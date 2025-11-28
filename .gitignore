@@ -1,0 +1,71 @@
+# ==============================
+# Backend: Spring Boot / Java
+# ==============================
+
+# Build output
+/target/
+
+# IDE / editor
+*.iml
+/.idea/
+/*.log
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# VM crash logs
+hs_err_pid*
+replay_pid*
+
+# ==============================
+# Frontend: Next.js / Node
+# ==============================
+
+# Dependencies
+frontend/node_modules/
+
+# Next.js build output
+frontend/.next/
+frontend/out/
+
+# Environment files
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Optional caches
+frontend/.cache
+frontend/.parcel-cache
+frontend/.eslintcache
+frontend/.stylelintcache
+frontend/.nyc_output
+frontend/build/Release
+
+# Logs
+frontend/logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# TypeScript cache
+frontend/*.tsbuildinfo
+
+# VSCode test files
+frontend/.vscode-test
+
+# ==============================
+# Sistema / Misc
+# ==============================
+
+.DS_Store
