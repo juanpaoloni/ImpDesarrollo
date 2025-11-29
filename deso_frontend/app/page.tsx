@@ -1,32 +1,49 @@
 "use client";
 
+import "./globals.css";
+import Link from "next/link";
+import Navbar from "./components/Navbar";
+
 import { useState } from "react";
 
-export default function Home() {
-  const [respuesta, setRespuesta] = useState("");
-
-  const llamarBackend = async () => {
-    try {
-      const res = await fetch("http://localhost:8080/api/hola");
-      const data = await res.text();
-      setRespuesta(data);
-    } catch (error) {
-      setRespuesta("Error al conectar al backend");
-    }
-  };
+export default function MenuPrincipal() {
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <h1 className="text-2xl font-bold">Test Next.js → Spring Boot</h1>
+    <main className="fondo">
+      
+      <Navbar />
 
-      <button
-        onClick={llamarBackend}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Llamar al backend
-      </button>
+      <h1 className="titulo">MENU PRINCIPAL</h1>
+      <h3 className="subtitulo">Elija una de las siguientes opciones</h3>
+      <div className="contenedor">
+        <Link href="/mostrarEstadoHabitaciones">
+        <button className="boton">
+          Mostar estado Habitaciones
+        </button>
+        </Link>
+        <Link href="/darDeBajaHuesped">
+        <button className="boton">
+          Dar de Baja Huesped
+        </button>
+        </Link>
+        <Link href="/reservarHabitacion">
+        <button className="boton">
+          Reservar Habitacion
+        </button>
+        </Link>
+        <Link href="/cancelarReserva">
+        <button className="boton">
+          Cancelar Reserva
+        </button>
+        </Link>
+        <Link href="/facturar">
+        <button className="boton">
+          Facturar
+        </button>
+        </Link>
+      </div>
 
-      <p className="text-lg mt-4">Respuesta: {respuesta}</p>
+
     </main>
   );
 }

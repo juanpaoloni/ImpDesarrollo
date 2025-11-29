@@ -1,0 +1,47 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package EntidadesDominio;
+
+import Enumerados.EstadoOcupacion;
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.*;
+import lombok.*;
+/**
+ *
+ * @author mirko
+ */
+@Data
+@AllArgsConstructor @NoArgsConstructor
+@Entity
+@Table(name = "ocupacion")
+public class Ocupacion {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idOcupacion;
+    
+    @Column
+    private LocalDate fechaInicio;
+    @Column
+    private LocalDate fechaFin;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="estadoOcupacion")
+    private EstadoOcupacion estado;
+    
+    @OneToMany(mappedBy = "idOcupacion")
+    private List<Factura> factura;
+    
+    @OneToMany(mappedBy = "idOcupacion")
+    private List<Servicio> servicios;
+    
+    @ManyToOne
+    @JoinColumn(name = "numeroHabitacion")
+    private Habitacion habitacion;
+    
+    @OneToMany(mappedBy = "idOcupacion")
+    private List<Huesped> huespedes;
+}
