@@ -1,4 +1,4 @@
-package EntidadesDominio;
+package com.DESO_TP.EntidadesDominio;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "factura")
+@Table(name = "notaCredito")
 @Data
 @AllArgsConstructor @NoArgsConstructor
 public class NotaCredito {
@@ -23,7 +23,7 @@ public class NotaCredito {
     @Column
     private float monto;
     
-    @OneToMany(mappedBy = "factura")
+    @OneToMany(mappedBy = "notaCredito")
     private List<Factura> facturas;
     
     

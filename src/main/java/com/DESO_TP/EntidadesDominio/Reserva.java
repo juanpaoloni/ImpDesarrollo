@@ -2,46 +2,54 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package EntidadesDominio;
+package com.DESO_TP.EntidadesDominio;
 
-import Enumerados.EstadoOcupacion;
+import Enumerados.EstadoReserva;
+import java.util.Date;
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.*;
 import lombok.*;
 /**
  *
  * @author mirko
  */
+@Entity
+@Table(name = "reserva")
 @Data
 @AllArgsConstructor @NoArgsConstructor
-@Entity
-@Table(name = "ocupacion")
-public class Ocupacion {
+public class Reserva {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idOcupacion;
+    private Long idReserva;
+    
+    @Column
+    private LocalDate fechaReserva;
     
     @Column
     private LocalDate fechaInicio;
+    
     @Column
     private LocalDate fechaFin;
     
     @Enumerated(EnumType.STRING)
-    @Column(name="estadoOcupacion")
-    private EstadoOcupacion estado;
+    @Column(name = "estadoReserva")
+    private EstadoReserva estado;
     
-    @OneToMany(mappedBy = "idOcupacion")
-    private List<Factura> factura;
+    @Column
+    private String telefono;
     
-    @OneToMany(mappedBy = "idOcupacion")
-    private List<Servicio> servicios;
+    @Column
+    private String nombre;
+    
+    @Column
+    private String apellido;
     
     @ManyToOne
     @JoinColumn(name = "numeroHabitacion")
     private Habitacion habitacion;
     
-    @OneToMany(mappedBy = "idOcupacion")
-    private List<Huesped> huespedes;
+    @OneToOne(mappedBy = "reserva")
+    private CancelacionReserva cancelacion;
+
 }

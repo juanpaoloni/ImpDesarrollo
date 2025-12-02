@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package EntidadesDominio;
+package com.DESO_TP.EntidadesDominio;
 
-import EntidadesDominio.IDs.FueraDeServicioId;
+
+
+import com.DESO_TP.EntidadesDominio.IDs.FueraDeServicioId;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;
@@ -31,7 +33,7 @@ public class FueraDeServicio{
     
     @MapsId("numeroHabitacion") // FK dentro del campo id
     @ManyToOne
-    @JoinColumn(name = "numeroHabitacion") // referencia a la tabla habitacion
+    @JoinColumn(name = "numero_Habitacion") // referencia a la tabla habitacion
     private Habitacion habitacion;
 
 }

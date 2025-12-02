@@ -1,4 +1,4 @@
-package EntidadesDominio;
+package com.DESO_TP.EntidadesDominio;
 
 import java.util.Date;
 
