@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.DESO_TP.DESO_backend.Services;
 
-/**
- *
- * @author jauni
- */
 import Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataAccessObject.DireccionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
+import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.DireccionResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
@@ -27,13 +20,28 @@ public class HuespedService {
     private final HuespedDAO huespedRepository;
     private final DireccionDAO direccionRepository;
 
+    // ========================================================
+    //            CREAR HUESPED CON DIRECCIÓN COMPLETA
+    // ========================================================
     public HuespedResponse crearHuesped(HuespedRequest req) {
 
-        // Buscar la dirección que se mandó (por ID)
-        Direccion direccion = direccionRepository.findById(req.getDireccionId())
-                .orElseThrow(() -> new RuntimeException("Dirección no encontrada"));
+        // Construir la dirección a partir del request
+        DireccionRequest dreq = req.getDireccion();
+        Direccion d = new Direccion();
 
-        // Crear entidad
+        d.setCalle(dreq.getCalle());
+        d.setNumero(dreq.getNumero());
+        d.setDepartamento(dreq.getDepartamento());
+        d.setPiso(dreq.getPiso());
+        d.setCodigoPostal(dreq.getCodigoPostal());
+        d.setLocalidad(dreq.getLocalidad());
+        d.setProvincia(dreq.getProvincia());
+        d.setPais(dreq.getPais());
+
+        // Guardar la dirección primero
+        direccionRepository.save(d);
+
+        // Crear entidad huésped
         Huesped h = new Huesped();
         h.setTipoDocumento(req.getTipoDocumento());
         h.setNumeroDocumento(req.getNumeroDocumento());
@@ -46,13 +54,16 @@ public class HuespedService {
         h.setEmail(req.getEmail());
         h.setTelefono(req.getTelefono());
         h.setOcupacion(req.getOcupacion());
-        h.setDireccion(direccion);
+        h.setDireccion(d);
 
         huespedRepository.save(h);
 
         return toResponse(h);
     }
 
+    // ========================================================
+    //                       OBTENER
+    // ========================================================
     public HuespedResponse obtenerHuesped(TipoDocumento tipo, String numero) {
 
         HuespedId id = new HuespedId(tipo, numero);
@@ -63,6 +74,10 @@ public class HuespedService {
         return toResponse(h);
     }
 
+
+    // ========================================================
+    //                     ACTUALIZAR
+    // ========================================================
     public HuespedResponse actualizarHuesped(HuespedRequest req) {
 
         HuespedId id = new HuespedId(req.getTipoDocumento(), req.getNumeroDocumento());
@@ -70,7 +85,7 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
 
-        // Actualizar campos
+        // Actualizar datos
         h.setNombre(req.getNombre());
         h.setApellido(req.getApellido());
         h.setCUIT(req.getCUIT());
@@ -81,11 +96,21 @@ public class HuespedService {
         h.setTelefono(req.getTelefono());
         h.setOcupacion(req.getOcupacion());
 
-        // Actualizar dirección si se envió otra
-        if (req.getDireccionId() != null) {
-            Direccion direccion = direccionRepository.findById(req.getDireccionId())
-                    .orElseThrow(() -> new RuntimeException("Dirección no encontrada"));
-            h.setDireccion(direccion);
+        // Actualizar dirección
+        if (req.getDireccion() != null) {
+            DireccionRequest dreq = req.getDireccion();
+            Direccion d = h.getDireccion();
+
+            d.setCalle(dreq.getCalle());
+            d.setNumero(dreq.getNumero());
+            d.setDepartamento(dreq.getDepartamento());
+            d.setPiso(dreq.getPiso());
+            d.setCodigoPostal(dreq.getCodigoPostal());
+            d.setLocalidad(dreq.getLocalidad());
+            d.setProvincia(dreq.getProvincia());
+            d.setPais(dreq.getPais());
+
+            direccionRepository.save(d);
         }
 
         huespedRepository.save(h);
@@ -93,6 +118,9 @@ public class HuespedService {
         return toResponse(h);
     }
 
+    // ========================================================
+    //                     ELIMINAR
+    // ========================================================
     public void eliminarHuesped(TipoDocumento tipo, String numero) {
 
         HuespedId id = new HuespedId(tipo, numero);
@@ -104,6 +132,9 @@ public class HuespedService {
         huespedRepository.deleteById(id);
     }
 
+    // ========================================================
+    //                       MAPPER
+    // ========================================================
     private HuespedResponse toResponse(Huesped h) {
 
         Direccion d = h.getDireccion();

@@ -17,19 +17,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HuespedRequest {
-
-    private TipoDocumento tipoDocumento;
-    private String numeroDocumento;
-
-    private String nombre;
-    private String apellido;
-    private String CUIT;
-    private PosicionIVA posicionIVA;
-    private LocalDate fechaNacimiento;
-    private String nacionalidad;
-    private String email;
-    private String telefono;
-    private String ocupacion;
-
-    private Long direccionId; // el cliente envía solo el ID
+   private TipoDocumento tipoDocumento;
+   private String numeroDocumento;
+   private String nombre;
+   private String apellido;
+   private String CUIT;
+   private PosicionIVA posicionIVA;
+   private LocalDate fechaNacimiento;
+   private String nacionalidad;
+   private String email;
+   private String telefono;
+   private String ocupacion;
+   private DireccionRequest direccion;
 }
