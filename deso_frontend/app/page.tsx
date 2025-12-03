@@ -11,7 +11,6 @@ export default function MenuPrincipal() {
   return (
     <main className="fondo">
       
-      <Navbar />
 
       <h1 className="titulo">MENU PRINCIPAL</h1>
       <h3 className="subtitulo">Elija una de las siguientes opciones</h3>

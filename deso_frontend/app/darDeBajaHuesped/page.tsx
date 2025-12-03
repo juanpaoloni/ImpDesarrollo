@@ -10,7 +10,7 @@ export default function prueba() {
 
   return (
     <main className="fondo">
-      <h2 className="titulo">Mostrar estado de las habitaciones</h2>
+      <h2 className="titulo">Dar de baja Huesped</h2>
 
 
     </main>
