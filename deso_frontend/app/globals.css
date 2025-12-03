@@ -19,17 +19,22 @@
   }
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
-  background: var(--background);
+  background: #f3e6d3; 
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 .titulo {
+    padding-top: 80px;
     text-align: center;
     font-family: "Cinzel", serif;
-    font-style: italic;
+    font-style: normal;
     text-shadow:
       0 3px 5px rgba(0, 0, 0, 0.25),
       0 1px 1px rgba(0, 0, 0, 0.15);
@@ -39,6 +44,7 @@ body {
     font-weight: 600;
     letter-spacing: 4.0px;
 }
+
 
 .subtitulo {
   color: #70604f;
@@ -50,60 +56,94 @@ body {
   padding-bottom: 10px;
 }
 
+.letra_btn {
+    margin-top: 6px;
+    text-align: center;
+    font-family: "Montserrat", sans-serif; 
+    font-weight: 600; 
+    font-size: 16px;
+    color: #f4f4f4;
+    text-decoration: none;
+
+    text-shadow: none;
+
+    letter-spacing: 1.5px;
+
+    line-height: 1.25;
+}
+
 .fondo {
-    background-color: #f3e6d3;
     min-height: 100vh;
+    background-color: #f3e6d3;
+    background-image: url("/textura_suave.png");
+    background-size: cover;
+    opacity: 0.97;
 }
 
 .contenedor {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    align-items: center;
-    justify-content: center;
-    min-height:50vh;
+  margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  justify-content: center;
+  align-items: center;
+
+  padding-bottom: 80px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+
 .boton {
-    background-color: #50563a;
-    color: white;
-    width: 180;
-    height: 180;
-    padding: 12px 22px;     
-    margin: 4px;
-    border-radius: 8px;      
-    border: none;             
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;        
-    letter-spacing: 0.5px;    
-    transition: 
-        background-color 0.25s ease,
-        transform 0.12s ease,
-        box-shadow 0.2s ease;  
+  width: 200px;
+  height: 200px;
+  border-radius: 18px;
+  background: linear-gradient(
+      180deg,
+      rgba(72, 74, 52, 0.92),
+      rgba(58, 60, 40, 0.96)
+  );
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  color: #fff;
+  border: none;
+  outline: none;
+  text-decoration: none;
+
+  cursor: pointer;
+  padding: 16px;
+
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
 .boton:hover {
-    background-color: #6c705d;
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
 }
 
-/* Cuando lo presionan */
 .boton:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
 }
 
 .navbar {
-  height: 78px;
+  height: 87px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1px 20px;
   background-color: #b69f7f;
-  border-bottom: 2px solid #937e60;
-  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.5);
+  border-radius:2px solid #937e60;;
+  backdrop-filter: blur(4px);
+  background-color: rgba(182, 159, 127, 0.92);
+  border-bottom: 3px solid #8c785e;
 }
 
 .navbar_center {
@@ -127,4 +167,10 @@ body {
 
 .icon_btn:hover {
   opacity: 0.6;
+}
+
+.iconos_boton {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
 }
