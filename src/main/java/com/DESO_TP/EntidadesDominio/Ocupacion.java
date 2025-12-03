@@ -42,6 +42,6 @@ public class Ocupacion {
     @JoinColumn(name = "numero_Habitacion")
     private Habitacion habitacion;
     
-    @OneToMany(mappedBy = "ocupacion")
+    @ManyToMany(mappedBy = "ocupaciones")
     private List<Huesped> huespedes;
 }

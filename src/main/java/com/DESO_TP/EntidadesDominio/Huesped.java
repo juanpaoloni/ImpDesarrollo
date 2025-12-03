@@ -11,6 +11,7 @@ import Enumerados.TipoDocumento;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import lombok.*;
 /**
  *
@@ -61,4 +62,19 @@ public class Huesped {
     @OneToOne
     @JoinColumn(name = "idDireccion")
     private Direccion direccion;
+    
+    
+    @ManyToMany
+    @JoinTable(
+        name = "ocupacion_huesped",
+        joinColumns = {
+            @JoinColumn(name = "tipo_documento", referencedColumnName = "tipoDocumento"),
+            @JoinColumn(name = "numero_documento", referencedColumnName = "numeroDocumento")
+        },
+        inverseJoinColumns = {
+            @JoinColumn(name = "id_ocupacion", referencedColumnName = "idOcupacion")
+        }
+    )
+    private List<Ocupacion> ocupaciones;
+    
 }
