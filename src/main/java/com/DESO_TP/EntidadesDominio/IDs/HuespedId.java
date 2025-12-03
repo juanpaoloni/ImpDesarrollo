@@ -4,7 +4,7 @@
  */
 package com.DESO_TP.EntidadesDominio.IDs;
 
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
