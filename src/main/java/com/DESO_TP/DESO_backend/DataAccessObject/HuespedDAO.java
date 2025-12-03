@@ -17,5 +17,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HuespedDAO extends CrudRepository<Huesped, HuespedId> {
-    
+     
 }

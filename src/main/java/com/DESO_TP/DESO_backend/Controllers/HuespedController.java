@@ -1,5 +1,6 @@
 package com.DESO_TP.DESO_backend.Controllers;
 
+import Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
 import com.DESO_TP.DESO_backend.Services.HuespedService;
@@ -16,10 +17,17 @@ public class HuespedController {
     @Autowired
     private HuespedService service;
 
-    @PostMapping
+    @PostMapping("/darDeAlta")
     public ResponseEntity<HuespedResponse> guardar(@RequestBody HuespedRequest request) {
-         System.out.println(request);
         HuespedResponse respuesta = service.crearHuesped(request);
         return ResponseEntity.ok(respuesta);
     }
+    
+    @DeleteMapping("/darDeBaja/{tipo}/{numero}")
+    public ResponseEntity<String> borrar(@PathVariable TipoDocumento tipo, @PathVariable String numero) {
+
+        service.eliminarHuesped(tipo, numero);
+        return ResponseEntity.ok("Huésped eliminado correctamente.");
+    }
+    
 }

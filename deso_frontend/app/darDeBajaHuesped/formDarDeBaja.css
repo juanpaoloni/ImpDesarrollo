@@ -1,0 +1,52 @@
+input {
+    background-color: whitesmoke;
+    margin: 5px;
+    padding: 10px;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+}
+
+.contenedor-campos {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding:10px;
+    background-color: whitesmoke;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 5px 8px rgba(0,0,0,0.15);
+    margin: 0 auto;
+    margin-top:50px;
+    max-width: 300px
+}
+
+select {
+  padding: 15px;
+  margin: 5px;
+  border-radius: 8px;
+  border: 1px solid #aaa;
+  background: whitesmoke;
+  color: black;
+}
+
+.btn {
+  margin-top: 25px;
+  width: 100%;
+  padding: 12px;
+  background-color: #b69f7f;
+  border: none;
+  color: white;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
+}
+
+.btn:hover {
+  background-color: #937e60;
+}
+
+.btn:active{
+    background-color: #afa18e;
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import "../globals.css"
-import Navbar from "../components/Navbar.jsx"
+import {validarNumerico, validarTexto, validarDocumento, validarTelefono, validarEmail, validarCuit } from "../components/Validaciones.jsx"
 import "./formHuesped.css"; 
 import { useState } from "react";
 
@@ -48,13 +48,46 @@ export default function darDeAlta() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+  if (!validarDocumento(form.tipoDocumento, form.numeroDocumento)) {
+    throw new Error("Número de documento inválido para el tipo seleccionado.");
+  }
+
+  if (!validarEmail(form.email)) {
+    throw new Error("Email inválido.");
+  }
+
+  if (!validarTexto(form.nombre)) {
+    throw new Error("Nombre inválido. Solo se permiten letras y espacios.");
+  }
+
+  if (!validarTexto(form.apellido)) {
+    throw new Error("Apellido inválido. Solo se permiten letras y espacios.");
+  }
+
+  if (!validarCuit(form.cuit)) {
+    throw new Error("CUIT inválido. Debe tener formato 00-00000000-0.");
+  }
+
+  if (!validarTexto(form.nacionalidad)) {
+    throw new Error("Nacionalidad inválida. Solo se permiten letras y espacios.");
+  }
+
+  if (!validarTelefono(form.telefono)) {
+    throw new Error("Teléfono inválido. Debe tener formato internacional, opcional '+'.");
+  }
+
+  if (!validarTexto(form.ocupacion)) {
+    throw new Error("Ocupación inválida. Solo se permiten letras y espacios.");
+  }
+
+
   try {
-    const response = await fetch("http://localhost:8080/huespedes", {
+    const response = await fetch("http://localhost:8080/huespedes/darDeAlta", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(form), // ← AHORA SÍ
+      body: JSON.stringify(form),
     });
 
     if (!response.ok) {

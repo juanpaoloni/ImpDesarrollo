@@ -20,9 +20,6 @@ public class HuespedService {
     private final HuespedDAO huespedRepository;
     private final DireccionDAO direccionRepository;
 
-    // ========================================================
-    //            CREAR HUESPED CON DIRECCIÓN COMPLETA
-    // ========================================================
     public HuespedResponse crearHuesped(HuespedRequest req) {
 
         // Construir la dirección a partir del request
@@ -61,9 +58,6 @@ public class HuespedService {
         return toResponse(h);
     }
 
-    // ========================================================
-    //                       OBTENER
-    // ========================================================
     public HuespedResponse obtenerHuesped(TipoDocumento tipo, String numero) {
 
         HuespedId id = new HuespedId(tipo, numero);
@@ -75,9 +69,6 @@ public class HuespedService {
     }
 
 
-    // ========================================================
-    //                     ACTUALIZAR
-    // ========================================================
     public HuespedResponse actualizarHuesped(HuespedRequest req) {
 
         HuespedId id = new HuespedId(req.getTipoDocumento(), req.getNumeroDocumento());
@@ -118,9 +109,6 @@ public class HuespedService {
         return toResponse(h);
     }
 
-    // ========================================================
-    //                     ELIMINAR
-    // ========================================================
     public void eliminarHuesped(TipoDocumento tipo, String numero) {
 
         HuespedId id = new HuespedId(tipo, numero);
@@ -132,9 +120,6 @@ public class HuespedService {
         huespedRepository.deleteById(id);
     }
 
-    // ========================================================
-    //                       MAPPER
-    // ========================================================
     private HuespedResponse toResponse(Huesped h) {
 
         Direccion d = h.getDireccion();
