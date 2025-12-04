@@ -6,8 +6,8 @@ package com.DESO_TP.EntidadesDominio;
 
 
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
-import Enumerados.PosicionIVA;
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.PosicionIVA;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;

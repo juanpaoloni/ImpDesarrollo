@@ -1,21 +1,19 @@
 package com.DESO_TP.DESO_backend.Services;
 
-import com.DESO_TP.Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataAccessObject.DireccionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
-import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
-import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.DireccionResponse;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-import com.DESO_TP.EntidadesDominio.Direccion;
-import com.DESO_TP.EntidadesDominio.Huesped;
-import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
+import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse; 
+import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
+import com.DESO_TP.Enumerados.TipoDocumento;  
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HuespedService {
+public class FacturacionService {
 
     private final HuespedDAO huespedRepository;
     private final DireccionDAO direccionRepository;

@@ -5,8 +5,8 @@
 package com.DESO_TP.EntidadesDominio;
 
 import com.DESO_TP.EntidadesDominio.Descuento;
-import Enumerados.TipoHabitacion;
-import Enumerados.EstadoHabitacion;
+import com.DESO_TP.Enumerados.TipoHabitacion;
+import com.DESO_TP.Enumerados.EstadoHabitacion;
 import jakarta.persistence.*;
 import java.util.*;
 import lombok.*;

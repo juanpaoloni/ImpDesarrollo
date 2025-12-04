@@ -1,5 +1,6 @@
 package com.DESO_TP.EntidadesDominio;
 
+import com.DESO_TP.Enumerados.PosicionIVA;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,5 +14,12 @@ public abstract class ResponsablePago {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idResponsable;
+    
+    private String nombreApellido;
+    private String CUIT;
+    private String telefono;
+    private Direccion direccion;
+    private String email;
+    private PosicionIVA posIva;
     
 }

@@ -4,8 +4,8 @@
  */
 package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
 
-import Enumerados.PosicionIVA;
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.PosicionIVA;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import java.time.LocalDate;
 import lombok.*;
 
