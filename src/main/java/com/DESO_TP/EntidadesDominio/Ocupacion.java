@@ -7,8 +7,10 @@ package com.DESO_TP.EntidadesDominio;
 import com.DESO_TP.Enumerados.EstadoOcupacion;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import lombok.*;
+
 /**
  *
  * @author mirko
@@ -25,8 +27,12 @@ public class Ocupacion {
     
     @Column
     private LocalDate fechaInicio;
+    
     @Column
     private LocalDate fechaFin;
+    
+    @Column
+    private LocalTime horaSalida;
     
     @Enumerated(EnumType.STRING)
     @Column(name="estadoOcupacion")
@@ -34,9 +40,6 @@ public class Ocupacion {
     
     @OneToMany(mappedBy = "ocupacion")
     private List<Factura> factura;
-    
-    @OneToMany(mappedBy = "ocupacion")
-    private List<Servicio> servicios;
     
     @ManyToOne
     @JoinColumn(name = "numero_Habitacion")

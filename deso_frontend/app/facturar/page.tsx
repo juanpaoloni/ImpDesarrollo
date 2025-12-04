@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar.jsx";
 import "./formFacturar.css"
 import "../globals.css";
 import { useState } from "react";
+import ResponsablePago from './SeleccionarResponsable.jsx';
 
 export default function Facturar() {
   const [form, setForm] = useState({
@@ -15,6 +16,8 @@ export default function Facturar() {
     numeroDeHabitación: "",
     horarioDeSalida: "",
   });
+
+  const [occupantsData, setOccupantsData] = useState(null);
 
   const handleChange = (e: { target: { name: any; value: any; }; }) => {
   const { name, value } = e.target;
@@ -61,12 +64,16 @@ export default function Facturar() {
     );
 
       if(!response.ok){
-        throw new Error("No se encontraron datos de la habitación correspondiente.");
-      }
+        const errorMessage = await response.text(); 
+    throw new Error(errorMessage || "Error desconocido al buscar la habitación.");
+  }
 
-      //ACA FALTA EL MANEJO DE MOVERSE A LA PROXIMA PANTALLA CON LOS DATOS DE FACTURACION
-      alert(`Factura encontrada para Habitación ${form.numeroDeHabitación}.`);
+  const data = await response.json(); 
+  
+  setOccupantsData(data); // 
 
+
+  setErrors({ numeroDeHabitación: "", horarioDeSalida: "" });
     } 
     catch(error){
       console.error(error);
@@ -82,7 +89,7 @@ export default function Facturar() {
      <main className="fondo">
       <h1 className="titulo">FACTURACIÓN</h1>
       <div className="linea-corta"></div> 
-      
+
       <div className="contenedor_fac">
         <form onSubmit={handleRequest}>
 

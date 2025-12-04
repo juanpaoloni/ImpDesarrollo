@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FacturaRequest {
-    private String numeroDeHabitacion; 
+    private int numeroDeHabitacion; 
     private String horarioDeSalida;
 
 }
