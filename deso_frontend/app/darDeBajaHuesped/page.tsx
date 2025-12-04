@@ -6,18 +6,18 @@ import Navbar from "../components/Navbar.jsx"
 
 import { useState } from "react";
 
-export default function darDeBaja() {
+export default function DarDeBaja() {
   const [form, setForm] = useState({
       tipoDocumento: "DNI",
       numeroDocumento: "",
     });
 
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value}));
   }
 
-  const handleRequest = async (e) => {
+  const handleRequest = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     try{
