@@ -7,9 +7,13 @@ import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionReq
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.DireccionResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
+import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +23,32 @@ public class HuespedService {
 
     private final HuespedDAO huespedRepository;
     private final DireccionDAO direccionRepository;
+    
+    public List<HuespedResponse> buscarHuespedes(String _nombres, String _apellido, String _tipoDoc, String _nroDoc){
+        _nombres = TextoUtils.normalizarString(_nombres);
+        _apellido = TextoUtils.normalizarString(_apellido);
+        _tipoDoc = TextoUtils.normalizarString(_tipoDoc);
+        _nroDoc = TextoUtils.normalizarString(_nroDoc);
+        
+        List<Huesped> huespedesSinFiltro = (List<Huesped>)huespedRepository.findAll();
+        List<Huesped> huespedes = new ArrayList();
+        for(Huesped h : huespedesSinFiltro){
+            if(TextoUtils.normalizarString(h.getNombre()).equals(_nombres) || _nombres.isEmpty()){
+                if(TextoUtils.normalizarString(h.getApellido()).equals(_apellido) || _apellido.isEmpty()){
+                    if(TextoUtils.normalizarString(h.getTipoDocumento().toString()).equals(_tipoDoc) || _tipoDoc.isEmpty()){
+                        if(TextoUtils.normalizarString(h.getNumeroDocumento()).equals(_nroDoc) || _nroDoc.isEmpty()){
+                            huespedes.add(h);
+                        }
+                    }
+                }
+            }
+        } 
 
+        return huespedes.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+    
     public HuespedResponse crearHuesped(HuespedRequest req) {
 
         // Construir la dirección a partir del request

@@ -7,6 +7,21 @@ input {
     border: 1px solid #aaa;
 }
 
+.texto-solicitud {
+  color: black;
+  text-align: center;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-style:oblique;
+}
+
+.contenedor-principal {
+  margin-top:30px;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  justify-content: center;
+}
+
 .contenedor-campos {
     display: flex;
     flex-direction: column;
@@ -16,8 +31,6 @@ input {
     border: 1px solid #ccc;
     border-radius: 10px;
     box-shadow: 0px 5px 8px rgba(0,0,0,0.15);
-    margin: 0 auto;
-    margin-top:50px;
     max-width: 300px
 }
 
@@ -31,7 +44,6 @@ select {
 }
 
 .btn {
-  margin-top: 25px;
   width: 100%;
   padding: 12px;
   background-color: #b69f7f;
@@ -41,6 +53,7 @@ select {
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
+  transition: background-color 0.1s ease, color 0.1s ease, transform 0.15s ease;
 }
 
 .btn:hover {
@@ -50,3 +63,102 @@ select {
 .btn:active{
     background-color: #afa18e;
 }
+
+.btn:disabled {
+  background-color: #615441;
+  color: rgb(156, 156, 156);
+  cursor: not-allowed;
+  box-shadow: none;
+  transition: background-color 0.1s ease, color 0.1s ease, transform 0.15s ease;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
+}
+
+.tabla-contenedor {
+  max-height: 360px;   
+  width: 800px;  
+  overflow-y: auto;      
+  overflow-x: hidden;     
+  padding: 0;
+  margin: 0;
+  background-color: #e3d3b9;
+  border-bottom: 2px solid #b69f7f;
+  box-shadow: 0px 10px 15px rgba(0,0,0,0.1);
+}
+
+.tabla {
+  width: 100%;
+  border-radius: 15px;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.tabla-header {
+  background-color: #b69f7f;
+  color: white;
+  padding: 10px;
+  width: 100px;
+  max-width: 100px;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.1);
+}
+
+.tabla-header-izquierdo {
+  border-top-left-radius: 10px;
+  background-color: #b69f7f;
+  color: white;
+  padding: 5px;
+  width:100px;
+  max-width: 100px;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.1);
+}
+
+.tabla-header-derecho {
+  border-top-right-radius: 10px;
+  background-color: #b69f7f;
+  color: white;
+  padding: 5px;
+  width:100px;
+  max-width: 100px;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.1);
+}
+
+.tabla-fila {
+  color: black;
+  text-align: center;
+  background-color: whitesmoke;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+.tabla-seleccionado {
+  color: black;
+  text-align: center;
+  background-color: #dfd6c9;
+  transform: scale(1.01);
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+.contenedor-boton{
+  max-width:300px;
+  margin: 0 auto;
+  margin-top:30px;
+}
+
+.fila-animada {
+  opacity: 0;
+  transform: translateY(-2px);
+  animation: aparecer 0.1s ease-out forwards;
+}
+
+.tabla-noEncontrado {
+  color: #534838;
+  font-weight: 600;
+  text-align: center;
+  padding: 20px
+}
+
+@keyframes aparecer {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
