@@ -34,7 +34,7 @@ export function validarTelefono(valor){
 
 export function validarFormatoFecha(valor) {
   // MM-DD-YYYY
-  return /^(0[1-9]|1[0-2])-([0-2][0-9]|3[0-1])-\d{4}$/.test(valor);
+  return /^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/.test(valor);
 }
 
 export function validarFechaNoFutura(valor) {
@@ -50,11 +50,12 @@ export function validarFechaNoFutura(valor) {
 }
 
 export function validarRangoFechas(fechaInicio, fechaFin) {
-  const [mesI, diaI, anioI] = fechaInicio.split("-").map(Number);
-  const [mesF, diaF, anioF] = fechaFin.split("-").map(Number);
+  const [anioI, mesI, diaI] = fechaInicio.split("-").map(Number);
+  const [anioF, mesF, diaF] = fechaFin.split("-").map(Number);
 
   const inicio = new Date(anioI, mesI - 1, diaI);
   const fin = new Date(anioF, mesF - 1, diaF);
+
 
   inicio.setHours(0,0,0,0);
   fin.setHours(0,0,0,0);

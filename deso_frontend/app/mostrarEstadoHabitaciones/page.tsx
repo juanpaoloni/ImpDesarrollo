@@ -4,6 +4,7 @@ import "../globals.css";
 import "./formMostrarHabitaciones.css"; // archivo CSS renombrado
 import { generarFechas, parseFechaSinOffset } from "./utilsMostrarHabitaciones";
 import { useState } from "react";
+import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
 
 type Habitacion = {
   numeroHabitacion: number;
@@ -36,6 +37,9 @@ type FueraDeServicioResponse = {
 export default function MostrarEstadoHabitaciones() {
 
   // STATES
+  const [err, setError] = useState({
+    mensaje:"ㅤ",
+  });
   const [form, setForm] = useState<FormState>({
     fechaInicio: "",
     fechaFin: "",
@@ -85,7 +89,24 @@ export default function MostrarEstadoHabitaciones() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError({mensaje:"ㅤ"});
 
+    if(!validarFormatoFecha(form.fechaInicio)){
+      setError({mensaje:"Por favor, completar la fecha de inicio."});
+      return;
+    }
+
+    if(!validarFormatoFecha(form.fechaFin)){
+      setError({mensaje:"Por favor, completar la fecha de fin."});
+      return;
+    }
+    if(!validarRangoFechas(form.fechaInicio, form.fechaFin)) {
+      setError({mensaje:"La fecha inicial es posterior a la final."});
+      return
+    };
+    
+
+    
     const fechas = generarFechas(form.fechaInicio, form.fechaFin);
     setFilas(fechas);
 
@@ -146,39 +167,47 @@ export default function MostrarEstadoHabitaciones() {
       <h1 className="subtitulo">
         Ingrese el rango de fechas y el tipo de habitación para ver el estado de las mismas
       </h1>
+      <div className="contenedor-campos-labels-MEH">
+        <div className="contenedor-labels-MEH">
+          <p className="label-campos-MEH">Fecha Inicio</p>
+          <p className="label-campos-MEH">Fecha Finㅤ ㅤ ㅤ</p>
+          <p className="label-campos-MEH">Tipo de Habitacion</p>
+        </div>
 
-      <div className="contenedor-campos-MEH">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="date"
-            name="fechaInicio"
-            value={form.fechaInicio}
-            onChange={handleChange}
-          />
-          <input
-            type="date"
-            name="fechaFin"
-            value={form.fechaFin}
-            onChange={handleChange}
-          />
+        <div className="contenedor-campos-MEH">
+          <form onSubmit={handleSubmit}>
+            <input
+              type="date"
+              name="fechaInicio"
+              value={form.fechaInicio}
+              onChange={handleChange}
+            />
+            <input
+              type="date"
+              name="fechaFin"
+              value={form.fechaFin}
+              onChange={handleChange}
+            />
 
-          <select
-            name="tipoHabitacion"
-            value={form.tipoHabitacion}
-            onChange={handleChange}
-          >
-            <option value="">Cualquier Tipo</option>
-            <option value="INDIVIDUAL_ESTANDAR">Individual Estándar</option>
-            <option value="SUITE_DOBLE">Suite Doble</option>
-            <option value="DOBLE_ESTANDAR">Doble Estándar</option>
-            <option value="DOBLE_SUPERIOR">Doble Superior</option>
-            <option value="SUPERIOR_FAMILY_PLAN">Superior Family Plan</option>
-          </select>
+            <select
+              name="tipoHabitacion"
+              value={form.tipoHabitacion}
+              onChange={handleChange}
+            >
+              <option value="">Cualquier Tipo</option>
+              <option value="INDIVIDUAL_ESTANDAR">Individual Estándar</option>
+              <option value="SUITE_DOBLE">Suite Doble</option>
+              <option value="DOBLE_ESTANDAR">Doble Estándar</option>
+              <option value="DOBLE_SUPERIOR">Doble Superior</option>
+              <option value="SUPERIOR_FAMILY_PLAN">Superior Family Plan</option>
+            </select>
 
-          <button className="btn-MEH" type="submit">
-            BUSCAR
-          </button>
-        </form>
+            <button className="btn-MEH" type="submit">
+              BUSCAR
+            </button>
+          </form>
+        </div>
+        <p className="error-MEH">{err.mensaje}</p>
       </div>
       
       <div className="tabla-contenedor-principal-MEH">

@@ -83,13 +83,19 @@ select {
   background-color: #e3d3b9;
   border-bottom: 2px solid #b69f7f;
   box-shadow: 0px 10px 15px rgba(0,0,0,0.1);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
 }
 
 .tabla {
   width: 100%;
-  border-radius: 15px;
   border-collapse: collapse;
   border-spacing: 0;
+  overflow:hidden;
+}
+
+.tabla th, .tabla td{
+    user-select:none;
 }
 
 .tabla-header {
@@ -143,12 +149,20 @@ select {
 }
 
 .fila-animada {
+  transition: opacity 0.1s ease, transform 0.5s ease-out;
+  max-height: 200px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.fila-animada.ocultar {
+  max-height: 0;
   opacity: 0;
-  transform: translateY(-2px);
-  animation: aparecer 0.1s ease-out forwards;
+  transform: translateY(-1px);
 }
 
 .tabla-noEncontrado {
+  transition: opacity 0.3s ease;
   color: #534838;
   font-weight: 600;
   text-align: center;

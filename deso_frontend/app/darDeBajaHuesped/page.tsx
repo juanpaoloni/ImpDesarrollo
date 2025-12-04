@@ -20,8 +20,10 @@ export default function darDeBaja() {
     numeroDocumento: "",
   });
 
-  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
 
+  const [error, setError] = useState();
+  const [filasEliminadas, setFilasEliminadas] = useState<string[]>([]);
+  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
   const [huespedSeleccionado, setHuespedSeleccionado] = useState<{
     tipoDocumento: string;
     numeroDocumento: string;
@@ -33,28 +35,37 @@ export default function darDeBaja() {
   };
 
   const handleBuscar = async (e: React.FormEvent) => {
-    setHuespedSeleccionado(null);
     e.preventDefault();
+    setHuespedSeleccionado(null);
 
-    const params = new URLSearchParams();
-    if (form.nombre) params.append("nombre", form.nombre);
-    if (form.apellido) params.append("apellido", form.apellido);
-    if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
-    if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
+    // Marcar todas las filas actuales para animación de desaparición
+    const ids = huespedes.map(h => `${h.tipoDocumento}-${h.numeroDocumento}`);
+    setFilasEliminadas(ids);
 
-    try {
-      const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
-      const data = await res.json();
+    // Esperar que termine la animación antes de reemplazar los datos
+    setTimeout(async () => {
+      const params = new URLSearchParams();
+      if (form.nombre) params.append("nombre", form.nombre);
+      if (form.apellido) params.append("apellido", form.apellido);
+      if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
+      if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
 
-      // asegurarse de que sea un array
-      setHuespedes(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Error al buscar huéspedes:", err);
-      setHuespedes([]);
-    }
+      try {
+        const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
+        const data = await res.json();
+        setHuespedes(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error al buscar huéspedes:", err);
+        setHuespedes([]);
+      }
+
+      // limpiar las filas eliminadas
+      setFilasEliminadas([]);
+    }, 300); // duración de la animación
   };
 
-  const handleDarDeBaja = async (e) => {
+
+  const handleDarDeBaja = async () => {
     try{
       if (!huespedSeleccionado?.tipoDocumento || !huespedSeleccionado?.numeroDocumento) {
         console.error("No hay huésped seleccionado");
@@ -146,6 +157,8 @@ export default function darDeBaja() {
                 huespedes.map((h, index) => (
                   <tr
                     key={index}
+                    data-numero={h.numeroDocumento}
+                    data-tipo={h.tipoDocumento}
                     onClick={() =>
                       setHuespedSeleccionado({
                         tipoDocumento: h.tipoDocumento,
@@ -158,8 +171,10 @@ export default function darDeBaja() {
                         ? "tabla-seleccionado"
                         : "tabla-fila"}
                       fila-animada
+                      ${filasEliminadas.includes(`${h.tipoDocumento}-${h.numeroDocumento}`) ? "ocultar" : ""}
                     `}
                   >
+
                     <td className="tabla-columna">{h.nombre}</td>
                     <td className="tabla-columna">{h.apellido}</td>
                     <td className="tabla-columna">{h.tipoDocumento}</td>
