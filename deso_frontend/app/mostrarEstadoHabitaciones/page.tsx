@@ -27,6 +27,12 @@ type OcupacionResponse = {
   fechaFin: string;
 };
 
+type FueraDeServicioResponse = {
+  numeroHabitacion: number;
+  fechaInicio: string;
+  fechaFin: string;
+};
+
 export default function MostrarEstadoHabitaciones() {
 
   // STATES
@@ -37,6 +43,7 @@ export default function MostrarEstadoHabitaciones() {
   });
 
   const [ocupaciones, setOcupaciones] = useState<OcupacionResponse[]>([]);
+  const [fueraDeServicio, setFueraDeServicio] = useState<FueraDeServicioResponse[]>([]);
   const [reservas, setReservas] = useState<ReservaResponse[]>([]);
   const [habitaciones, setHabitaciones] = useState<Habitacion[]>([]);
   const [filas, setFilas] = useState<Date[]>([]);
@@ -62,6 +69,13 @@ export default function MostrarEstadoHabitaciones() {
       return o.numeroHabitacion === Number(numeroHabitacion) && fecha >= inicio && fecha <= fin;
     });
 
+    const estaFueraDeServicio = fueraDeServicio.some(fds => {
+      const inicio = parseFechaSinOffset(fds.fechaInicio);
+      const fin = parseFechaSinOffset(fds.fechaFin);
+      return fds.numeroHabitacion === Number(numeroHabitacion) && fecha >= inicio && fecha <= fin;
+    });
+
+    if(estaFueraDeServicio) return "FDS";
     if (estaOcupada) return "OCUPADA";
     if (estaReservada) return "RESERVADA";
     
@@ -102,8 +116,18 @@ export default function MostrarEstadoHabitaciones() {
           return await res.json();
         })
       );
-      setOcupaciones(ocupacionesPorHabitaciones.flat());
 
+      const fueraDeServicioPorHabitaciones = await Promise.all(
+        listaHabitaciones.map(async (h) => {
+          const res = await fetch(
+            `http://localhost:8080/fueraDeServicio/obtenerPorHabitacion?numeroHabitacion=${h.numeroHabitacion}`
+          );
+          return await res.json();
+        })
+      );
+
+      setFueraDeServicio(fueraDeServicioPorHabitaciones.flat());
+      setOcupaciones(ocupacionesPorHabitaciones.flat());
       const reservasPlanas = reservasPorHabitaciones.flat();
       setReservas(reservasPlanas);
 

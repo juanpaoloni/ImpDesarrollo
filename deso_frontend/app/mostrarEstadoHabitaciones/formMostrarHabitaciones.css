@@ -77,7 +77,7 @@ select {
 
 .tabla-contenedor-principal-MEH {
   height: 500px;   
-  width: 1000px;      
+  width: 1500px;      
   padding: 0;
   margin: 0 auto;
   background-color: #e3d3b9;
@@ -88,7 +88,7 @@ select {
 
 .tabla-contenedor-MEH {
   max-height: 500px;   
-  width: 1000px;  
+  width: 1500px;  
   overflow-y: auto;      
   overflow-x: auto;     
   padding: 0;
@@ -191,7 +191,12 @@ select {
   text-align: center;
 }
 
-.td-LIBRE, .td-RESERVADA, .td-OCUPADA{
+.td-FDS {
+  background-color: #2d2d2d; 
+  text-align: center;
+}
+
+.td-LIBRE, .td-RESERVADA, .td-OCUPADA, .td-FDS{
   transition: background-color 0.2s ease;
   height: 40px;
   width: 100px;
