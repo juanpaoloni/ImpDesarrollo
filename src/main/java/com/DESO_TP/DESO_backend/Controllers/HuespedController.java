@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/huespedes")
-@CrossOrigin(origins = "http://localhost:3000") // Permite llamadas desde Next.js
+@CrossOrigin(origins = "http://localhost:3000")
 public class HuespedController {
 
     @Autowired
@@ -26,6 +26,9 @@ public class HuespedController {
     
     @DeleteMapping("/darDeBaja/{tipo}/{numero}")
     public ResponseEntity<String> borrar(@PathVariable TipoDocumento tipo, @PathVariable String numero) {
+        //
+        // FALTA VERIFICAR QUE NO TENGA OCUPACIONES
+        //
 
         service.eliminarHuesped(tipo, numero);
         return ResponseEntity.ok("Huésped eliminado correctamente.");

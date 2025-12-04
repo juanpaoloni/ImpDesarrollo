@@ -35,9 +35,6 @@ public class Ocupacion {
     @OneToMany(mappedBy = "ocupacion")
     private List<Factura> factura;
     
-    @OneToMany(mappedBy = "ocupacion")
-    private List<Servicio> servicios;
-    
     @ManyToOne
     @JoinColumn(name = "numero_Habitacion")
     private Habitacion habitacion;

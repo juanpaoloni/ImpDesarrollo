@@ -1,19 +1,12 @@
 .form-container {
-  padding: 30px;
 
   margin: auto;
     background-color: #f3e6d3;
     min-height: 100vh;
 }
 
-.titulo {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 28px;
-}
-
 .subtitulo {
-  margin-top: 25px;
+  margin-top: 10px;
   font-size: 20px;
   font-weight: bold;
 }
@@ -37,7 +30,7 @@
 }
 
 input {
-  padding: 10px;
+  padding: 7px;
   border-radius: 8px;
   border: 1px solid #aaa;
   font-size: 15px;
