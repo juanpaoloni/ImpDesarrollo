@@ -4,6 +4,7 @@ import com.DESO_TP.DESO_backend.DataAccessObject.OcupacionDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class OcupacionService {
     
     @Autowired
-    OcupacionDAO ocupacionRepository;
+    private OcupacionDAO ocupacionRepository;
     
     // Necesitamos este método para que FacturacionService lo use
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacionYHoraSalida(
@@ -32,6 +33,12 @@ public class OcupacionService {
         return ocupaciones.stream().map(this::toResponse).toList();
     }
     
+    public List<OcupacionResponse> ocupacionesPorHuesped(TipoDocumento tipoDocumento, String nroDocumento) {
+        List<Ocupacion> ocupaciones = ocupacionRepository.findByHuesped(tipoDocumento, nroDocumento);
+        
+        return ocupaciones.stream().map(this::toResponse).toList();
+    }
+            
     public OcupacionResponse toResponse(Ocupacion ocupacion) {
         OcupacionResponse response = new OcupacionResponse();
         response.setIdOcupacion(ocupacion.getIdOcupacion());

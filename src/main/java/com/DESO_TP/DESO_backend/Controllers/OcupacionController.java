@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OcupacionController {
     
     @Autowired
-    OcupacionService service;
+    private OcupacionService service;
     
     @GetMapping("/obtenerPorHabitacion")
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(

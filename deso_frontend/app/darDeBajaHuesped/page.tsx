@@ -2,7 +2,7 @@
 
 import "../globals.css";
 import "./formDarDeBaja.css";
-import Navbar from "../components/Navbar.jsx";
+import { ModalBase, ModalAdvertencia, ModalError } from "../components/Modal.jsx";
 import { useState } from "react";
 
 type Huesped = {
@@ -20,11 +20,19 @@ export default function darDeBaja() {
     numeroDocumento: "",
   });
 
-  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
 
+  const[mostrarPopUp, setMostrarPopUp] = useState({
+    advertencia:false,
+    confirmacion:false,
+    fallo:false,
+  });
+  const [filasEliminadas, setFilasEliminadas] = useState<string[]>([]);
+  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
   const [huespedSeleccionado, setHuespedSeleccionado] = useState<{
     tipoDocumento: string;
     numeroDocumento: string;
+    nombre: string;
+    apellido: string;
   } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -33,32 +41,61 @@ export default function darDeBaja() {
   };
 
   const handleBuscar = async (e: React.FormEvent) => {
-    setHuespedSeleccionado(null);
     e.preventDefault();
+    setHuespedSeleccionado(null);
 
-    const params = new URLSearchParams();
-    if (form.nombre) params.append("nombre", form.nombre);
-    if (form.apellido) params.append("apellido", form.apellido);
-    if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
-    if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
+    // Marcar todas las filas actuales para animación de desaparición
+    const ids = huespedes.map(h => `${h.tipoDocumento}-${h.numeroDocumento}`);
+    setFilasEliminadas(ids);
 
-    try {
-      const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
-      const data = await res.json();
+    // Esperar que termine la animación antes de reemplazar los datos
+    setTimeout(async () => {
+      const params = new URLSearchParams();
+      if (form.nombre) params.append("nombre", form.nombre);
+      if (form.apellido) params.append("apellido", form.apellido);
+      if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
+      if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
 
-      // asegurarse de que sea un array
-      setHuespedes(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error("Error al buscar huéspedes:", err);
-      setHuespedes([]);
-    }
+      try {
+        const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
+        const data = await res.json();
+        setHuespedes(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error al buscar huéspedes:", err);
+        setHuespedes([]);
+      }
+
+      // limpiar las filas eliminadas
+      setFilasEliminadas([]);
+    }, 300); // duración de la animación
   };
 
-  const handleDarDeBaja = async (e) => {
+
+  const handleDarDeBaja = async () => {
+    try{
+
+      setMostrarPopUp((prev) => ({...prev, advertencia:true}));
+
+    }catch(error){
+      alert(error);
+    }
+  }
+
+  const handleAceptar = async () => {
+    setMostrarPopUp(prev => ({ ...prev, advertencia: false }));
+    
+    
     try{
       if (!huespedSeleccionado?.tipoDocumento || !huespedSeleccionado?.numeroDocumento) {
         console.error("No hay huésped seleccionado");
         throw new Error("No hay un huesped seleccionado.");
+      }
+
+      const tieneOcupacionesResponse = await fetch(`http://localhost:8080/huespedes/tieneOcupacion?tipoDocumento=${huespedSeleccionado.tipoDocumento}&nroDocumento=${huespedSeleccionado.numeroDocumento}`)
+      const tieneOcupaciones = await tieneOcupacionesResponse.json();
+      if(tieneOcupaciones){
+        setMostrarPopUp(prev => ({ ...prev, fallo: true }));
+        return;
       }
 
       const result = await fetch(`http://localhost:8080/huespedes/darDeBaja/${huespedSeleccionado.tipoDocumento}/${huespedSeleccionado.numeroDocumento}`,
@@ -69,15 +106,21 @@ export default function darDeBaja() {
 
       if(!result.ok) throw new Error("No se pudo dar de baja al huesped.");
 
-      const mensaje = await result.text();
-      alert(mensaje);
+      
 
       setHuespedes([]);
-      setHuespedSeleccionado(null);
 
-    }catch(error){
-      alert(error);
+    }catch(err){
+      alert("Hubo un error.");
     }
+
+    // Cuando este popup se cierra se seta en null la seleccion
+    setMostrarPopUp((prev) => ({...prev, confirmacion:true}));
+  }
+
+  const handleCerrarPopUp = async () => {
+    setMostrarPopUp(prev => ({ ...prev, confirmacion: false }));
+    setHuespedSeleccionado(null);
   }
 
   // A partir de aca empieza el return
@@ -143,13 +186,17 @@ export default function darDeBaja() {
             </thead>
             <tbody>
               {huespedes.length > 0 ? (
-                huespedes.map((h, index) => (
+                huespedes.map((h) => (
                   <tr
-                    key={index}
+                    key={`${h.tipoDocumento}-${h.numeroDocumento}`}
+                    data-numero={h.numeroDocumento}
+                    data-tipo={h.tipoDocumento}
                     onClick={() =>
                       setHuespedSeleccionado({
                         tipoDocumento: h.tipoDocumento,
                         numeroDocumento: h.numeroDocumento,
+                        nombre: h.nombre,
+                        apellido: h.apellido,
                       })
                     }
                     className={`
@@ -157,9 +204,9 @@ export default function darDeBaja() {
                       huespedSeleccionado?.tipoDocumento === h.tipoDocumento
                         ? "tabla-seleccionado"
                         : "tabla-fila"}
-                      fila-animada
                     `}
                   >
+
                     <td className="tabla-columna">{h.nombre}</td>
                     <td className="tabla-columna">{h.apellido}</td>
                     <td className="tabla-columna">{h.tipoDocumento}</td>
@@ -175,8 +222,41 @@ export default function darDeBaja() {
               )}
             </tbody>
           </table>
-
+              
         </div>
+
+        {/*ACA EMPIEZAN LOS POPUPS*/}
+        <ModalBase
+          visible={mostrarPopUp.confirmacion}
+          onClose={
+            handleCerrarPopUp
+          }
+        >
+          
+          <h2>¡Exito!</h2>
+          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} ha sido dado de baja exitosamente.</p>
+        </ModalBase>
+        
+        <ModalError
+          visible={mostrarPopUp.fallo}
+          onClose={() => setMostrarPopUp(prev => ({ ...prev, fallo: false }))}
+          
+        >
+          <h2>¡Error!</h2>
+          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
+        </ModalError>
+
+
+        <ModalAdvertencia
+          visible={mostrarPopUp.advertencia}
+          onClose={() =>
+            setMostrarPopUp(prev => ({ ...prev, advertencia: false }))
+          }
+          onAceptar={handleAceptar}
+        >
+          <h2>¡Advertencia!</h2>
+          <p>¿Esta seguro que quiere eliminar al huesped<br/> {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido}?</p>
+        </ModalAdvertencia>
 
 
       </div>

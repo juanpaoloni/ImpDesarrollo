@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReservaController {
     
     @Autowired
-    ReservaService service;
+    private ReservaService service;
     
     @GetMapping("/obtenerPorHabitacion")
     public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(

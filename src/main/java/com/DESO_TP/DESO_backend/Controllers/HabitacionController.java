@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HabitacionController {
     
     @Autowired
-    HabitacionService service;
+    private HabitacionService service;
     
     @GetMapping("/obtenerPorTipo")
     public List<HabitacionResponse> obtenerHabitacionesPorTipo(@RequestParam(required = false) String tipo){

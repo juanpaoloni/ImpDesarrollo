@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FueraDeServicioController {
     
     @Autowired
-    FueraDeServicioService service;
+    private FueraDeServicioService service;
     
     @GetMapping("/obtenerPorHabitacion")
     public List<FueraDeServicioResponse> obtenerFueraDeServicioPorNumeroHabitacion(

@@ -7,6 +7,7 @@ import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionReq
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.DireccionResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
+import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
@@ -15,14 +16,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class HuespedService {
 
-    private final HuespedDAO huespedRepository;
-    private final DireccionDAO direccionRepository;
+    @Autowired
+    private HuespedDAO huespedRepository;
+    
+    @Autowired
+    private DireccionDAO direccionRepository;
+    
+    @Autowired
+    private OcupacionService ocupacionService;
+    
+    public boolean tieneOcupaciones(String tipoDocumento, String nroDocumento){
+        List<OcupacionResponse> ocupaciones = ocupacionService.ocupacionesPorHuesped(TipoDocumento.valueOf(tipoDocumento), nroDocumento);
+    
+        return !ocupaciones.isEmpty();
+    }
+    
     
     public List<HuespedResponse> buscarHuespedes(String _nombres, String _apellido, String _tipoDoc, String _nroDoc){
         _nombres = TextoUtils.normalizarString(_nombres);
@@ -99,7 +114,8 @@ public class HuespedService {
 
 
     public HuespedResponse actualizarHuesped(HuespedRequest req) {
-
+        
+        
         HuespedId id = new HuespedId(req.getTipoDocumento(), req.getNumeroDocumento());
 
         Huesped h = huespedRepository.findById(id)
