@@ -128,6 +128,7 @@ select {
 }
 
 .tabla-fila {
+  opacity: 1 !important;
   color: black;
   text-align: center;
   background-color: whitesmoke;
@@ -135,30 +136,18 @@ select {
 }
 
 .tabla-seleccionado {
+  opacity: 1;
   color: black;
   text-align: center;
   background-color: #dfd6c9;
-  transform: scale(1.01);
-  transition: background-color 0.1s ease, transform 0.1s ease;
+  transform: scale(1.01)!important;
+  transition: background-color 0.1s ease, transform 0.1s ease !important;
 }
 
 .contenedor-boton{
   max-width:300px;
   margin: 0 auto;
   margin-top:30px;
-}
-
-.fila-animada {
-  transition: opacity 0.1s ease, transform 0.5s ease-out;
-  max-height: 200px;
-  opacity: 1;
-  overflow: hidden;
-}
-
-.fila-animada.ocultar {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-1px);
 }
 
 .tabla-noEncontrado {

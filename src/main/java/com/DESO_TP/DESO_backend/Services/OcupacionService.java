@@ -4,6 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.Services;
 
+import Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataAccessObject.OcupacionDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
@@ -20,10 +21,16 @@ import org.springframework.stereotype.Service;
 public class OcupacionService {
     
     @Autowired
-    OcupacionDAO ocupacionRepository;
+    private OcupacionDAO ocupacionRepository;
     
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(Integer numeroHabitacion){
         List<Ocupacion> ocupaciones = ocupacionRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
+        
+        return ocupaciones.stream().map(this::toResponse).toList();
+    }
+    
+    public List<OcupacionResponse> ocupacionesPorHuesped(TipoDocumento tipoDocumento, String nroDocumento) {
+        List<Ocupacion> ocupaciones = ocupacionRepository.findByHuesped(tipoDocumento, nroDocumento);
         
         return ocupaciones.stream().map(this::toResponse).toList();
     }

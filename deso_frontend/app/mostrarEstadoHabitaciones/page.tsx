@@ -38,7 +38,7 @@ export default function MostrarEstadoHabitaciones() {
 
   // STATES
   const [err, setError] = useState({
-    mensaje:"ㅤ",
+    mensaje:"",
   });
   const [form, setForm] = useState<FormState>({
     fechaInicio: "",
@@ -89,7 +89,7 @@ export default function MostrarEstadoHabitaciones() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError({mensaje:"ㅤ"});
+    setError({mensaje:""});
 
     if(!validarFormatoFecha(form.fechaInicio)){
       setError({mensaje:"Por favor, completar la fecha de inicio."});
@@ -207,7 +207,9 @@ export default function MostrarEstadoHabitaciones() {
             </button>
           </form>
         </div>
+        {err.mensaje &&  (
         <p className="error-MEH">{err.mensaje}</p>
+        )}
       </div>
       
       <div className="tabla-contenedor-principal-MEH">

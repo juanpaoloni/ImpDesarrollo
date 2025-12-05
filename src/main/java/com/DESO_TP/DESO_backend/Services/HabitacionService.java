@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class HabitacionService {
     
     @Autowired
-    HabitacionDAO habitacionRepository;
+    private HabitacionDAO habitacionRepository;
     
     public List<HabitacionResponse> obtenerHabitacionPorTipo(TipoHabitacion tipo) {
         List<Habitacion> habitaciones = habitacionRepository.findByTipo(tipo);

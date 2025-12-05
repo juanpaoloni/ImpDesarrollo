@@ -43,4 +43,14 @@ public class HuespedController {
     ) {
         return service.buscarHuespedes(nombre, apellido, tipoDocumento, nroDocumento);
     }
+    
+    @GetMapping("/tieneOcupacion")
+    public ResponseEntity<Boolean> tieneOcupaciones(
+    @RequestParam(required = true) String tipoDocumento, 
+    @RequestParam(required = true) String nroDocumento){
+        
+        return ResponseEntity.ok(service.tieneOcupaciones(tipoDocumento, nroDocumento));
+        
+    } 
+    
 }

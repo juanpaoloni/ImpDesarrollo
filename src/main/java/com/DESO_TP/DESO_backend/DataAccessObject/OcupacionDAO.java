@@ -4,10 +4,12 @@
  */
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
+import Enumerados.TipoDocumento;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
-import com.DESO_TP.EntidadesDominio.Reserva;
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -17,4 +19,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OcupacionDAO extends CrudRepository<Ocupacion, Long>{
     List<Ocupacion> findByHabitacion_NumeroHabitacion(Integer numeroHabitacion);
+    
+    @Query("SELECT o FROM Ocupacion o JOIN o.huespedes h " +
+           "WHERE h.tipoDocumento = :tipoDocumento " +
+           "AND h.numeroDocumento = :numeroDocumento")
+    List<Ocupacion> findByHuesped(
+        @Param("tipoDocumento") TipoDocumento tipoDocumento,
+        @Param("numeroDocumento") String numeroDocumento
+    );
 }

@@ -229,6 +229,10 @@ select {
 
 .error-MEH{
   color: red;
+  background-color: rgba(255,0,0,0.1);
+  border: 1px solid red;
+  font-weight: bold;
+  padding: 5px;
   margin:0 auto;
   font-size:12px;
 }

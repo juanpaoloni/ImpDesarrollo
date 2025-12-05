@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class FueraDeServicioService {
     
     @Autowired
-    FueraDeServicioDAO fueraDeServicioRepository;
+    private FueraDeServicioDAO fueraDeServicioRepository;
     
     public List<FueraDeServicioResponse> obtenerFueraDeServicioPorNumeroHabitacion(Integer numeroHabitacion){
         List<FueraDeServicio> fueraDeServicioLista = fueraDeServicioRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);

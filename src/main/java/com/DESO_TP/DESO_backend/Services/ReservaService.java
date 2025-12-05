@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class ReservaService {
     
     @Autowired
-    ReservaDAO reservaRepository;
+    private ReservaDAO reservaRepository;
     
     public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(Integer numeroHabitacion){
         List<Reserva> reservas = reservaRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
