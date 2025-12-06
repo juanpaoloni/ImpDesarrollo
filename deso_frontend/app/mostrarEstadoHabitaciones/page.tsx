@@ -164,6 +164,7 @@ export default function MostrarEstadoHabitaciones() {
   return (
     <main className="fondo">
       <h2 className="titulo">Mostrar estado de las habitaciones</h2>
+      <div className="linea-corta"></div>
       <h1 className="subtitulo">
         Ingrese el rango de fechas y el tipo de habitación para ver el estado de las mismas
       </h1>

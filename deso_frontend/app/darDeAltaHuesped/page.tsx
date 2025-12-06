@@ -132,7 +132,7 @@ const handleSubmit = async (e) => {
 
 
   return (
-    <main className="form-container">
+    <main className="fondo">
       <h1 className="titulo">Dar de Alta Huesped</h1>
 
       <form className="form" onSubmit={handleSubmit}>

@@ -14,8 +14,9 @@
 
 .modal-contenido {
   text-align: center;
-  background: rgb(255, 255, 255);
+  background: rgb(43, 70, 36);
   color:rgb(50, 50, 50);
+  border: 3px solid rgb(58, 192, 37);
   padding: 10px;
   border-radius: 10px;
   min-width: 300px;
@@ -25,23 +26,23 @@
 }
 
 .modal-contenido.advertencia {
-  background-color: rgb(252, 238, 145);
-  border: 3px solid rgb(156, 146, 79)
+  background-color: rgb(125, 109, 45);
+  border: 3px solid rgb(225, 201, 47)
 }
 
-.modal-contenido-advertencia h2 {
-  color: black;
+.modal-contenido h2 {
+  color: rgb(255, 255, 255);
   font-size:30px;
+  font-weight:bold;
+}
+.modal-contenido p {
+  color: rgb(255, 255, 255);
+  font-size:15x;
 }
 
 .modal-contenido.error {
-  background-color: rgb(255, 187, 187);
-  border: 3px solid rgb(255, 0, 0)
-}
-
-.modal-contenido-advertencia h2 {
-  color: black;
-  font-size:30px;
+  background-color: rgb(63, 15, 15);
+  border: 3px solid rgb(255, 59, 59)
 }
 
 .modal-boton-contenedor {
@@ -49,12 +50,6 @@
   flex-direction: row;
   gap: 30px;
   justify-content: center;
-}
-
-
-.modal-contenido h2 {
-  color: black;
-  font-size:30px;
 }
 
 .modal-btn {
@@ -74,10 +69,10 @@
 }
 
 .modal-btn.cerrar {
-  background: #494949;
+  background: #56643e;
 }
 .modal-btn.cerrar:hover {
-  background: #606060;
+  background: #5e6b46;
 }
 
 .modal-btn.cerrar-error {
