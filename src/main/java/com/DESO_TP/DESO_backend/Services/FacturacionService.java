@@ -47,6 +47,7 @@ public class FacturacionService {
         response.setIdOcupacion(ocupacionPrincipal.getIdOcupacion());
         response.setHuespedes(huespedesDetalle);
         
+        
         return response;
     }
 }
