@@ -26,10 +26,6 @@ public class HuespedController {
     
     @DeleteMapping("/darDeBaja/{tipo}/{numero}")
     public ResponseEntity<String> borrar(@PathVariable TipoDocumento tipo, @PathVariable String numero) {
-        //
-        // FALTA VERIFICAR QUE NO TENGA OCUPACIONES
-        //
-
         service.eliminarHuesped(tipo, numero);
         return ResponseEntity.ok("Huésped eliminado correctamente.");
     }
