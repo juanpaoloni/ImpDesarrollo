@@ -25,20 +25,7 @@ public class ReservaService {
     public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(Integer numeroHabitacion){
         List<Reserva> reservas = reservaRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
         
-        return reservas.stream().map(this::toResponse).toList();
-    }
-            
-    public ReservaResponse toResponse(Reserva r){
-        return new ReservaResponse(
-            r.getIdReserva(),
-            r.getFechaReserva(),
-            r.getFechaInicio(),
-            r.getFechaFin(),
-            r.getEstado(),
-            r.getTelefono(),
-            r.getNombre(),
-            r.getApellido(),
-            r.getHabitacion().getNumeroHabitacion());
+        return reservas.stream().map(ReservaResponse::toResponse).toList();
     }
     
 }

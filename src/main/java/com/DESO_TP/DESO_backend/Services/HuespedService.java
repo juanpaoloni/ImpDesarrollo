@@ -60,7 +60,7 @@ public class HuespedService {
         } 
 
         return huespedes.stream()
-                .map(this::toResponse)
+                .map(HuespedResponse::toResponse)
                 .collect(Collectors.toList());
     }
     
@@ -99,7 +99,7 @@ public class HuespedService {
 
         huespedRepository.save(h);
 
-        return toResponse(h);
+        return HuespedResponse.toResponse(h);
     }
 
     public HuespedResponse obtenerHuesped(TipoDocumento tipo, String numero) {
@@ -109,7 +109,7 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
 
-        return toResponse(h);
+        return HuespedResponse.toResponse(h);
     }
 
 
@@ -151,7 +151,7 @@ public class HuespedService {
 
         huespedRepository.save(h);
 
-        return toResponse(h);
+        return HuespedResponse.toResponse(h);
     }
 
     public void eliminarHuesped(TipoDocumento tipo, String numero) {
@@ -165,36 +165,6 @@ public class HuespedService {
         huespedRepository.deleteById(id);
     }
 
-    private HuespedResponse toResponse(Huesped h) {
 
-        Direccion d = h.getDireccion();
-
-        DireccionResponse direccionDTO = new DireccionResponse(
-                d.getIdDireccion(),
-                d.getCalle(),
-                d.getNumero(),
-                d.getDepartamento(),
-                d.getPiso(),
-                d.getCodigoPostal(),
-                d.getLocalidad(),
-                d.getProvincia(),
-                d.getPais()
-        );
-
-        return new HuespedResponse(
-                h.getTipoDocumento(),
-                h.getNumeroDocumento(),
-                h.getNombre(),
-                h.getApellido(),
-                h.getCUIT(),
-                h.getPosicionIVA(),
-                h.getFechaNacimiento(),
-                h.getNacionalidad(),
-                h.getEmail(),
-                h.getTelefono(),
-                h.getOcupacion(),
-                direccionDTO
-        );
-    }
 
 }
