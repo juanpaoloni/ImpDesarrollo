@@ -42,7 +42,7 @@ public class Ocupacion {
     private List<Factura> factura;
     
     @ManyToOne
-    @JoinColumn(name = "numero_Habitacion")
+    @JoinColumn(name = "numero_habitacion")
     private Habitacion habitacion;
     
     @ManyToMany(mappedBy = "ocupaciones")

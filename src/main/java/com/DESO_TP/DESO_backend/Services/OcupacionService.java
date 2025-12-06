@@ -30,7 +30,7 @@ public class OcupacionService {
         
         // CORRECCIÓN: Usamos el método findByHabitacion_NumeroHabitacionAndHoraSalida
         List<Ocupacion> ocupaciones = ocupacionRepository
-                .findByNumeroHabitacionAndHoraSalida(numeroHabitacion, horaSalida);
+                .findByHabitacion_NumeroHabitacionAndHoraSalida(numeroHabitacion, horaSalida);
         
         return ocupaciones.stream().map(this::toResponse).toList();
     }

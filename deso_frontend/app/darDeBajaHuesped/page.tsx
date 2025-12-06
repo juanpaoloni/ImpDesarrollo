@@ -20,13 +20,11 @@ export default function darDeBaja() {
     numeroDocumento: "",
   });
 
-
   const[mostrarPopUp, setMostrarPopUp] = useState({
     advertencia:false,
     confirmacion:false,
     fallo:false,
   });
-  const [filasEliminadas, setFilasEliminadas] = useState<string[]>([]);
   const [huespedes, setHuespedes] = useState<Huesped[]>([]);
   const [huespedSeleccionado, setHuespedSeleccionado] = useState<{
     tipoDocumento: string;
@@ -46,7 +44,6 @@ export default function darDeBaja() {
 
     // Marcar todas las filas actuales para animación de desaparición
     const ids = huespedes.map(h => `${h.tipoDocumento}-${h.numeroDocumento}`);
-    setFilasEliminadas(ids);
 
     // Esperar que termine la animación antes de reemplazar los datos
     setTimeout(async () => {
@@ -66,7 +63,6 @@ export default function darDeBaja() {
       }
 
       // limpiar las filas eliminadas
-      setFilasEliminadas([]);
     }, 300); // duración de la animación
   };
 
