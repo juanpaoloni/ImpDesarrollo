@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OcupacionDAO extends CrudRepository<Ocupacion, Long>{
     List<Ocupacion> findByHabitacion_NumeroHabitacion(Integer numeroHabitacion);
-    List<Ocupacion> findByNumeroHabitacionAndHoraSalida(Integer numeroHabitacion, LocalTime horaSalida);
+    List<Ocupacion> findByHabitacion_NumeroHabitacionAndHoraSalida(Integer numeroHabitacion, LocalTime horaSalida);
     
     @Query("SELECT o FROM Ocupacion o JOIN o.huespedes h " +
            "WHERE h.tipoDocumento = :tipoDocumento " +
