@@ -24,7 +24,7 @@ export default function DropdownMenu() {
       {/* Botón del engranaje */}
       <button
         onClick={() => setOpen(!open)}
-        className="icon-btn"
+        className="icon_btn"
       >
         <img src="/settings.png" alt="settings" width={38} height={38}/>
       </button>

@@ -10,7 +10,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <button className="icon-btn" onClick={toggleSidebar}>
+      <button className="icon_btn" onClick={toggleSidebar}>
             <img src="/menu.png" alt="menu" width={38} height={38}/>
       </button>
 

@@ -2,37 +2,15 @@
 
 import "../globals.css";
 import "./formMostrarHabitaciones.css"; // archivo CSS renombrado
-import { generarFechas, parseFechaSinOffset } from "./utilsMostrarHabitaciones";
+import { generarFechas } from "./utilsMostrarHabitaciones";
 import { useState } from "react";
 import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
-
-type Habitacion = {
-  numeroHabitacion: number;
-};
-
 type FormState = {
   fechaInicio: string;
   fechaFin: string;
   tipoHabitacion: string;
 };
 
-type ReservaResponse = {
-  numeroHabitacion: number;
-  fechaInicio: string;
-  fechaFin: string;
-};
-
-type OcupacionResponse = {
-  numeroHabitacion: number;
-  fechaInicio: string;
-  fechaFin: string;
-};
-
-type FueraDeServicioResponse = {
-  numeroHabitacion: number;
-  fechaInicio: string;
-  fechaFin: string;
-};
 
 export default function MostrarEstadoHabitaciones() {
 
@@ -46,12 +24,10 @@ export default function MostrarEstadoHabitaciones() {
     tipoHabitacion: "",
   });
 
-  const [ocupaciones, setOcupaciones] = useState<OcupacionResponse[]>([]);
-  const [fueraDeServicio, setFueraDeServicio] = useState<FueraDeServicioResponse[]>([]);
-  const [reservas, setReservas] = useState<ReservaResponse[]>([]);
-  const [habitaciones, setHabitaciones] = useState<Habitacion[]>([]);
   const [filas, setFilas] = useState<Date[]>([]);
-  const [columnas, setColumnas] = useState<string[]>([]);
+  const [columnas, setColumnas] = useState<string[]>([]);  // números de habitación
+  const [estadoHabitaciones, setEstadoHabitaciones] = useState<any[]>([]);
+
 
   // METODOS
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -59,107 +35,49 @@ export default function MostrarEstadoHabitaciones() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  
-  const obtenerEstado = (fecha: Date, numeroHabitacion: string) => {
-    const estaReservada = reservas.some(r => {
-      const inicio = parseFechaSinOffset(r.fechaInicio);
-      const fin = parseFechaSinOffset(r.fechaFin);
-      return r.numeroHabitacion === Number(numeroHabitacion) && fecha >= inicio && fecha <= fin;
-    });
-
-    const estaOcupada = ocupaciones.some(o => {
-      const inicio = parseFechaSinOffset(o.fechaInicio);
-      const fin = parseFechaSinOffset(o.fechaFin);
-      return o.numeroHabitacion === Number(numeroHabitacion) && fecha >= inicio && fecha <= fin;
-    });
-
-    const estaFueraDeServicio = fueraDeServicio.some(fds => {
-      const inicio = parseFechaSinOffset(fds.fechaInicio);
-      const fin = parseFechaSinOffset(fds.fechaFin);
-      return fds.numeroHabitacion === Number(numeroHabitacion) && fecha >= inicio && fecha <= fin;
-    });
-
-    if(estaFueraDeServicio) return "FDS";
-    if (estaOcupada) return "OCUPADA";
-    if (estaReservada) return "RESERVADA";
-    
-    return "LIBRE";
-  };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError({mensaje:""});
+    setError({ mensaje: "" });
 
-    if(!validarFormatoFecha(form.fechaInicio)){
-      setError({mensaje:"Por favor, completar la fecha de inicio."});
+    if (!validarFormatoFecha(form.fechaInicio)) {
+      setError({ mensaje: "Por favor, completar la fecha de inicio." });
       return;
     }
 
-    if(!validarFormatoFecha(form.fechaFin)){
-      setError({mensaje:"Por favor, completar la fecha de fin."});
+    if (!validarFormatoFecha(form.fechaFin)) {
+      setError({ mensaje: "Por favor, completar la fecha de fin." });
       return;
     }
-    if(!validarRangoFechas(form.fechaInicio, form.fechaFin)) {
-      setError({mensaje:"La fecha inicial es posterior a la final."});
-      return
-    };
-    
 
-    
+    if (!validarRangoFechas(form.fechaInicio, form.fechaFin)) {
+      setError({ mensaje: "La fecha inicial es posterior a la final." });
+      return;
+    }
+
     const fechas = generarFechas(form.fechaInicio, form.fechaFin);
     setFilas(fechas);
 
     try {
-      const habitacionesRes = await fetch(
-        `http://localhost:8080/habitaciones/obtenerPorTipo?tipo=${form.tipoHabitacion}`
-      );
-      const habs: Habitacion[] = await habitacionesRes.json();
-      const listaHabitaciones = Array.isArray(habs) ? habs : [];
-      setHabitaciones(listaHabitaciones);
-      setColumnas(listaHabitaciones.map(h => `${h.numeroHabitacion}`));
-
-      const reservasPorHabitaciones = await Promise.all(
-        listaHabitaciones.map(async (h) => {
-          const res = await fetch(
-            `http://localhost:8080/reservas/obtenerPorHabitacion?numeroHabitacion=${h.numeroHabitacion}`
-          );
-          const data: ReservaResponse[] = await res.json();
-          return data;
-        })
+      const res = await fetch(
+        `http://localhost:8080/habitaciones/estado?tipo=${form.tipoHabitacion}&fechaDesde=${form.fechaInicio}&fechaHasta=${form.fechaFin}`
       );
 
-      const ocupacionesPorHabitaciones = await Promise.all(
-        listaHabitaciones.map(async (h) => {
-          const res = await fetch(
-            `http://localhost:8080/ocupaciones/obtenerPorHabitacion?numeroHabitacion=${h.numeroHabitacion}`
-          );
-          return await res.json();
-        })
-      );
+      const data = await res.json();
 
-      const fueraDeServicioPorHabitaciones = await Promise.all(
-        listaHabitaciones.map(async (h) => {
-          const res = await fetch(
-            `http://localhost:8080/fueraDeServicio/obtenerPorHabitacion?numeroHabitacion=${h.numeroHabitacion}`
-          );
-          return await res.json();
-        })
-      );
+      setEstadoHabitaciones(data);
 
-      setFueraDeServicio(fueraDeServicioPorHabitaciones.flat());
-      setOcupaciones(ocupacionesPorHabitaciones.flat());
-      const reservasPlanas = reservasPorHabitaciones.flat();
-      setReservas(reservasPlanas);
+      // columnas = lista de números de habitación
+      const nums = data.map((h: any) => String(h.numeroHabitacion));
+      setColumnas(nums);
 
-    } catch (error) {
-      console.error("Error:", error);
-      setHabitaciones([]);
+    } catch (err) {
+      console.error(err);
+      setEstadoHabitaciones([]);
       setColumnas([]);
-      setReservas([]);
-      setOcupaciones([]);
     }
   };
+
 
   return (
     <main className="fondo">
@@ -227,20 +145,25 @@ export default function MostrarEstadoHabitaciones() {
             </thead>
 
             <tbody className="tbody-animado-MEH">
-              {filas.map((fecha, i) => (
-                <tr className="tabla-fila-MEH" key={i}>
-                  <td>{fecha.toLocaleDateString("es-AR")}</td>
-                  {columnas.map((numHab, j) => (
-                    <td
-                      key={j}
-                      className={`td-${obtenerEstado(fecha, numHab).replace(" / ", "_")}`}
-                    >
-                      {/* Opcional: mantener texto para tooltip */}
-                      {obtenerEstado(fecha, numHab)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {filas.map((fecha, i) => {
+                const fechaStr = fecha.toISOString().slice(0, 10);
+
+                return (
+                  <tr className="tabla-fila-MEH" key={i}>
+                    <td>{fecha.toLocaleDateString("es-AR")}</td>
+
+                    {estadoHabitaciones.map((hab, j) => {
+                      const estado = hab.estadoPorFecha[fechaStr] || "LIBRE";
+                      
+                      return (
+                        <td key={j} className={`td-${estado}`}>
+                          {estado}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
