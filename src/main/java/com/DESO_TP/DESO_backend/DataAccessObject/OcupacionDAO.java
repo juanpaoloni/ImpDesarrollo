@@ -4,6 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
+import Enumerados.TipoDocumento;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
 import com.DESO_TP.Enumerados.TipoDocumento;
 import java.time.LocalTime;
