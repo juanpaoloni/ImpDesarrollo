@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class ResponsablePago {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idResponsable;
