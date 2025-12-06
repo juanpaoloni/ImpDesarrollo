@@ -4,7 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.Services;
 
-import Enumerados.TipoHabitacion;
+import com.DESO_TP.Enumerados.TipoHabitacion;
 import com.DESO_TP.DESO_backend.DataAccessObject.HabitacionDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HabitacionResponse;
 import com.DESO_TP.EntidadesDominio.Habitacion;

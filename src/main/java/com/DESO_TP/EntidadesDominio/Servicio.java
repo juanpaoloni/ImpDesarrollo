@@ -6,7 +6,7 @@ package com.DESO_TP.EntidadesDominio;
 
 
 import com.DESO_TP.EntidadesDominio.IDs.ServicioId;
-import Enumerados.TipoServicio;
+import com.DESO_TP.Enumerados.TipoServicio;
 
 import jakarta.persistence.*;
 import java.util.List;

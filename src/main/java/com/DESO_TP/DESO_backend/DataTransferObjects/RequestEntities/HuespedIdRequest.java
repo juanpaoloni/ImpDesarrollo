@@ -4,7 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities;
 
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

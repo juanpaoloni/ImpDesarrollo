@@ -8,9 +8,10 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
-import Enumerados.EstadoOcupacion;
+import com.DESO_TP.Enumerados.EstadoOcupacion;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import lombok.*;
@@ -23,6 +24,7 @@ public class OcupacionResponse {
     private Long idOcupacion;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
+    private LocalTime horaSalida;
     private EstadoOcupacion estado;
 
     // Relación con habitación
@@ -36,4 +38,6 @@ public class OcupacionResponse {
 
     // IDs de huespedes
     private List<HuespedId> idsHuespedes;
+    
+    private List<HuespedResponse> huespedes;
 }

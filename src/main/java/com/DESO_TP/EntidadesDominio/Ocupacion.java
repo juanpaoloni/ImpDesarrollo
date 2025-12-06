@@ -4,11 +4,13 @@
  */
 package com.DESO_TP.EntidadesDominio;
 
-import Enumerados.EstadoOcupacion;
+import com.DESO_TP.Enumerados.EstadoOcupacion;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import lombok.*;
+
 /**
  *
  * @author mirko
@@ -25,8 +27,12 @@ public class Ocupacion {
     
     @Column
     private LocalDate fechaInicio;
+    
     @Column
     private LocalDate fechaFin;
+    
+    @Column
+    private LocalTime horaSalida;
     
     @Enumerated(EnumType.STRING)
     @Column(name="estadoOcupacion")

@@ -1,6 +1,6 @@
 package com.DESO_TP.DESO_backend.Services;
 
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataAccessObject.DireccionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
@@ -114,7 +114,8 @@ public class HuespedService {
 
 
     public HuespedResponse actualizarHuesped(HuespedRequest req) {
-
+        
+        
         HuespedId id = new HuespedId(req.getTipoDocumento(), req.getNumeroDocumento());
 
         Huesped h = huespedRepository.findById(id)

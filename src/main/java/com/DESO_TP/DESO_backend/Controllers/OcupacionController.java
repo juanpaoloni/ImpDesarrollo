@@ -6,6 +6,7 @@ package com.DESO_TP.DESO_backend.Controllers;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.DESO_backend.Services.OcupacionService;
+import java.time.LocalTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,4 +33,11 @@ public class OcupacionController {
         return service.obtenerOcupacionPorNumeroHabitacion(numeroHabitacion);
     }
     
+    @GetMapping("/obtenerPorHabitacionYHora")
+    public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacionYHoraSalida(
+            @RequestParam(required = true) Integer numeroHabitacion,
+            @RequestParam(required = true) LocalTime horaSalida){
+        
+        return service.obtenerOcupacionPorNumeroHabitacionYHoraSalida(numeroHabitacion, horaSalida);
+    }
 }

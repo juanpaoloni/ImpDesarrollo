@@ -4,7 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
-import Enumerados.TipoHabitacion;
+import com.DESO_TP.Enumerados.TipoHabitacion;
 import com.DESO_TP.EntidadesDominio.Habitacion;
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;

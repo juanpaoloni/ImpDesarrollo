@@ -8,7 +8,7 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
-import Enumerados.EstadoReserva;
+import com.DESO_TP.Enumerados.EstadoReserva;
 import java.time.LocalDate;
 import lombok.*;
 

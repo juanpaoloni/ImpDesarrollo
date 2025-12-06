@@ -4,8 +4,7 @@
  */
 package com.DESO_TP.EntidadesDominio;
 
-import Enumerados.EstadoReserva;
-import java.util.Date;
+import com.DESO_TP.Enumerados.EstadoReserva;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;

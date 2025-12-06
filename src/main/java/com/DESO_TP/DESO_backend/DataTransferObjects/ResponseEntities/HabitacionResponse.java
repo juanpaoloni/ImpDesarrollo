@@ -8,8 +8,8 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
-import Enumerados.TipoHabitacion;
-import Enumerados.EstadoHabitacion;
+import com.DESO_TP.Enumerados.TipoHabitacion;
+import com.DESO_TP.Enumerados.EstadoHabitacion;
 import lombok.*;
 
 @Data

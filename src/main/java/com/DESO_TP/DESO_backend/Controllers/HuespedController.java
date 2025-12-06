@@ -1,6 +1,6 @@
 package com.DESO_TP.DESO_backend.Controllers;
 
-import Enumerados.TipoDocumento;
+import com.DESO_TP.Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
 import com.DESO_TP.DESO_backend.Services.HuespedService;
