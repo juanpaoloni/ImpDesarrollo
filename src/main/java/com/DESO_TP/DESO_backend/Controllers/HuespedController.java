@@ -4,6 +4,7 @@ import com.DESO_TP.Enumerados.TipoDocumento;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
 import com.DESO_TP.DESO_backend.Services.HuespedService;
+import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,4 +50,18 @@ public class HuespedController {
         
     } 
     
+    @GetMapping("/buscarPorId")
+    public ResponseEntity<HuespedResponse> buscarHuespedPorId(
+            @RequestParam(required = true)String tipoDocumento, 
+            @RequestParam(required = true)String nroDocumento){
+        
+        return ResponseEntity.ok(service.buscarHuespedPorId(TipoDocumento.valueOf(tipoDocumento), nroDocumento));
+        
+    }
+    
+    @PostMapping("/modificar")
+    public ResponseEntity<HuespedResponse> modificarHuesped(@RequestBody HuespedRequest request){
+        HuespedResponse respuesta = service.actualizarHuesped(request);
+        return ResponseEntity.ok(respuesta);
+    }
 }
