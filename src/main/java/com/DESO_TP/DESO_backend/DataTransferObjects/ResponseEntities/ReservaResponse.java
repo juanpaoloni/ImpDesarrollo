@@ -8,6 +8,7 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
+import com.DESO_TP.EntidadesDominio.Reserva;
 import com.DESO_TP.Enumerados.EstadoReserva;
 import java.time.LocalDate;
 import lombok.*;
@@ -26,5 +27,18 @@ public class ReservaResponse {
     private String nombre;
     private String apellido;
     private Integer numeroHabitacion;     
+    
+    public static ReservaResponse toResponse(Reserva r){
+        return new ReservaResponse(
+            r.getIdReserva(),
+            r.getFechaReserva(),
+            r.getFechaInicio(),
+            r.getFechaFin(),
+            r.getEstado(),
+            r.getTelefono(),
+            r.getNombre(),
+            r.getApellido(),
+            r.getHabitacion().getNumeroHabitacion());
+    }
 }
 

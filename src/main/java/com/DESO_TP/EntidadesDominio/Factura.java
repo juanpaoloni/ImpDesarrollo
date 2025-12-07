@@ -43,8 +43,8 @@ public class Factura {
     @JoinColumn(name = "idOcupacion")
     private Ocupacion ocupacion;
     
-    //@OneToMany(mappedBy = "numeroFactura")
-    //private List<Pago> pagos;
+    @OneToOne(mappedBy = "factura")
+    private Pago pago;
     
     @ManyToOne
     @JoinColumn(name = "numeroNotaCredito")

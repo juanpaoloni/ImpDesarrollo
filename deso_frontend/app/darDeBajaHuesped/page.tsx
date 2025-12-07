@@ -125,6 +125,7 @@ export default function darDeBaja() {
   return (
     <main className="fondo">
       <h1 className="titulo">Dar de baja Huesped</h1>
+      <div className="linea-corta"></div>
       <h3 className="subtitulo">Ingrese los datos del huesped a dar de baja y seleccionelo para continuar</h3>
 
 

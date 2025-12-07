@@ -8,6 +8,7 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
+import com.DESO_TP.EntidadesDominio.Habitacion;
 import com.DESO_TP.Enumerados.TipoHabitacion;
 import com.DESO_TP.Enumerados.EstadoHabitacion;
 import lombok.*;
@@ -28,4 +29,16 @@ public class HabitacionResponse {
     private Integer capacidad;
 
     private Float costoPorNoche;
+    
+    
+    public static HabitacionResponse toResponse(Habitacion h) {
+        return new HabitacionResponse(
+            h.getNumeroHabitacion(),
+            h.getTipo(),
+            h.getEstado(),
+            h.getDescripcion(),
+            h.getCapacidad(),
+            h.getCostoPorNoche()
+        );
+    }
 }

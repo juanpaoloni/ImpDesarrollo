@@ -24,16 +24,8 @@ public class FueraDeServicioService {
     
     public List<FueraDeServicioResponse> obtenerFueraDeServicioPorNumeroHabitacion(Integer numeroHabitacion){
         List<FueraDeServicio> fueraDeServicioLista = fueraDeServicioRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
-        return fueraDeServicioLista.stream().map(this::toResponse).toList();
+        return fueraDeServicioLista.stream().map(FueraDeServicioResponse::toResponse).toList();
     }
-    
-    public FueraDeServicioResponse toResponse(FueraDeServicio fds){
-        return new FueraDeServicioResponse(
-        fds.getId().getNumeroHabitacion(),
-        fds.getId().getFechaInicio(),
-        fds.getFechaFin(),
-        fds.getDescripcion()
-        );
-    }
+   
     
 }

@@ -30,6 +30,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.linea-corta {
+  border: none; 
+  border-top: 2px solid #b69f7f; 
+  width: 45%; 
+  margin: 2px auto; 
+}
+
+
 .titulo {
     margin-top: 100px;
     padding-top: 20px;
@@ -54,7 +62,6 @@ body {
   text-shadow:
       0 2px 2px rgba(0, 0, 0, 0.15);
   letter-spacing: 4.0px;
-  padding-bottom: 10px;
 }
 
 .letra_btn {
@@ -82,28 +89,25 @@ body {
 }
 
 .contenedor {
-  margin-top: 60px;
+  margin-top: 0px;
   display: flex;
   flex-wrap: wrap;
   gap: 26px;
   justify-content: center;
   align-items: center;
-  padding-bottom: 80px;
+  padding: 60px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  border-bottom: 3px solid #8c785e;
 }
 
 
 .boton {
-  width: 200px;
+  width: 300px;
   height: 200px;
   border-radius: 18px;
-  background: linear-gradient(
-      180deg,
-      rgba(72, 74, 52, 0.92),
-      rgba(58, 60, 40, 0.96)
-  );
+  background: rgb(106, 86, 66);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 
   display: flex;
@@ -122,6 +126,13 @@ body {
 
   transition: transform .2s ease, box-shadow .2s ease;
 }
+
+.boton img {
+  width: 100%;
+  height: 100%;
+}
+
+
 
 .boton:hover {
   transform: translateY(-10px) scale(1.01);
@@ -146,13 +157,20 @@ body {
   background-color: rgba(182, 159, 127, 0.92);
   border-bottom: 3px solid #8c785e;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-  z-index:20;
+  z-index:60;
+  overflow:visible;
 }
 
 .navbar_center {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  transition:opacity 0.1s ease, transform 0.2s ease;
+}
+
+.navbar_center:hover {
+  opacity:1.0;
+  transform: scale(1.01) translateX(-50%) translateY(-50%);
 }
 
 .navbar img {
@@ -165,11 +183,13 @@ body {
   border: none;
   cursor: pointer;
   padding: 5px;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 1.0s ease;
+  width: 50px;
 }
 
 .icon_btn:hover {
   opacity: 0.6;
+  transform: scale(1.05);
 }
 
 .iconos_boton {
@@ -190,13 +210,11 @@ thead {
   z-index: 10;
 }
 
-/* Contenedor principal */
 .dropdown-container {
   position: relative;
   display: inline-block;
+  z-index:31;
 }
-
-/* Botón que abre el menú */
 .dropdown-button {
   padding: 8px;
   border-radius: 6px;
@@ -214,36 +232,123 @@ thead {
 .dropdown-menu {
   position: absolute;
   right: 0;
-  margin-top: 8px;
+  margin-top: 15px;
   width: 160px;
-  background: white;
-  border: 1px solid #d4d4d4;
-  border-radius: 8px;
+  background: #e1d3bf;
+  border: 3px solid #9c8669;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
-  z-index: 50;
-  animation: fadeIn 0.15s ease-out;
+  z-index: 30;
+  animation: dropdown-aparecer 0.15s ease-out;
 }
 
-/* Elementos del menú */
 .dropdown-item {
+  color: #3f3a33;
   padding: 10px 14px;
   cursor: pointer;
   transition: background 0.15s;
   font-size: 14px;
+  animation: dropdown-item-aparecer 0.3s;
+  user-select: none;
 }
 
 .dropdown-item:hover {
   background-color: #f5f5f5;
 }
 
-/* Animación suave */
-@keyframes fadeIn {
+@keyframes dropdown-item-aparecer {
   from {
-    opacity: 0;
-    transform: scale(0.98);
+    opacity:0;
   }
   to {
-    opacity: 1;
-    transform: scale(1);
+    opacity:1;
   }
 }
+@keyframes dropdown-aparecer {
+  from {
+    opacity:0.5;
+    height: 0;
+  }
+  to {
+    opacity:1;
+    height: 125px;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  z-index: 99;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: #e1d3bf;
+  border-right: 3px solid #9c8669;
+  box-shadow: 4px 0px 15px rgba(0,0,0,0.1);
+  padding: 20px 14px;
+  transition: left 0.28s ease;
+  z-index: 120;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.sidebar-header h2 {
+  font-family: "Cinzel", serif;
+  font-size: 24px;
+  color: #5a4b37;
+}
+
+.close-btn {
+  font-size: 28px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #5a4b37;
+}
+
+.close-btn:hover {
+  opacity: 0.6;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  padding: 14px 10px;
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif;
+  border-radius: 8px;
+  text-align: left;
+  width:100%;
+  cursor: pointer;
+  color: #3f3a33;
+  transition: background 0.02s;
+  font-weight: bold;
+}
+
+.sidebar-item:hover {
+  background: #d3c2ac;
+}
+

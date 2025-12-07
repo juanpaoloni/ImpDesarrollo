@@ -1,4 +1,4 @@
-input {
+.contenedor-campos input {
     background-color: whitesmoke;
     margin: 5px;
     padding: 10px;
@@ -34,7 +34,7 @@ input {
     max-width: 300px
 }
 
-select {
+.contenedor-campos select {
   padding: 15px;
   margin: 5px;
   border-radius: 8px;

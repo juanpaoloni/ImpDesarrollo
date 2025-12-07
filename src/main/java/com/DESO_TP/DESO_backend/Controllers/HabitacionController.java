@@ -4,6 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.Controllers;
 
+import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.EstadoHabitacionResponse;
 import com.DESO_TP.Enumerados.TipoHabitacion;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HabitacionResponse;
 import com.DESO_TP.DESO_backend.Services.HabitacionService;
@@ -27,6 +28,17 @@ public class HabitacionController {
     
     @Autowired
     private HabitacionService service;
+    
+    @GetMapping("/estado")
+    public List<EstadoHabitacionResponse> obtenerEstadoPorTipo(
+            @RequestParam(required = true)String tipo, 
+            @RequestParam(required = true)String fechaDesde, 
+            @RequestParam(required = true)String fechaHasta){
+        
+        return service.obtenerEstadoPorTipo(tipo, fechaDesde, fechaHasta);
+        
+    }
+    
     
     @GetMapping("/obtenerPorTipo")
     public List<HabitacionResponse> obtenerHabitacionesPorTipo(@RequestParam(required = false) String tipo){

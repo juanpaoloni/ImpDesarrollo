@@ -8,28 +8,36 @@ export default function MenuPrincipal() {
     <main className="fondo">
 
       <h1 className="titulo">MENU PRINCIPAL</h1>
-      <h3 className="subtitulo">Elija una de las siguientes opciones</h3>
+      <div className="linea-corta"></div> 
+      <h3 className="subtitulo">¿Que desea hacer?</h3>
 
       <div className="contenedor">
 
         <Link href="/mostrarEstadoHabitaciones">
           <button className="boton">
-            <img src="/lupa.png" className="iconos_boton" />
-             <h3 className="letra_btn">Mostrar Estado Habitaciones</h3>
+            <img src="/estadoHab.png" className="iconos_boton" />
+             <h3 className="letra_btn">Ver Habitaciones</h3>
           </button>
         </Link>
 
         <Link href="/darDeBajaHuesped">
           <button className="boton">
-            <img src="/darbaja.png" className="iconos_boton" />
-             <h3 className="letra_btn">Dar de Baja Huesped</h3>
+            <img src="/darbaja.png" className="iconos_boton"/>
+             <h3 className="letra_btn">Dar de Baja un Huesped</h3>
+          </button>
+        </Link>
+
+        <Link href="/darDeAltaHuesped">
+          <button className="boton">
+            <img src="/daralta.png" className="iconos_boton"/>
+             <h3 className="letra_btn">Dar de Alta un Huesped</h3>
           </button>
         </Link>
 
         <Link href="/reservarHabitacion">
           <button className="boton">
             <img src="/calendario.png" className="iconos_boton" />
-             <h3 className="letra_btn">Reservar Habitacion</h3>
+             <h3 className="letra_btn">Reservar una Habitacion</h3>
           </button>
         </Link>
 

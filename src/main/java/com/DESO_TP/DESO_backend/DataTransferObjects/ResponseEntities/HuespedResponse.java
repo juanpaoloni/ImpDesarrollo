@@ -4,6 +4,8 @@
  */
 package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
 
+import com.DESO_TP.EntidadesDominio.Direccion;
+import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.Enumerados.PosicionIVA;
 import com.DESO_TP.Enumerados.TipoDocumento;
 import java.time.LocalDate;
@@ -32,4 +34,36 @@ public class HuespedResponse {
     private String ocupacion;
 
     private DireccionResponse direccion; // devolvés el DTO completo
+    
+    public static HuespedResponse toResponse(Huesped h) {
+
+        Direccion d = h.getDireccion();
+
+        DireccionResponse direccionDTO = new DireccionResponse(
+                d.getIdDireccion(),
+                d.getCalle(),
+                d.getNumero(),
+                d.getDepartamento(),
+                d.getPiso(),
+                d.getCodigoPostal(),
+                d.getLocalidad(),
+                d.getProvincia(),
+                d.getPais()
+        );
+
+        return new HuespedResponse(
+                h.getTipoDocumento(),
+                h.getNumeroDocumento(),
+                h.getNombre(),
+                h.getApellido(),
+                h.getCUIT(),
+                h.getPosicionIVA(),
+                h.getFechaNacimiento(),
+                h.getNacionalidad(),
+                h.getEmail(),
+                h.getTelefono(),
+                h.getOcupacion(),
+                direccionDTO
+        );
+    }
 }

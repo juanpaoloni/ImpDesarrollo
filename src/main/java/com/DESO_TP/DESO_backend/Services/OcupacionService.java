@@ -32,48 +32,20 @@ public class OcupacionService {
         List<Ocupacion> ocupaciones = ocupacionRepository
                 .findByHabitacion_NumeroHabitacionAndHoraSalida(numeroHabitacion, horaSalida);
         
-        return ocupaciones.stream().map(this::toResponse).toList();
+        return ocupaciones.stream().map(OcupacionResponse::toResponse).toList();
     }
     
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(Integer numeroHabitacion){
         List<Ocupacion> ocupaciones = ocupacionRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
         
-        return ocupaciones.stream().map(this::toResponse).toList();
+        return ocupaciones.stream().map(OcupacionResponse::toResponse).toList();
     }
     
     public List<OcupacionResponse> ocupacionesPorHuesped(TipoDocumento tipoDocumento, String nroDocumento) {
         List<Ocupacion> ocupaciones = ocupacionRepository.findByHuesped(tipoDocumento, nroDocumento);
         
-        return ocupaciones.stream().map(this::toResponse).toList();
+        return ocupaciones.stream().map(OcupacionResponse::toResponse).toList();
     }
             
-    public OcupacionResponse toResponse(Ocupacion ocupacion) {
-        OcupacionResponse response = new OcupacionResponse();
-        response.setIdOcupacion(ocupacion.getIdOcupacion());
-        response.setFechaInicio(ocupacion.getFechaInicio());
-        response.setFechaFin(ocupacion.getFechaFin());
-        response.setHoraSalida(ocupacion.getHoraSalida()); 
-        response.setEstado(ocupacion.getEstado());
 
-        if(ocupacion.getHabitacion() != null)
-            response.setNumeroHabitacion(ocupacion.getHabitacion().getNumeroHabitacion());
-
-        response.setIdsFactura(
-            ocupacion.getFactura() != null ?
-            ocupacion.getFactura().stream().map(f -> f.getNumeroFactura()).toList() :
-            List.of()
-        );
-
-        response.setIdsHuespedes(
-            ocupacion.getHuespedes() != null ?
-            ocupacion.getHuespedes()
-                .stream()
-                .map(h -> new HuespedId(h.getTipoDocumento(), h.getNumeroDocumento()))
-                .toList()
-            :
-            List.of()
-        );
-
-        return response;
-    }
 }

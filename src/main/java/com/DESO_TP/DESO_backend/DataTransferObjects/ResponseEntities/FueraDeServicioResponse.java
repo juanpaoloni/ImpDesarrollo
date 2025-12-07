@@ -4,6 +4,7 @@
  */
 package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
 
+import com.DESO_TP.EntidadesDominio.FueraDeServicio;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,4 +21,14 @@ public class FueraDeServicioResponse {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String descripcion;
+    
+    
+    public static FueraDeServicioResponse toResponse(FueraDeServicio fds){
+        return new FueraDeServicioResponse(
+        fds.getId().getNumeroHabitacion(),
+        fds.getId().getFechaInicio(),
+        fds.getFechaFin(),
+        fds.getDescripcion()
+        );
+    }
 }
