@@ -2,7 +2,7 @@
 
 import "../globals.css";
 import "./formMostrarHabitaciones.css"; // archivo CSS renombrado
-import { generarFechas } from "./utilsMostrarHabitaciones";
+import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./utilsMostrarHabitaciones";
 import { useState } from "react";
 import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
 type FormState = {
@@ -87,39 +87,44 @@ export default function MostrarEstadoHabitaciones() {
         Ingrese el rango de fechas y el tipo de habitación para ver el estado de las mismas
       </h1>
       <div className="contenedor-campos-labels-MEH">
-        <div className="contenedor-labels-MEH">
-          <p className="label-campos-MEH">Fecha Inicio</p>
-          <p className="label-campos-MEH">Fecha Finㅤ ㅤ ㅤ</p>
-          <p className="label-campos-MEH">Tipo de Habitacion</p>
-        </div>
 
         <div className="contenedor-campos-MEH">
           <form onSubmit={handleSubmit}>
-            <input
-              type="date"
-              name="fechaInicio"
-              value={form.fechaInicio}
-              onChange={handleChange}
-            />
-            <input
-              type="date"
-              name="fechaFin"
-              value={form.fechaFin}
-              onChange={handleChange}
-            />
+            <div>
+              <p className="label-MEH">Fecha Desde</p>
+              <input
+                type="date"
+                name="fechaInicio"
+                value={form.fechaInicio}
+                onChange={handleChange}
+              />
+            </div>
 
-            <select
-              name="tipoHabitacion"
-              value={form.tipoHabitacion}
-              onChange={handleChange}
-            >
-              <option value="">Cualquier Tipo</option>
-              <option value="INDIVIDUAL_ESTANDAR">Individual Estándar</option>
-              <option value="SUITE_DOBLE">Suite Doble</option>
-              <option value="DOBLE_ESTANDAR">Doble Estándar</option>
-              <option value="DOBLE_SUPERIOR">Doble Superior</option>
-              <option value="SUPERIOR_FAMILY_PLAN">Superior Family Plan</option>
-            </select>
+            <div>
+              <p className="label-MEH">Fecha Hasta</p>
+              <input
+                type="date"
+                name="fechaFin"
+                value={form.fechaFin}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <p className="label-MEH">Tipo de habitacion</p>
+              <select
+                name="tipoHabitacion"
+                value={form.tipoHabitacion}
+                onChange={handleChange}
+              >
+                <option value="">Cualquier Tipo</option>
+                <option value="INDIVIDUAL_ESTANDAR">Individual Estándar</option>
+                <option value="SUITE_DOBLE">Suite Doble</option>
+                <option value="DOBLE_ESTANDAR">Doble Estándar</option>
+                <option value="DOBLE_SUPERIOR">Doble Superior</option>
+                <option value="SUPERIOR_FAMILY_PLAN">Superior Family Plan</option>
+              </select>
+            </div>
 
             <button className="btn-MEH" type="submit">
               BUSCAR
@@ -146,7 +151,7 @@ export default function MostrarEstadoHabitaciones() {
 
             <tbody className="tbody-animado-MEH">
               {filas.map((fecha, i) => {
-                const fechaStr = fecha.toISOString().slice(0, 10);
+                const fechaStr = parseFechaSinOffset(fecha);
 
                 return (
                   <tr className="tabla-fila-MEH" key={i}>

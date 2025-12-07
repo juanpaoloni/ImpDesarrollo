@@ -21,7 +21,7 @@ export function validarCuit(valor, posIVA){
         return true;
     }
     else{
-        return /^[0-9]{11}$/.test(valor)
+        return /^[0-9]{8,11}$/.test(valor)
     }
 }
 
@@ -30,7 +30,7 @@ export function validarEmail(valor){
 }
 
 export function validarNumerico(valor){
-    return /^[0-9]{1, 20}$/.test(valor)
+    return /^[0-9]{1,20}$/.test(valor)
 }
 
 export function validarTelefono(valor){

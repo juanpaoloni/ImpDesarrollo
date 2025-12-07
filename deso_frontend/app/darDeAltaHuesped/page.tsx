@@ -95,6 +95,37 @@ export default function darDeAlta() {
     });
   }
 
+  const limpiarFormulario = () => {
+      setForm({
+      nombre: "",
+      apellido: "",
+      cuit: "",
+      tipoDocumento: "DNI",
+      numeroDocumento: "",
+      posicionIVA: "CONSUMIDOR_FINAL",
+      fechaNacimiento: "",
+      nacionalidad: "",
+      email: "",
+      telefono: "",
+      ocupacion: "",
+      direccion: {
+        calle: "",
+        numero: "",
+        departamento: "",
+        piso: "",
+        codigoPostal: "",
+        localidad: "",
+        provincia: "",
+        pais: "",
+      }
+    });
+  }
+
+  const handleDeshacer = () => {
+    resetErrores();
+    limpiarFormulario();
+  }
+
 const verificarYMostrarErrores = () => {
   let hayErrores = false;
 
@@ -157,10 +188,10 @@ const verificarYMostrarErrores = () => {
     hayErrores = true;
   }
 
-  if(!validarTexto(form.direccion.calle) && !validarNumerico(form.direccion.calee)){
+  if(!validarTexto(form.direccion.calle)){
     setErrores((prev) => ({
         ...prev,
-        direccion: { ...prev.direccion, calle: "La calle debe estar compuesta\npor letras o numeros." }
+        direccion: { ...prev.direccion, calle: "La calle debe estar compuesta\npor letras." }
       }));
     hayErrores = true;
   }
@@ -273,29 +304,7 @@ const handleSubmit = async (e) => {
     alert("Huésped guardado con éxito");
 
     // Limpiar formulario
-    setForm({
-      nombre: "",
-      apellido: "",
-      cuit: "",
-      tipoDocumento: "DNI",
-      numeroDocumento: "",
-      posicionIVA: "CONSUMIDOR_FINAL",
-      fechaNacimiento: "",
-      nacionalidad: "",
-      email: "",
-      telefono: "",
-      ocupacion: "",
-      direccion: {
-        calle: "",
-        numero: "",
-        departamento: "",
-        piso: "",
-        codigoPostal: "",
-        localidad: "",
-        provincia: "",
-        pais: "",
-      }
-    });
+    limpiarFormulario();
 
   } catch (error) {
     alert("Hubo un problema al guardar.");
@@ -306,6 +315,8 @@ const handleSubmit = async (e) => {
   return (
     <main className="fondo">
       <h1 className="titulo">Dar de Alta Huesped</h1>
+      <div className="linea-corta"></div>
+      <h3 className="subtitulo">Ingrese los datos del huesped que quiere cargar</h3>
 
       <form className="form-DAH" onSubmit={handleSubmit}>
 
@@ -315,17 +326,20 @@ const handleSubmit = async (e) => {
 
             <div className="grid-DAH">
               <div>
+                <p className="label-DAH">Nombre</p>
                 <input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
                 {errores.nombre && <p className="error-DAH">{errores.nombre}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Apellido</p>
                 <input name="apellido" value={form.apellido} onChange={handleChange} placeholder="Apellido" />
                 {errores.apellido && <p className="error-DAH">{errores.apellido}</p>}
               </div>    
 
              
               <div>
+                <p className="label-DAH">Tipo de documento</p>
                 <select name="tipoDocumento" value={form.tipoDocumento} onChange={handleChange}>
                   <option value="DNI">DNI</option>
                   <option value="LE">LE</option>
@@ -337,17 +351,20 @@ const handleSubmit = async (e) => {
               </div>
 
               <div>
+                <p className="label-DAH">Número de documento</p>
                 <input name="numeroDocumento" value={form.numeroDocumento} onChange={handleChange} placeholder="Número Documento" />
                 {errores.numeroDocumento && <p className="error-DAH">{errores.numeroDocumento}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">CUIT</p>
                 <input name="cuit" value={form.cuit} onChange={handleChange} placeholder="CUIT" />
                 {errores.cuit && <p className="error-DAH">{errores.cuit}</p>}
               </div>
 
 
               <div>
+                <p className="label-DAH">Posición frente al IVA</p>
                 <select name="posicionIVA" value={form.posicionIVA} onChange={handleChange}>
                   <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
                   <option value="EXENTO">Exento</option>
@@ -357,26 +374,31 @@ const handleSubmit = async (e) => {
               </div>
 
               <div>
+                <p className="label-DAH">Fecha de Nacimiento</p>
                 <input type="date" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange} />
                 {errores.fechaNacimiento && <p className="error-DAH">{errores.fechaNacimiento}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Nacionalidad</p>
                 <input name="nacionalidad" value={form.nacionalidad} onChange={handleChange} placeholder="Nacionalidad" />
                 {errores.nacionalidad && <p className="error-DAH">{errores.nacionalidad}</p>}
               </div>
 
               <div>
-                <input name="email" value={form.email} onChange={handleChange} placeholder="Email" />
+                <p className="label-DAH">Correo Electrónico</p>
+                <input name="email" value={form.email} onChange={handleChange} placeholder="Email (opcional)" />
                 {errores.email && <p className="error-DAH">{errores.email}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Teléfono</p>
                 <input name="telefono" value={form.telefono} onChange={handleChange} placeholder="Teléfono" />
                 {errores.telefono && <p className="error-DAH">{errores.telefono}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Ocupación</p>
                 <input name="ocupacion" value={form.ocupacion} onChange={handleChange} placeholder="Ocupación" />
                 {errores.ocupacion && <p className="error-DAH">{errores.ocupacion}</p>}
               </div>
@@ -388,41 +410,49 @@ const handleSubmit = async (e) => {
 
             <div className="grid-DAH">
               <div>
+                <p className="label-DAH">Calle</p>
                 <input name="dir_calle" value={form.direccion.calle} onChange={handleChange} placeholder="Calle" />
                 {errores.direccion.calle && <p className="error-DAH">{errores.direccion.calle}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Número/Altura</p>
                 <input name="dir_numero" value={form.direccion.numero} onChange={handleChange} placeholder="Número" />
                 {errores.direccion.numero && <p className="error-DAH">{errores.direccion.numero}</p>}
               </div>
 
               <div>
-                <input name="dir_departamento" value={form.direccion.departamento} onChange={handleChange} placeholder="Departamento" />
+                <p className="label-DAH">Departamento</p>
+                <input name="dir_departamento" value={form.direccion.departamento} onChange={handleChange} placeholder="Departamento (opcional)" />
                 {errores.direccion.departamento && <p className="error-DAH">{errores.direccion.departamento}</p>}
               </div>
 
               <div>
-                <input name="dir_piso" value={form.direccion.piso} onChange={handleChange} placeholder="Piso" />
+                <p className="label-DAH">Piso</p>
+                <input name="dir_piso" value={form.direccion.piso} onChange={handleChange} placeholder="Piso (opcional)" />
                 {errores.direccion.piso && <p className="error-DAH">{errores.direccion.piso}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Código Postal</p>
                 <input name="dir_codigoPostal" value={form.direccion.codigoPostal} onChange={handleChange} placeholder="Código Postal" />
                 {errores.direccion.codigoPostal && <p className="error-DAH">{errores.direccion.codigoPostal}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Localidad</p>
                 <input name="dir_localidad" value={form.direccion.localidad} onChange={handleChange} placeholder="Localidad" />
                 {errores.direccion.localidad && <p className="error-DAH">{errores.direccion.localidad}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">Provincia</p>
                 <input name="dir_provincia" value={form.direccion.provincia} onChange={handleChange} placeholder="Provincia" />
                 {errores.direccion.provincia && <p className="error-DAH">{errores.direccion.provincia}</p>}
               </div>
 
               <div>
+                <p className="label-DAH">País</p>
                 <input name="dir_pais" value={form.direccion.pais} onChange={handleChange} placeholder="País" />
                 {errores.direccion.pais && <p className="error-DAH">{errores.direccion.pais}</p>}
               </div>
@@ -431,8 +461,10 @@ const handleSubmit = async (e) => {
           </div>
         </div>
 
-
-        <button type="submit" className="btn-DAH">Guardar Huesped</button>
+        <div className="contenedor-botones-DAH">
+          <button type="button" className="btn-DAH" onClick={handleDeshacer}>Deshacer</button>
+          <button type="submit" className="btn-DAH">Dar de Alta</button>
+        </div>
       </form>
     </main>
   );
