@@ -7,17 +7,22 @@ export function validarDocumento(tipo, valor){
     if(["DNI", "LE", "LC"].includes(t))
         return /^[0-9]{7,10}$/.test(valor);
     else if (t === "PASAPORTE")
-        return /^[A-Z]{2}[0-9]{7,10}$/.test(valor);
+        return /^[a-zA-Z]{2}[0-9]{3,10}$/.test(valor);
 
     return false;
 }
 
 export function validarTexto(valor){
-    return /^[a-zA-ZÁÉÍÓÚáéíóúñÑ ]{2,40}$/.test(valor)
+    return /^[a-zA-ZÁÉÍÓÚáéíóúñÑ ]{1,40}$/.test(valor)
 }
 
-export function validarCuit(valor){
-    return /^[0-9]{11}$/.test(valor)
+export function validarCuit(valor, posIVA){
+    if(posIVA === "EXENTO" && !valor){
+        return true;
+    }
+    else{
+        return /^[0-9]{11}$/.test(valor)
+    }
 }
 
 export function validarEmail(valor){
@@ -39,7 +44,7 @@ export function validarFormatoFecha(valor) {
 
 export function validarFechaNoFutura(valor) {
   // convertir MM-DD-YYYY a Date
-  const [mes, dia, anio] = valor.split("-").map(Number);
+  const [anio, mes, dia] = valor.split("-").map(Number);
   const fecha = new Date(anio, mes - 1, dia);
 
   const hoy = new Date();
@@ -61,6 +66,10 @@ export function validarRangoFechas(fechaInicio, fechaFin) {
   fin.setHours(0,0,0,0);
 
   return inicio <= fin;
+}
+
+export function validarDepartamento(valor) {
+    return /^[A-Za-z]{1}[A-Za-z0-9\-]{0,3}$/.test(valor);
 }
 
 

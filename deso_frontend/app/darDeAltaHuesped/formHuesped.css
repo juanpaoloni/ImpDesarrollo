@@ -1,35 +1,65 @@
-.form-container {
-
+.form-container-DAH {
   margin: auto;
     background-color: #f3e6d3;
     min-height: 100vh;
 }
 
-.subtitulo {
+.subtitulo-DAH{
+  color: #70604f;
+  text-align: center;
+  font-style: italic;
+  text-shadow:
+      0 2px 2px rgba(0, 0, 0, 0.15);
   margin-top: 10px;
   font-size: 20px;
   font-weight: bold;
 }
 
-.form {
-  max-width: 900px;
+.contenedor-DAH {
+  display:flex;
+  flex-direction: row;
+  gap:60px;
+  justify-content: center;
+}
+
+.subcontenedor-DAH {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.error-DAH {
+  position:absolute;
+  color: red;
+  font-size: 11px;
+  margin-top:-2px;
+  margin-left:4px;
+  white-space: pre-line;
+}
+
+
+
+.form-DAH {
+  display:flex;
+  flex-direction:column;
+  max-width: 1000px;
   background: #f5f5f5;
   padding: 20px;
   border-radius: 12px;
   border: 1px solid #ccc;
   box-shadow: 0px 3px 8px rgba(0,0,0,0.3);
-
-  margin: 0 auto; /* <-- centrar horizontalmente */
+  align-items:center;
+  margin: 0 auto;
 }
 
-.grid {
+.grid-DAH {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 35px;
   margin-top: 10px;
 }
 
-input {
+.form-DAH input {
+  width:200px;
   padding: 7px;
   border-radius: 8px;
   border: 1px solid #aaa;
@@ -38,9 +68,9 @@ input {
   color:black;
 }
 
-.btn {
+.btn-DAH {
   margin-top: 25px;
-  width: 100%;
+  max-width: 200px;
   padding: 12px;
   background-color: #b69f7f;
   border: none;
@@ -51,12 +81,13 @@ input {
   box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
 }
 
-.btn:hover {
+.btn-DAH:hover {
   background-color: #937e60;
 }
 
 
-select {
+.form-DAH select {
+  width:200px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #aaa;
