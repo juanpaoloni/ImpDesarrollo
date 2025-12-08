@@ -18,7 +18,6 @@ public class OcupacionService {
 
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(Integer numeroHabitacion){
         List<Ocupacion> ocupaciones = ocupacionRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
-        System.out.println("a");
         return ocupaciones.stream().map(OcupacionResponse::toResponse).toList();
     }
     

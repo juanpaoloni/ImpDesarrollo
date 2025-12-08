@@ -1,12 +1,7 @@
-// FacturacionService.java
-
 package com.DESO_TP.DESO_backend.Services;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
-// Importaciones de HuespedResponse y Collectos ya no son necesarias
-// import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-// import java.util.stream.Collectors; 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
