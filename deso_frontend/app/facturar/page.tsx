@@ -7,97 +7,130 @@
   import ResponsablePago from './SeleccionarResponsable';
 
 
-  const OccupationsTable = ({ data, hasSearched, onFacturarClick }: { data: any[] | null, hasSearched: boolean, onFacturarClick: (occupation: any) => void }) => {
-      
-      if (!data && !hasSearched) {
-          return (
-              <div style={{ flexGrow: 1, minWidth: '400px' }}>
-                  <div style={{ maxWidth: '650px', margin: '0', padding: '0', borderRadius: '10px'}}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                          <thead>
-                              <tr style={{ backgroundColor: '#b69f7f', color: 'white' }}>
-                                  <th style={{ padding: '10px', border: '1px solid #ccc' }}>ID Ocupación</th>
-                                  <th style={{ padding: '10px', border: '1px solid #ccc' }}>Fecha Inicio</th>
-                                  <th style={{ padding: '10px', border: '1px solid #ccc' }}>Fecha Fin</th>
-                                  <th style={{ padding: '10px', border: '1px solid #ccc' }}>Estado</th>
-                                  <th style={{ padding: '10px', border: '1px solid #ccc' }}>Acción</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr key="no-search-yet" style={{ borderBottom: '1px solid #eee', backgroundColor: 'white' }}>
-                                  <td colSpan={5} style={{ padding: '20px', border: '1px solid #ccc', textAlign: 'center', color: '#888', fontStyle: 'italic' }}>
-                                      Ingrese un número de habitación y presione "Buscar Ocupaciones"
-                                  </td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          );
-      }
+ const OccupationsTable = ({
+    data,
+    hasSearched,
+    onFacturarClick
+}: {
+    data: any[] | null,
+    hasSearched: boolean,
+    onFacturarClick: (occupation: any) => void
+}) => {
 
-      const sortedData = data ? [...data].sort((a, b) => {
-          const isAInProcess = a.estado === 'EN_PROCESO';
-          const isBInProcess = b.estado === 'EN_PROCESO';
-          if (isAInProcess && !isBInProcess) return -1; 
-          if (!isAInProcess && isBInProcess) return 1;  
-          return b.fechaInicio.localeCompare(a.fechaInicio); 
-      }) : [];
-      
-      return (
-          <div style={{ flexGrow: 1, minWidth: '400px' }}>
-              <div style={{ maxWidth: '650px', margin: '0', padding: '0', borderRadius: '10px'}}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                      <thead>
-                          <tr style={{ backgroundColor: '#b69f7f', color: 'white' }}>
-                              <th style={{ padding: '10px', border: '1px solid #ccc' }}>ID Ocupación</th>
-                              <th style={{ padding: '10px', border: '1px solid #ccc' }}>Fecha Inicio</th>
-                              <th style={{ padding: '10px', border: '1px solid #ccc' }}>Fecha Fin</th>
-                              <th style={{ padding: '10px', border: '1px solid #ccc' }}>Estado</th>
-                              <th style={{ padding: '10px', border: '1px solid #ccc' }}>Acción</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {sortedData.length > 0 ? (
-                              sortedData.map((item, index) => (
-                                  <tr key={item.idOcupacion} style={{ borderBottom: '1px solid #eee', backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}>
-                                      <td style={{ padding: '10px', border: '1px solid #ccc', textAlign: 'center' }}>{item.idOcupacion}</td>
-                                      <td style={{ padding: '10px', border: '1px solid #ccc', textAlign: 'center' }}>{item.fechaInicio}</td>
-                                      <td style={{ padding: '10px', border: '1px solid #ccc', textAlign: 'center' }}>{item.fechaFin}</td>
-                                      <td style={{ padding: '10px', border: '1px solid #ccc', textAlign: 'center', fontWeight: 'bold', color: item.estado === 'EN_PROCESO' ? '#4CAF50' : '#888' }}>{item.estado}</td>
-                                      <td style={{ padding: '10px', border: '1px solid #ccc', textAlign: 'center' }}>
-                                          {item.estado === 'EN_PROCESO' && (
-                                            <button 
-                                                onClick={() => onFacturarClick(item)} 
-                                                style={{ padding: '8px 12px', backgroundColor: '#3d352c', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+    if (!data && !hasSearched) {
+        return (
+            <div className="ocupaciones-wrapper-FAC">
+                <div className="ocupaciones-container-FAC">
+                    <table className="ocupaciones-table-FAC">
+                        <thead>
+                            <tr className="ocupaciones-header-row-FAC">
+                                <th className="ocupaciones-th-FAC">ID Ocupación</th>
+                                <th className="ocupaciones-th-FAC">Fecha Inicio</th>
+                                <th className="ocupaciones-th-FAC">Fecha Fin</th>
+                                <th className="ocupaciones-th-FAC">Estado</th>
+                                <th className="ocupaciones-th-FAC">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr key="no-search-yet" className="ocupaciones-row-odd-FAC">
+                                <td colSpan={5} className="ocupaciones-msg-FAC">
+                                    Ingrese un número de habitación y presione "Buscar Ocupaciones"
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    }
+
+    const sortedData = data
+        ? [...data].sort((a, b) => {
+              const isAInProcess = a.estado === "EN_PROCESO";
+              const isBInProcess = b.estado === "EN_PROCESO";
+              if (isAInProcess && !isBInProcess) return -1;
+              if (!isAInProcess && isBInProcess) return 1;
+              return b.fechaInicio.localeCompare(a.fechaInicio);
+          })
+        : [];
+
+    return (
+        <div className="ocupaciones-wrapper-FAC">
+            <div className="ocupaciones-container-FAC">
+                <table className="ocupaciones-table-FAC">
+                    <thead>
+                        <tr className="ocupaciones-header-row-FAC">
+                            <th className="ocupaciones-th-FAC">ID Ocupación</th>
+                            <th className="ocupaciones-th-FAC">Fecha Inicio</th>
+                            <th className="ocupaciones-th-FAC">Fecha Fin</th>
+                            <th className="ocupaciones-th-FAC">Estado</th>
+                            <th className="ocupaciones-th-FAC">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedData.length > 0 ? (
+                            sortedData.map((item, index) => (
+                                <tr
+                                    key={item.idOcupacion}
+                                    className={
+                                        index % 2 === 0
+                                            ? "ocupaciones-row-even-FAC"
+                                            : "ocupaciones-row-odd-FAC"
+                                    }
+                                >
+                                    <td className="ocupaciones-td-FAC">{item.idOcupacion}</td>
+                                    <td className="ocupaciones-td-FAC">{item.fechaInicio}</td>
+                                    <td className="ocupaciones-td-FAC">{item.fechaFin}</td>
+                                    <td
+                                        className={
+                                            item.estado === "EN_PROCESO"
+                                                ? "ocupaciones-td-FAC estado-proceso-FAC"
+                                                : "ocupaciones-td-FAC estado-finalizada-FAC"
+                                        }
+                                    >
+                                        {item.estado}
+                                    </td>
+                                    <td className="ocupaciones-td-FAC">
+                                        {item.estado === "EN_PROCESO" && (
+                                            <button
+                                                onClick={() =>
+                                                    onFacturarClick(item)
+                                                }
+                                                className="btn-facturar-FAC"
                                             >
                                                 Facturar
-                                            </button>)}
-                                      </td>
-                                  </tr>
-                              ))
-                          ) : (
-                              <tr key="no-results" style={{ borderBottom: '1px solid #eee', backgroundColor: 'white' }}>
-                                  <td colSpan={5} style={{ padding: '20px', border: '1px solid #ccc', textAlign: 'center', color: '#888', fontStyle: 'italic' }}>
-                                      {hasSearched ? "Búsqueda completada. Revise el campo de habitación o intente otra búsqueda." : "Cargando..."}
-                                  </td>
-                              </tr>
-                          )}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      );
-  };
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr className="ocupaciones-row-odd-FAC">
+                                <td colSpan={5} className="ocupaciones-msg-FAC">
+                                    {hasSearched
+                                        ? "Búsqueda completada. Revise el campo de habitación o intente otra búsqueda."
+                                        : "Cargando..."}
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
 
 
   export default function Facturar() {
       const [form, setForm] = useState({
           numeroDeHabitación: "",
+          horaSalida:"",
       });
 
       const [errors, setErrors] = useState({
           numeroDeHabitación: "",
+          horaSalida:"",
       });
 
       const [occupantsData, setOccupantsData] = useState<any[] | null>(null);
@@ -122,6 +155,7 @@
 
           let newErrors = {
               numeroDeHabitación: "",
+              horaSalida:"",
           };
           let isValid = true;
 
@@ -132,7 +166,7 @@
           
           const integerRegex = /^\d+$/; 
           if (roomNumberValue && !integerRegex.test(roomNumberValue)) {
-              newErrors.numeroDeHabitación = "Solo se permiten números enteros (sin letras ni espacios).";
+              newErrors.numeroDeHabitación = "Solo se permiten números enteros\n(sin letras ni espacios).";
               isValid = false;
           }
 
@@ -146,14 +180,14 @@
           const roomNumber = parseInt(form.numeroDeHabitación, 10);
           
           if (isNaN(roomNumber) || roomNumber <= 0) {
-              newErrors.numeroDeHabitación = "Ingrese un número de habitación válido (> 0).";
+              newErrors.numeroDeHabitación = "Ingrese un número de habitación válido\n(> 0).";
               setErrors(newErrors);
               setOccupantsData(null); 
               return;
           }
 
 
-          setErrors({ numeroDeHabitación: "" });
+          setErrors({ numeroDeHabitación: "", horaSalida:"", });
           setOccupantsData(null); 
 
           try{
@@ -174,7 +208,7 @@
               }
 
               setOccupantsData(data); 
-              setErrors({ numeroDeHabitación: "" });
+              setErrors({ numeroDeHabitación: "", horaSalida:"", });
           } 
           catch(error){
               console.error(error);
@@ -207,28 +241,47 @@
 
               <div className="layout-horizontal">
                   
-                  <div className="contenedor_fac" style={{ margin: '0', marginTop: '40px' }}> 
+                  <div className="contenedor_fac"> 
                       <form onSubmit={handleRequest}>
-                          <div className="contenedor-campos" style={{marginTop: '0'}}>
-                              
-                              <h3 className="arriba_bot">
-                                  Número de Habitación 
-                                  <span className="obligatorio"> (*)</span>
-                              </h3>
-                              <input 
-                                  name="numeroDeHabitación" 
-                                  value={form.numeroDeHabitación} 
-                                  onChange={handleChange} 
-                                  placeholder="Numero de Habitación"
-                              
-                                  className={errors.numeroDeHabitación ? 'input-error' : ''} 
-                              />
-                              {errors.numeroDeHabitación && (
-                            
-                                  <p className="mensaje-error-campo">{errors.numeroDeHabitación}</p>
-                              )}
-                              
-                              <button type="submit" className="btn">
+                          <div className="contenedor-campos-FAC">
+                            <h2 className="texto-campos">Datos de la ocupacion</h2>
+                            <div> 
+                                <h3 className="arriba_bot">
+                                    Número de Habitación 
+                                    <span className="obligatorio"> (*)</span>
+                                </h3>
+                                <input 
+                                    name="numeroDeHabitación" 
+                                    value={form.numeroDeHabitación} 
+                                    onChange={handleChange} 
+                                    placeholder="Numero de Habitación"
+                                
+                                    className={errors.numeroDeHabitación ? 'input-error' : ''} 
+
+                                />
+                                {errors.numeroDeHabitación && (
+                                    <p className="mensaje-error-campo">{errors.numeroDeHabitación}</p>
+                                )}
+                            </div>
+                            <div>
+                                <h3 className="arriba_bot">
+                                    Hora de Salida
+                                    <span className="obligatorio"> (*)</span>
+                                </h3>
+                                <input 
+                                    name="numeroDeHabitación" 
+                                    value={form.horaSalida} 
+                                    onChange={handleChange} 
+                                    placeholder="Numero de Habitación"
+                                
+                                    className={errors.horaSalida ? 'input-error' : ''} 
+                                />
+                                {errors.horaSalida && (
+                                
+                                    <p className="mensaje-error-campo">{errors.horaSalida}</p>
+                                )}
+                              </div>
+                              <button type="submit" className="btn-FAC">
                                   Buscar Ocupaciones
                               </button>
 
