@@ -3,9 +3,84 @@
 import "../globals.css"
 import {validarNumerico, validarTexto, validarDocumento, validarTelefono, validarEmail, validarCuit, validarFechaNoFutura, validarDepartamento } from "../components/Validaciones.jsx"
 import "./formHuesped.css"; 
-import { useState } from "react";
+import { useState, useEffect} from "react";
+import { useSearchParams } from "next/navigation";
+import { ModalBase } from "../components/Modal.jsx"
+import { useRouter } from "next/navigation";
 
-export default function darDeAlta() {
+type Direccion = {
+  idDireccion: number;
+  calle: string;
+  numero: number;
+  departamento: string;
+  piso: number;
+  codigoPostal: string;
+  localidad: string;
+  provincia: string;
+  pais: string;
+};
+
+type Huesped = {
+  tipoDocumento: string;
+  numeroDocumento: string;
+  nombre: string;
+  apellido: string;
+  CUIT: string;
+  posicionIVA: string;
+  fechaNacimiento: string; 
+  nacionalidad: string;
+  email: string;
+  telefono: string;
+  ocupacion: string;
+  direccion: Direccion;
+};
+export default function modificarHuesped() {
+    const router = useRouter();
+  const searchParams = useSearchParams();
+  const tipoDoc = searchParams.get("tipoDocumento");
+  const nroDoc = searchParams.get("nroDocumento");
+  const [huesped, setHuesped] = useState<Huesped | null>(null);
+  useEffect(() => {
+  if (!tipoDoc || !nroDoc) return;
+
+  async function buscar() {
+    try {
+        const res = await fetch(
+          `http://localhost:8080/huespedes/buscarPorId?tipoDocumento=${tipoDoc}&nroDocumento=${nroDoc}`,
+          { cache: "no-store" }
+        );
+
+        if (!res.ok) {
+          setHuesped(null);
+          return;
+        }
+
+        const data: Huesped = await res.json();
+
+        const normalizado: Huesped = {
+          ...data,
+          cuit: data.CUIT,                 
+          direccion: {
+            ...data.direccion
+          }
+        };
+
+        setHuesped(normalizado);
+        setForm(normalizado);
+
+
+      } catch (err) {
+        console.error(err);
+        alert(err);
+      }
+    }
+
+
+    buscar();
+  }, [tipoDoc, nroDoc]); 
+
+
+  const [verPopUp, setVerPopUp] = useState(false);
 
   const [errores, setErrores] = useState({
     nombre: "",
@@ -119,11 +194,6 @@ export default function darDeAlta() {
         pais: "",
       }
     });
-  }
-
-  const handleDeshacer = () => {
-    resetErrores();
-    limpiarFormulario();
   }
 
 const verificarYMostrarErrores = () => {
@@ -280,6 +350,13 @@ const verificarYMostrarErrores = () => {
   return hayErrores;
 }
 
+const handleClosePopUp = () => {
+  setVerPopUp(false);
+
+
+  router.push("/");
+}
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -291,7 +368,7 @@ const handleSubmit = async (e) => {
 
 
   try {
-    const response = await fetch("http://localhost:8080/huespedes/darDeAlta", {
+    const response = await fetch("http://localhost:8080/huespedes/modificar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -301,7 +378,7 @@ const handleSubmit = async (e) => {
       throw new Error("Error al guardar el huésped");
     }
 
-    alert("Huésped guardado con éxito");
+    setVerPopUp(true);
 
     // Limpiar formulario
     limpiarFormulario();
@@ -314,57 +391,57 @@ const handleSubmit = async (e) => {
 
   return (
     <main className="fondo">
-      <h1 className="titulo">Dar de Alta Huesped</h1>
+      <h1 className="titulo">Modificar Huesped</h1>
       <div className="linea-corta"></div>
-      <h3 className="subtitulo">Ingrese los datos del huesped que quiere cargar</h3>
+      <h3 className="subtitulo">Ingrese los datos del huesped {huesped?.nombre} {huesped?.apellido}</h3>
 
-      <form className="form-DAH" onSubmit={handleSubmit}>
+      <form className="form-MH" onSubmit={handleSubmit}>
 
-        <div className="contenedor-DAH">
-          <div className="subcontenedor-DAH">
-            <h2 className="subtitulo-DAH">Datos del Huesped</h2>
+        <div className="contenedor-MH">
+          <div className="subcontenedor-MH">
+            <h2 className="subtitulo-MH">Datos del Huesped</h2>
 
-            <div className="grid-DAH">
+            <div className="grid-MH">
               <div>
-                <p className="label-DAH">Nombre</p>
+                <p className="label-MH">Nombre</p>
                 <input name="nombre" value={form.nombre} onChange={handleChange} placeholder="Nombre" />
-                {errores.nombre && <p className="error-DAH">{errores.nombre}</p>}
+                {errores.nombre && <p className="error-MH">{errores.nombre}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Apellido</p>
+                <p className="label-MH">Apellido</p>
                 <input name="apellido" value={form.apellido} onChange={handleChange} placeholder="Apellido" />
-                {errores.apellido && <p className="error-DAH">{errores.apellido}</p>}
+                {errores.apellido && <p className="error-MH">{errores.apellido}</p>}
               </div>    
 
              
               <div>
-                <p className="label-DAH">Tipo de documento</p>
-                <select name="tipoDocumento" value={form.tipoDocumento} onChange={handleChange}>
+                <p className="label-MH">Tipo de documento</p>
+                <select name="tipoDocumento" value={form.tipoDocumento} onChange={handleChange} disabled>
                   <option value="DNI">DNI</option>
                   <option value="LE">LE</option>
                   <option value="LC">LC</option>
                   <option value="PASAPORTE">PASAPORTE</option>
                   <option value="OTRO">OTRO</option>
                 </select>
-                {errores.tipoDocumento && <p className="error-DAH">{errores.tipoDocumento}</p>}
+                {errores.tipoDocumento && <p className="error-MH">{errores.tipoDocumento}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Número de documento</p>
-                <input name="numeroDocumento" value={form.numeroDocumento} onChange={handleChange} placeholder="Número Documento" />
-                {errores.numeroDocumento && <p className="error-DAH">{errores.numeroDocumento}</p>}
+                <p className="label-MH">Número de documento</p>
+                <input name="numeroDocumento" value={form.numeroDocumento} onChange={handleChange} placeholder="Número Documento" readOnly/>
+                {errores.numeroDocumento && <p className="error-MH">{errores.numeroDocumento}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">CUIT</p>
-                <input name="cuit" value={form.cuit} onChange={handleChange} placeholder="CUIT" />
-                {errores.cuit && <p className="error-DAH">{errores.cuit}</p>}
+                <p className="label-MH">CUIT</p>
+                <input name="cuit" value={form.cuit ?? ""} onChange={handleChange} placeholder="CUIT" />
+                {errores.cuit && <p className="error-MH">{errores.cuit}</p>}
               </div>
 
 
               <div>
-                <p className="label-DAH">Posición frente al IVA</p>
+                <p className="label-MH">Posición frente al IVA</p>
                 <select name="posicionIVA" value={form.posicionIVA} onChange={handleChange}>
                   <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
                   <option value="EXENTO">Exento</option>
@@ -374,98 +451,103 @@ const handleSubmit = async (e) => {
               </div>
 
               <div>
-                <p className="label-DAH">Fecha de Nacimiento</p>
+                <p className="label-MH">Fecha de Nacimiento</p>
                 <input type="date" name="fechaNacimiento" value={form.fechaNacimiento} onChange={handleChange} />
-                {errores.fechaNacimiento && <p className="error-DAH">{errores.fechaNacimiento}</p>}
+                {errores.fechaNacimiento && <p className="error-MH">{errores.fechaNacimiento}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Nacionalidad</p>
+                <p className="label-MH">Nacionalidad</p>
                 <input name="nacionalidad" value={form.nacionalidad} onChange={handleChange} placeholder="Nacionalidad" />
-                {errores.nacionalidad && <p className="error-DAH">{errores.nacionalidad}</p>}
+                {errores.nacionalidad && <p className="error-MH">{errores.nacionalidad}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Correo Electrónico</p>
+                <p className="label-MH">Correo Electrónico</p>
                 <input name="email" value={form.email} onChange={handleChange} placeholder="Email (opcional)" />
-                {errores.email && <p className="error-DAH">{errores.email}</p>}
+                {errores.email && <p className="error-MH">{errores.email}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Teléfono</p>
+                <p className="label-MH">Teléfono</p>
                 <input name="telefono" value={form.telefono} onChange={handleChange} placeholder="Teléfono" />
-                {errores.telefono && <p className="error-DAH">{errores.telefono}</p>}
+                {errores.telefono && <p className="error-MH">{errores.telefono}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Ocupación</p>
+                <p className="label-MH">Ocupación</p>
                 <input name="ocupacion" value={form.ocupacion} onChange={handleChange} placeholder="Ocupación" />
-                {errores.ocupacion && <p className="error-DAH">{errores.ocupacion}</p>}
+                {errores.ocupacion && <p className="error-MH">{errores.ocupacion}</p>}
               </div>
             </div>
           </div>
 
-            <div className="subcontenedor-DAH">
-            <h2 className="subtitulo-DAH">Dirección</h2>
+            <div className="subcontenedor-MH">
+            <h2 className="subtitulo-MH">Dirección</h2>
 
-            <div className="grid-DAH">
+            <div className="grid-MH">
               <div>
-                <p className="label-DAH">Calle</p>
+                <p className="label-MH">Calle</p>
                 <input name="dir_calle" value={form.direccion.calle} onChange={handleChange} placeholder="Calle" />
-                {errores.direccion.calle && <p className="error-DAH">{errores.direccion.calle}</p>}
+                {errores.direccion.calle && <p className="error-MH">{errores.direccion.calle}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Número/Altura</p>
+                <p className="label-MH">Número/Altura</p>
                 <input name="dir_numero" value={form.direccion.numero} onChange={handleChange} placeholder="Número" />
-                {errores.direccion.numero && <p className="error-DAH">{errores.direccion.numero}</p>}
+                {errores.direccion.numero && <p className="error-MH">{errores.direccion.numero}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Departamento</p>
+                <p className="label-MH">Departamento</p>
                 <input name="dir_departamento" value={form.direccion.departamento} onChange={handleChange} placeholder="Departamento (opcional)" />
-                {errores.direccion.departamento && <p className="error-DAH">{errores.direccion.departamento}</p>}
+                {errores.direccion.departamento && <p className="error-MH">{errores.direccion.departamento}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Piso</p>
+                <p className="label-MH">Piso</p>
                 <input name="dir_piso" value={form.direccion.piso} onChange={handleChange} placeholder="Piso (opcional)" />
-                {errores.direccion.piso && <p className="error-DAH">{errores.direccion.piso}</p>}
+                {errores.direccion.piso && <p className="error-MH">{errores.direccion.piso}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Código Postal</p>
+                <p className="label-MH">Código Postal</p>
                 <input name="dir_codigoPostal" value={form.direccion.codigoPostal} onChange={handleChange} placeholder="Código Postal" />
-                {errores.direccion.codigoPostal && <p className="error-DAH">{errores.direccion.codigoPostal}</p>}
+                {errores.direccion.codigoPostal && <p className="error-MH">{errores.direccion.codigoPostal}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Localidad</p>
+                <p className="label-MH">Localidad</p>
                 <input name="dir_localidad" value={form.direccion.localidad} onChange={handleChange} placeholder="Localidad" />
-                {errores.direccion.localidad && <p className="error-DAH">{errores.direccion.localidad}</p>}
+                {errores.direccion.localidad && <p className="error-MH">{errores.direccion.localidad}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">Provincia</p>
+                <p className="label-MH">Provincia</p>
                 <input name="dir_provincia" value={form.direccion.provincia} onChange={handleChange} placeholder="Provincia" />
-                {errores.direccion.provincia && <p className="error-DAH">{errores.direccion.provincia}</p>}
+                {errores.direccion.provincia && <p className="error-MH">{errores.direccion.provincia}</p>}
               </div>
 
               <div>
-                <p className="label-DAH">País</p>
+                <p className="label-MH">País</p>
                 <input name="dir_pais" value={form.direccion.pais} onChange={handleChange} placeholder="País" />
-                {errores.direccion.pais && <p className="error-DAH">{errores.direccion.pais}</p>}
+                {errores.direccion.pais && <p className="error-MH">{errores.direccion.pais}</p>}
               </div>
 
             </div>
           </div>
         </div>
 
-        <div className="contenedor-botones-DAH">
-          <button type="button" className="btn-DAH" onClick={handleDeshacer}>Deshacer</button>
-          <button type="submit" className="btn-DAH">Dar de Alta</button>
+        <div className="contenedor-botones-MH">
+          <button type="submit" className="btn-MH">Modificar</button>
         </div>
       </form>
+
+      <ModalBase visible={verPopUp} onClose={handleClosePopUp}>
+        <h2>¡Exito!</h2>
+        <p>El huesped ha sido modificado correctamente</p>
+        </ModalBase>
+
     </main>
   );
 }

@@ -5,7 +5,6 @@ import com.DESO_TP.DESO_backend.DataAccessObject.DireccionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.DireccionResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.DESO_backend.Utils.TextoUtils;
@@ -14,6 +13,7 @@ import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +165,14 @@ public class HuespedService {
         huespedRepository.deleteById(id);
     }
 
+    public HuespedResponse buscarHuespedPorId(TipoDocumento tipo, String numero) {
+        HuespedId id = new HuespedId(tipo, numero);
+
+        Huesped h = huespedRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
+
+        return HuespedResponse.toResponse(h); // o como lo construyas
+    }
 
 
 }
