@@ -5,8 +5,8 @@ import "./formFacturar.css"
 import "../globals.css";
 import { useState } from "react";
 import ResponsablePago from './SeleccionarResponsable.jsx';
+import { errorMonitor } from "events";
 
-// Nuevo componente para mostrar la lista de ocupaciones
 const OccupationsTable = ({ data }: { data: any[] }) => {
     return (
         <div className="contenedor_fac">
@@ -94,12 +94,18 @@ export default function Facturar() {
     setErrors({ numeroDeHabitación: "" });
 
     try{
+      const roomNumber = parseInt(form.numeroDeHabitación, 10);
+
+      if (isNaN(roomNumber)) {
+          throw new Error("El número de habitación debe ser un valor numérico.");
+      }
+
       const response = await fetch("http://localhost:8080/facturar/buscar", {
       method: "POST", 
       headers: {
         'Content-Type': 'application/json',
         }, 
-        body: JSON.stringify({ numeroDeHabitación: form.numeroDeHabitación })
+        body: JSON.stringify({ numeroDeHabitación: roomNumber })
       }
     );
 
@@ -157,7 +163,6 @@ export default function Facturar() {
         </form>
       </div>
       
-      {/* Visualización de la tabla de ocupaciones */}
       {occupantsData && occupantsData.length > 0 && (
           <OccupationsTable data={occupantsData} />
       )}

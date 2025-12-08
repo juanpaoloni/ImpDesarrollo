@@ -1,20 +1,22 @@
+// FacturacionService.java
+
 package com.DESO_TP.DESO_backend.Services;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
+// Importaciones de HuespedResponse y Collectos ya no son necesarias
+// import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
+// import java.util.stream.Collectors; 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FacturacionService {
     
     private final OcupacionService ocupacionService;
-    private final HuespedService huespedService;
 
     public List<OcupacionResponse> buscarOcupacionesParaFacturar(FacturaRequest request) {
         
@@ -31,15 +33,7 @@ public class FacturacionService {
         if (ocupaciones.isEmpty()) {
             throw new RuntimeException("No se encontraron ocupaciones para esa habitación.");
         }
-        
-        for (OcupacionResponse ocupacion : ocupaciones) {
-            List<HuespedResponse> huespedesDetalle = ocupacion.getIdsHuespedes().stream()
-                .map(id -> huespedService.obtenerHuesped(id.getTipoDocumento(), id.getNumeroDocumento()))
-                .collect(Collectors.toList());
-            
-            ocupacion.setHuespedes(huespedesDetalle);
-        }
-              
+
         return ocupaciones;
     }
 }

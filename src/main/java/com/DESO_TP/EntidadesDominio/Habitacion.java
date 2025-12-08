@@ -21,7 +21,7 @@ import lombok.*;
 public class Habitacion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer numeroHabitacion;
     
     @Enumerated(EnumType.STRING)
