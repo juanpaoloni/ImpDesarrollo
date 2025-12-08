@@ -121,7 +121,7 @@ public class HabitacionService {
             Habitacion habitacion = habitacionRepository.findById(numHab)
                     .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
             
-            List<String[]> rangos = ServiceUtils.simplificarRangoFechas(entry.getValue());
+            /*List<String[]> rangos = ServiceUtils.simplificarRangoFechas(entry.getValue());
             
             for(String[] r : rangos){
                 String fechaInicio = r[0];
@@ -129,7 +129,7 @@ public class HabitacionService {
                 String[] reservaPreview = {String.valueOf(numHab), habitacion.getTipo().toString(), fechaInicio, fechaFin};
                 
                 reservasSeleccionadas.add(reservaPreview);
-            }
+            }*/
         }
         
         return reservasSeleccionadas;
