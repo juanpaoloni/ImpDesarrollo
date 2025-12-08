@@ -1,5 +1,3 @@
-// fileName: FacturacionService.java
-
 package com.DESO_TP.DESO_backend.Services;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
@@ -8,7 +6,6 @@ import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResp
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalTime; // Ya no es necesario, se puede quitar
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +16,8 @@ public class FacturacionService {
     private final OcupacionService ocupacionService;
     private final HuespedService huespedService;
 
-    public OcupacionResponse buscarOcupantesPorFacturaRequest(FacturaRequest request) {
-
+    public List<OcupacionResponse> buscarOcupacionesParaFacturar(FacturaRequest request) {
+        
         Integer numeroHabitacion;
         try {
             numeroHabitacion = request.getNumeroDeHabitacion(); 
@@ -29,24 +26,20 @@ public class FacturacionService {
         }
         
         List<OcupacionResponse> ocupaciones = ocupacionService
-                .obtenerOcupacionPorNumeroHabitacion(numeroHabitacion); 
+                .obtenerOcupacionPorNumeroHabitacion(numeroHabitacion);
 
         if (ocupaciones.isEmpty()) {
-            throw new RuntimeException("No se encontró una ocupación activa para esa habitación.");
+            throw new RuntimeException("No se encontraron ocupaciones para esa habitación.");
         }
         
-        OcupacionResponse ocupacionPrincipal = ocupaciones.get(0);
-        
-        List<HuespedResponse> huespedesDetalle = ocupacionPrincipal.getIdsHuespedes().stream()
+        for (OcupacionResponse ocupacion : ocupaciones) {
+            List<HuespedResponse> huespedesDetalle = ocupacion.getIdsHuespedes().stream()
                 .map(id -> huespedService.obtenerHuesped(id.getTipoDocumento(), id.getNumeroDocumento()))
                 .collect(Collectors.toList());
-
-        OcupacionResponse response = new OcupacionResponse();
-        
-        response.setNumeroHabitacion(request.getNumeroDeHabitacion());
-        response.setIdOcupacion(ocupacionPrincipal.getIdOcupacion());
-        response.setHuespedes(huespedesDetalle);
+            
+            ocupacion.setHuespedes(huespedesDetalle);
+        }
               
-        return response;
+        return ocupaciones;
     }
 }
