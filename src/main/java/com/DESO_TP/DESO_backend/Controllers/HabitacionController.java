@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,12 +43,16 @@ public class HabitacionController {
         
     }
     
-    @RequestMapping("/confirmarSeleccion") //localhost:8080/habitaciones/confirmarSeleccion
-    public ResponseEntity<List<String[]>> confirmarSeleccion(@RequestBody SeleccionReservaRequest seleccion){
-        List<String[]> reservasSeleccionadas = service.generarSeleccion(seleccion.getSeleccionReserva());
-        
+    @PostMapping("/confirmarSeleccion")
+    public ResponseEntity<List<String[]>> confirmarSeleccion(
+            @RequestBody SeleccionReservaRequest seleccion) {
+
+        List<String[]> reservasSeleccionadas =
+                service.generarSeleccion(seleccion.getSeleccionReserva());
+
         return ResponseEntity.ok(reservasSeleccionadas);
     }
+
     
     @GetMapping("/obtenerPorTipo")
     public List<HabitacionResponse> obtenerHabitacionesPorTipo(@RequestParam(required = false) String tipo){
