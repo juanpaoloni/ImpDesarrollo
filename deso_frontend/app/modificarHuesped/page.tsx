@@ -464,7 +464,7 @@ const handleSubmit = async (e) => {
 
               <div>
                 <p className="label-MH">Correo Electrónico</p>
-                <input name="email" value={form.email} onChange={handleChange} placeholder="Email (opcional)" />
+                <input name="email" value={form.email ?? ""} onChange={handleChange} placeholder="Email (opcional)" />
                 {errores.email && <p className="error-MH">{errores.email}</p>}
               </div>
 
@@ -481,6 +481,8 @@ const handleSubmit = async (e) => {
               </div>
             </div>
           </div>
+
+          <div className="linea-vertical"></div>
 
             <div className="subcontenedor-MH">
             <h2 className="subtitulo-MH">Dirección</h2>
@@ -500,13 +502,13 @@ const handleSubmit = async (e) => {
 
               <div>
                 <p className="label-MH">Departamento</p>
-                <input name="dir_departamento" value={form.direccion.departamento} onChange={handleChange} placeholder="Departamento (opcional)" />
+                <input name="dir_departamento" value={form.direccion.departamento ?? ""} onChange={handleChange} placeholder="Departamento (opcional)" />
                 {errores.direccion.departamento && <p className="error-MH">{errores.direccion.departamento}</p>}
               </div>
 
               <div>
                 <p className="label-MH">Piso</p>
-                <input name="dir_piso" value={form.direccion.piso} onChange={handleChange} placeholder="Piso (opcional)" />
+                <input name="dir_piso" value={form.direccion.piso ?? ""} onChange={handleChange} placeholder="Piso (opcional)" />
                 {errores.direccion.piso && <p className="error-MH">{errores.direccion.piso}</p>}
               </div>
 

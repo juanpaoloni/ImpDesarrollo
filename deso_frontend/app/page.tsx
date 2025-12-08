@@ -22,8 +22,8 @@ export default function MenuPrincipal() {
 
         <Link href="/darDeBajaHuesped">
           <button className="boton">
-            <img src="/darbaja.png" className="iconos_boton"/>
-             <h3 className="letra_btn">Dar de Baja un Huesped</h3>
+            <img src="/huesped.png" className="iconos_boton"/>
+             <h3 className="letra_btn">Gestionar Huespedes</h3>
           </button>
         </Link>
 

@@ -4,6 +4,8 @@ import "../globals.css";
 import "./formDarDeBaja.css";
 import { ModalBase, ModalAdvertencia, ModalError } from "../components/Modal.jsx";
 import { useState } from "react";
+import { useRouter } from "next/navigation"
+
 
 type Huesped = {
   nombre: string;
@@ -13,6 +15,9 @@ type Huesped = {
 };
 
 export default function darDeBaja() {
+
+  const router = useRouter();
+
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -42,10 +47,6 @@ export default function darDeBaja() {
     e.preventDefault();
     setHuespedSeleccionado(null);
 
-    // Marcar todas las filas actuales para animación de desaparición
-    const ids = huespedes.map(h => `${h.tipoDocumento}-${h.numeroDocumento}`);
-
-    // Esperar que termine la animación antes de reemplazar los datos
     setTimeout(async () => {
       const params = new URLSearchParams();
       if (form.nombre) params.append("nombre", form.nombre);
@@ -117,6 +118,10 @@ export default function darDeBaja() {
   const handleCerrarPopUp = async () => {
     setMostrarPopUp(prev => ({ ...prev, confirmacion: false }));
     setHuespedSeleccionado(null);
+  }
+
+  const handleModificar = () => {
+      router.push(`/modificarHuesped?tipoDocumento=${huespedSeleccionado?.tipoDocumento}&nroDocumento=${huespedSeleccionado?.numeroDocumento}`)
   }
 
   // A partir de aca empieza el return
@@ -261,6 +266,9 @@ export default function darDeBaja() {
       <div className="contenedor-boton">
         <button className="btn" onClick={handleDarDeBaja} disabled={!huespedSeleccionado}>
           DAR DE BAJA
+        </button>
+        <button className="btn" onClick={handleModificar} disabled={!huespedSeleccionado}>
+          MODIFICAR
         </button>
       </div>
     </main>
