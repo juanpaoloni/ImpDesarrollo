@@ -16,6 +16,7 @@ import com.DESO_TP.EntidadesDominio.FueraDeServicio;
 import com.DESO_TP.EntidadesDominio.Habitacion;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
 import com.DESO_TP.EntidadesDominio.Reserva;
+import com.DESO_TP.Enumerados.EstadoReserva;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -136,4 +137,12 @@ public class HabitacionService {
         
     }
     
+    @Autowired
+    private HabitacionDAO habitacionDAO;
+
+    @Autowired
+    private ReservaDAO reservaDAO;
+
+
+
 }
