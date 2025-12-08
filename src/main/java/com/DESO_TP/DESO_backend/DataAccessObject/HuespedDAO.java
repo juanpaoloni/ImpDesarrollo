@@ -6,7 +6,10 @@ package com.DESO_TP.DESO_backend.DataAccessObject;
 
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -17,5 +20,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HuespedDAO extends CrudRepository<Huesped, HuespedId> {
-     
 }

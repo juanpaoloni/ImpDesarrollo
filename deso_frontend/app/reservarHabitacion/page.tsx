@@ -41,7 +41,6 @@ export default function SeleccionarHabitaciones() {
 
   const handleAceptar = async () => {
     try {
-      // Build payload: array de { numeroHabitacion, fechasSeleccionadas }
       const seleccionReserva = Object.fromEntries(
         Object.entries(seleccion).map(([numHab, fechasSet]) => [
           Number(numHab),
@@ -51,32 +50,15 @@ export default function SeleccionarHabitaciones() {
 
       const payload = { seleccionReserva };
 
-      console.log("Enviando payload:", payload);
+      // Convertimos a JSON para mandarlo en la URL
+      const payloadString = encodeURIComponent(JSON.stringify(payload));
 
-      // Enviar al endpoint acordado
-      const res = await fetch("http://localhost:8080/habitaciones/confirmarSeleccion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      router.push(
+        `/mostrarListaReserva?data=${payloadString}`
+      );
 
-      if (!res.ok) {
-        // intenta leer mensaje de error del backend
-        const text = await res.text().catch(() => "");
-        console.error("Backend error:", res.status, text);
-        throw new Error("Error del backend");
-      }
-
-      const data = await res.json();
-
-      // Guardamos los datos recibidos para la siguiente pantalla
-      sessionStorage.setItem("confirmarReserva", JSON.stringify(data));
-
-      // Navegamos a la pantalla donde se muestra la tabla final (con slash)
-      router.push("/confirmarReserva");
-    } catch (err) {
-      console.error(err);
-      alert("Hubo un error al enviar la selección. Revisa la consola para más detalles.");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -100,6 +82,8 @@ export default function SeleccionarHabitaciones() {
       return copia;
     });
   };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError({ mensaje: "" });
