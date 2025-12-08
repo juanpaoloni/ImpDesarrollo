@@ -8,14 +8,19 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
+import com.DESO_TP.DESO_backend.Services.HuespedService;
+import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.Enumerados.EstadoOcupacion;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
 @AllArgsConstructor
@@ -31,9 +36,6 @@ public class OcupacionResponse {
     // Relación con habitación
     private Integer numeroHabitacion;
 
-    // IDs de facturas
-    private List<Long> idsFactura;
-
     // IDs de servicios
     private List<Long> idsServicios;
 
@@ -47,17 +49,12 @@ public class OcupacionResponse {
         response.setIdOcupacion(ocupacion.getIdOcupacion());
         response.setFechaInicio(ocupacion.getFechaInicio());
         response.setFechaFin(ocupacion.getFechaFin());
-        response.setHoraSalida(ocupacion.getHoraSalida()); 
+        //response.setHoraSalida(ocupacion.getHoraSalida()); 
         response.setEstado(ocupacion.getEstado());
 
         if(ocupacion.getHabitacion() != null)
             response.setNumeroHabitacion(ocupacion.getHabitacion().getNumeroHabitacion());
 
-        response.setIdsFactura(
-            ocupacion.getFactura() != null ?
-            ocupacion.getFactura().stream().map(f -> f.getNumeroFactura()).toList() :
-            List.of()
-        );
 
         response.setIdsHuespedes(
             ocupacion.getHuespedes() != null ?
@@ -68,6 +65,23 @@ public class OcupacionResponse {
             :
             List.of()
         );
+        
+        if (ocupacion.getHuespedes() != null) {
+        List<Huesped> listaHuespedes = ocupacion.getHuespedes();
+        List<HuespedResponse> huespedesDTO = new ArrayList<>();
+        for (int i = 0; i < listaHuespedes.size(); i++) {
+            Huesped h = listaHuespedes.get(i); 
+
+            HuespedResponse dto = HuespedResponse.toResponse(h); 
+            
+            huespedesDTO.add(dto);
+            }
+        response.setHuespedes(huespedesDTO);
+        }
+        else{
+            response.setHuespedes(List.of());
+        }
+        
 
         return response;
     }

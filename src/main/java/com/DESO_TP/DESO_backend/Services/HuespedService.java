@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +30,7 @@ public class HuespedService {
     @Autowired
     private DireccionDAO direccionRepository;
     
+    @Lazy
     @Autowired
     private OcupacionService ocupacionService;
     
@@ -173,6 +175,8 @@ public class HuespedService {
 
         return HuespedResponse.toResponse(h); // o como lo construyas
     }
+    
+    
 
 
 }

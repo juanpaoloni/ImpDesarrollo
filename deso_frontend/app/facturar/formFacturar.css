@@ -21,7 +21,6 @@
       0 2px 2px rgba(0, 0, 0, 0.15);
   letter-spacing: 4.0px;
   
-  /* AJUSTE 1: Aumentar el margen inferior para separar del contenido */
   margin-bottom: 40px; 
 }
 
@@ -132,4 +131,200 @@
 }
 .layout-horizontal table .finalizada_text { 
     color: #888 !important; 
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+}
+
+.modal-content-pago {
+    background-color: #e6e6e6;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 900px; 
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-title {
+    font-family: "Cinzel", serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #302922;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #b69f7f;
+    padding-bottom: 10px;
+}
+
+.modal-body-pago {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.section-left {
+    flex: 2; 
+}
+
+.section-right {
+    flex: 1; 
+    padding-left: 20px;
+    border-left: 1px solid #ccc;
+}
+
+.section-title-pago {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3d352c;
+    margin-bottom: 15px;
+}
+.section-title-pago-right {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3d352c;
+    margin-top: 0;
+}
+
+
+.occupants-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.occupants-table th, .occupants-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+    color: #302922; /* Color oscuro pero legible para datos no seleccionados */
+}
+
+.occupants-table th {
+    background-color: #f0f0f0;
+    font-weight: 600;
+    color: #3d352c;
+}
+
+.occupants-table tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.occupants-table tr:hover {
+    background-color: #e0e0e0;
+}
+
+.selected-row {
+    background-color: #b69f7f !important;
+    color: white !important; /* CAMBIO CLAVE: Letra blanca para la fila seleccionada */
+    font-weight: bold;
+}
+/* Asegura que el texto dentro de la fila seleccionada sea blanco */
+.selected-row td {
+    color: white !important;
+}
+
+.input-label-pago {
+    font-size: 14px;
+    color: #302922; 
+    margin-bottom: 5px;
+}
+
+.cuit-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    color: #302922; 
+}
+
+.note-pago {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.modal-footer-pago {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid #ccc;
+}
+
+.btn-modal-pago {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-modal-pago.cancel {
+    background-color: #888;
+    color: white;
+}
+
+.btn-modal-pago.cancel:hover {
+    background-color: #666;
+}
+
+.btn-modal-pago.confirm {
+    background-color: #b69f7f;
+    color: white;
+}
+
+.btn-modal-pago.confirm:hover {
+    background-color: #a08e75;
+}
+
+.status-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.status-label {
+    font-weight: bold;
+    color: #3d352c;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.status-box {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 8px 15px;
+    flex-grow: 1;
+    border-radius: 5px;
+    color: #302922;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.error-message-modal {
+    color: red;
+    font-size: 12px;
+    margin-left: 10px;
 }
