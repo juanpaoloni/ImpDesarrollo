@@ -1,3 +1,5 @@
+// fileName: FacturacionService.java
+
 package com.DESO_TP.DESO_backend.Services;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
@@ -6,7 +8,7 @@ import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResp
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalTime;
+import java.time.LocalTime; // Ya no es necesario, se puede quitar
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,21 +20,19 @@ public class FacturacionService {
     private final HuespedService huespedService;
 
     public OcupacionResponse buscarOcupantesPorFacturaRequest(FacturaRequest request) {
-        
-        LocalTime horaSalida;
+
         Integer numeroHabitacion;
         try {
-            horaSalida = LocalTime.parse(request.getHorarioDeSalida());
             numeroHabitacion = request.getNumeroDeHabitacion(); 
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Datos de entrada inválidos (Habitación debe ser número, Hora debe ser HH:MM).");
+            throw new IllegalArgumentException("Datos de entrada inválidos (Habitación debe ser número).");
         }
         
         List<OcupacionResponse> ocupaciones = ocupacionService
-                .obtenerOcupacionPorNumeroHabitacionYHoraSalida(numeroHabitacion, horaSalida);
+                .obtenerOcupacionPorNumeroHabitacion(numeroHabitacion); 
 
         if (ocupaciones.isEmpty()) {
-            throw new RuntimeException("No se encontró una ocupación activa para esa habitación y hora.");
+            throw new RuntimeException("No se encontró una ocupación activa para esa habitación.");
         }
         
         OcupacionResponse ocupacionPrincipal = ocupaciones.get(0);
