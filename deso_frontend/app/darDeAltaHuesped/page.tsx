@@ -405,6 +405,8 @@ const handleSubmit = async (e) => {
             </div>
           </div>
 
+          <div className="linea-vertical"></div>
+
             <div className="subcontenedor-DAH">
             <h2 className="subtitulo-DAH">Dirección</h2>
 
