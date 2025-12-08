@@ -49,12 +49,14 @@ export default function MostrarListaReserva() {
 
         // Transformamos reservas[][] → reservas[] PLANAS compatibles con backend
         const payload = reservas.map((fila) => ({
-            numeroHabitacion: parseInt(fila[0]),
             fechaInicio: fila[2],
             fechaFin: fila[3],
             nombre,
             apellido,
             telefono,
+            habitacion: {
+                numeroHabitacion: parseInt(fila[0])
+            }
         }));
 
         try {
