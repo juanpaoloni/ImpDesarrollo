@@ -32,12 +32,4 @@ public class OcupacionController {
             @RequestParam(required = true) Integer numeroHabitacion){
         return service.obtenerOcupacionPorNumeroHabitacion(numeroHabitacion);
     }
-    
-    @GetMapping("/obtenerPorHabitacionYHora")
-    public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacionYHoraSalida(
-            @RequestParam(required = true) Integer numeroHabitacion,
-            @RequestParam(required = true) LocalTime horaSalida){
-        
-        return service.obtenerOcupacionPorNumeroHabitacionYHoraSalida(numeroHabitacion, horaSalida);
-    }
 }

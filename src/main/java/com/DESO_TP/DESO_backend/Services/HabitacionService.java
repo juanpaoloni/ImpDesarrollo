@@ -111,5 +111,29 @@ public class HabitacionService {
 
         return habitaciones.stream().map(HabitacionResponse::toResponse).toList();
     }
+
+    public List<String[]> generarSeleccion(Map<Integer, List<String>> seleccion) {
+     
+        List<String[]> reservasSeleccionadas = new ArrayList();
+        for(Map.Entry<Integer,List<String>> entry : seleccion.entrySet()){
+            
+            Integer numHab = entry.getKey();
+            Habitacion habitacion = habitacionRepository.findById(numHab)
+                    .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+            
+            List<String[]> rangos = ServiceUtils.simplificarRangoFechas(entry.getValue());
+            
+            for(String[] r : rangos){
+                String fechaInicio = r[0];
+                String fechaFin = r[1];
+                String[] reservaPreview = {String.valueOf(numHab), habitacion.getTipo().toString(), fechaInicio, fechaFin};
+                
+                reservasSeleccionadas.add(reservaPreview);
+            }
+        }
+        
+        return reservasSeleccionadas;
+        
+    }
     
 }

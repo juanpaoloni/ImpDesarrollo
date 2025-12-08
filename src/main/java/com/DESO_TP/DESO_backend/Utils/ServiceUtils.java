@@ -39,4 +39,35 @@ public class ServiceUtils {
         return(!fechaAVerificar.isBefore(fechaInicio) && !fechaAVerificar.isAfter(fechaFin));
     }
     
+    public static List<String[]> simplificarRangoFechas(List<String> fechas) {
+        List<String[]> rangos = new ArrayList<>();
+
+        if (fechas == null || fechas.isEmpty()) {
+            return rangos;
+        }
+        String fechaInicio = fechas.get(0);
+        String fechaAnterior = fechas.get(0);
+
+        for (int i = 1; i < fechas.size(); i++) {
+            String fechaActual = fechas.get(i);
+
+            if (!sonConsecutivas(fechaAnterior, fechaActual)) {
+                rangos.add(new String[]{fechaInicio, fechaAnterior});
+                fechaInicio = fechaActual;
+            }
+
+            fechaAnterior = fechaActual;
+        }
+
+        rangos.add(new String[]{fechaInicio, fechaAnterior});
+
+        return rangos;
+    }
+
+    private static boolean sonConsecutivas(String fecha1, String fecha2) {
+        LocalDate f1 = LocalDate.parse(fecha1);
+        LocalDate f2 = LocalDate.parse(fecha2);
+        return f1.plusDays(1).equals(f2);
+    }
+
 }

@@ -6,7 +6,6 @@ package com.DESO_TP.DESO_backend.DataAccessObject;
 
 import com.DESO_TP.EntidadesDominio.Ocupacion;
 import com.DESO_TP.Enumerados.TipoDocumento;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OcupacionDAO extends CrudRepository<Ocupacion, Long>{
     List<Ocupacion> findByHabitacion_NumeroHabitacion(Integer numeroHabitacion);
-    List<Ocupacion> findByHabitacion_NumeroHabitacionAndHoraSalida(Integer numeroHabitacion, LocalTime horaSalida);
     
     @Query("SELECT o FROM Ocupacion o JOIN o.huespedes h " +
            "WHERE h.tipoDocumento = :tipoDocumento " +
