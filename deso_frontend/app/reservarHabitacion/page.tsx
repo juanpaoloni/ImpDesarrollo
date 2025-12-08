@@ -42,20 +42,19 @@ export default function SeleccionarHabitaciones() {
   const handleAceptar = async () => {
     try {
       // Build payload: array de { numeroHabitacion, fechasSeleccionadas }
-      const payload = Object.entries(seleccion).map(([numHab, fechasSet]) => ({
-        numeroHabitacion: numHab,
-        fechasSeleccionadas: Array.from(fechasSet).sort(),
-      }));
+      const seleccionReserva = Object.fromEntries(
+        Object.entries(seleccion).map(([numHab, fechasSet]) => [
+          Number(numHab),
+          Array.from(fechasSet).sort(),
+        ])
+      );
 
-      if (payload.length === 0) {
-        alert("No hay celdas seleccionadas.");
-        return;
-      }
+      const payload = { seleccionReserva };
 
       console.log("Enviando payload:", payload);
 
       // Enviar al endpoint acordado
-      const res = await fetch("http://localhost:8080/reservas", {
+      const res = await fetch("http://localhost:8080/habitaciones/confirmarSeleccion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -101,61 +100,6 @@ export default function SeleccionarHabitaciones() {
       return copia;
     });
   };
-
-  const buildPayload = () => {
-    return Object.entries(seleccion).map(([numHab, fechas]) => ({
-      numeroHabitacion: Number(numHab),
-      rangoFecha: Array.from(fechas).sort(),
-    }));
-  };
-
-  const obtenerRangos = () => {
-    const resultado: any[] = [];
-
-    Object.entries(seleccion).forEach(([numHab, fechasSet]) => {
-      const fechas = Array.from(fechasSet).sort();
-
-      let rangos: any[] = [];
-
-      let inicio: string | null = null;
-      let anterior: string | null = null;
-
-      fechas.forEach((f) => {
-        if (!inicio) {
-          inicio = f;
-          anterior = f;
-          return;
-        }
-
-        const fechaActual = new Date(f);
-        const fechaAnterior = new Date(anterior!);
-        fechaAnterior.setDate(fechaAnterior.getDate() + 1);
-
-        if (fechaActual.toISOString().slice(0, 10) === fechaAnterior.toISOString().slice(0, 10)) {
-          // Son contiguas
-          anterior = f;
-        } else {
-          // Cortamos el rango
-          rangos.push({ desde: inicio, hasta: anterior });
-          inicio = f;
-          anterior = f;
-        }
-      });
-
-      // Último rango pendiente
-      if (inicio) {
-        rangos.push({ desde: inicio, hasta: anterior });
-      }
-
-      resultado.push({
-        numeroHabitacion: numHab,
-        rangoFechas: rangos,
-      });
-    });
-
-    return resultado;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError({ mensaje: "" });

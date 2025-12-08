@@ -4,14 +4,17 @@
  */
 package com.DESO_TP.DESO_backend.Controllers;
 
+import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.SeleccionReservaRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.EstadoHabitacionResponse;
 import com.DESO_TP.Enumerados.TipoHabitacion;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HabitacionResponse;
 import com.DESO_TP.DESO_backend.Services.HabitacionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +42,12 @@ public class HabitacionController {
         
     }
     
+    @RequestMapping("/confirmarSeleccion") //localhost:8080/habitaciones/confirmarSeleccion
+    public ResponseEntity<List<String[]>> confirmarSeleccion(@RequestBody SeleccionReservaRequest seleccion){
+        List<String[]> reservasSeleccionadas = service.generarSeleccion(seleccion.getSeleccionReserva());
+        
+        return ResponseEntity.ok(reservasSeleccionadas);
+    }
     
     @GetMapping("/obtenerPorTipo")
     public List<HabitacionResponse> obtenerHabitacionesPorTipo(@RequestParam(required = false) String tipo){
