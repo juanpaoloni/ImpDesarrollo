@@ -6,10 +6,14 @@ package com.DESO_TP.DESO_backend.Controllers;
 
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.ReservaResponse;
 import com.DESO_TP.DESO_backend.Services.ReservaService;
+import com.DESO_TP.EntidadesDominio.Reserva;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +36,22 @@ public class ReservaController {
             @RequestParam(required = true) Integer numeroHabitacion){
         return service.obtenerReservaPorNumeroHabitacion(numeroHabitacion);
     }
-    
+
+    // ------------------------------------------------------------
+    //  NUEVO ENDPOINT PARA CREAR MÚLTIPLES RESERVAS
+    // ------------------------------------------------------------
+    @PostMapping("/crearMultiples")
+    public ResponseEntity<?> crearMultiplesReservas(@RequestBody List<Reserva> reservas) {
+        try {
+            service.crearMultiplesReservas(reservas);
+            return ResponseEntity.ok("Reservas creadas con éxito");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al crear reservas: " + e.getMessage());
+        }
+    }
+
 }
+
+    
+
