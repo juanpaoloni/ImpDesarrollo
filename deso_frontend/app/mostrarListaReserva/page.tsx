@@ -3,17 +3,32 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import "./mostrarLista.css";
+import { validarTexto, validarTelefono } from "../components/Validaciones.jsx"
+import { ModalBase, ModalAdvertencia } from "../components/Modal.jsx"
+import {useRouter} from "next/navigation";
 
 export default function MostrarListaReserva() {
     const searchParams = useSearchParams();
     const [reservas, setReservas] = useState<string[][]>([]);
     const [loading, setLoading] = useState(true);
 
+    const router = useRouter();
+
     // Datos del huésped
     const [apellido, setApellido] = useState("");
     const [nombre, setNombre] = useState("");
     const [telefono, setTelefono] = useState("");
 
+    const [errores, setErrores] = useState({
+        apellido:"",
+        nombre:"",
+        telefono:"",
+    })
+    
+    const[popUpVisible, setVisible] = useState({
+        confirmacion:false,
+        advertencia: false,
+    })
     useEffect(() => {
         const cargarDatos = async () => {
             try {
@@ -40,9 +55,33 @@ export default function MostrarListaReserva() {
         cargarDatos();
     }, [searchParams]);
 
+    const handleErrores = () => {
+
+        setErrores({
+            apellido:"",
+            nombre:"",
+            telefono:"",
+        });
+
+        let hayErrores = false;
+        if(!validarTexto(apellido)){
+            setErrores((prev) => ({...prev, apellido:"El apellido solo puede contener letras\nsin espacios ni números."}))
+            hayErrores = true;
+        }
+        if(!validarTexto(nombre)){
+            setErrores((prev) => ({...prev, nombre:"El nombre solo puede contener letras\nsin espacios ni números."}))
+            hayErrores = true;
+        }
+        if(!validarTelefono(telefono)){
+            setErrores((prev) => ({...prev, telefono:"Telefono invalido."}))
+            hayErrores = true;
+        }
+
+        return hayErrores;
+    }
+
     const enviarReservas = async () => {
-        if (!apellido || !nombre || !telefono) {
-            alert("Complete todos los campos obligatorios");
+        if (handleErrores()){
             return;
         }
 
@@ -66,8 +105,7 @@ export default function MostrarListaReserva() {
             });
 
             if (res.ok) {
-                alert("Reserva creada con éxito");
-                window.location.href = "/";
+                setVisible((prev) => ({...prev, confirmacion:true}));
             } else {
                 alert("Error al crear la reserva");
             }
@@ -91,6 +129,9 @@ export default function MostrarListaReserva() {
         else return "?";
     }
 
+    const handleVolver = () => {
+        router.push("/");
+    }
 
 return (
     <main className="fondo">
@@ -113,38 +154,47 @@ return (
                     <div className="linea-corta-ML"></div>
                     <div className="flex flex-col gap-4">
                         <div>
-                            <label className="texto-mlr">Apellido (*)</label>
+                            <label className="texto-mlr">Apellido</label>
+                            <label className="obligatorio-ML"> (*)</label>
                             <input
                                 type="text"
-                                className="texto-mlr"
+                                className={`texto-mlr ${errores.apellido ? "input-error" : ""}`}
                                 value={apellido}
                                 onChange={(e) => setApellido(e.target.value)}
+                                placeholder="Apellido"
                             />
+                            {errores.apellido && <p className="error-ML">{errores.apellido}</p>}
                         </div>
 
                         <div>
-                            <label className="texto-mlr">Nombre (*)</label>
+                            <label className="texto-mlr">Nombre</label>
+                            <label className="obligatorio-ML"> (*)</label>
                             <input
                                 type="text"
-                                className="texto-mlr"
+                                className={`texto-mlr ${errores.nombre ? "input-error" : ""}`}
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
+                                placeholder="Nombre"
                             />
+                            {errores.nombre && <p className="error-ML">{errores.nombre}</p>}
                         </div>
 
                         <div>
-                            <label className="texto-mlr">Teléfono (*)</label>
+                            <label className="texto-mlr">Teléfono</label>
+                            <label className="obligatorio-ML"> (*)</label>
                             <input
                                 type="text"
-                                className="texto-mlr"
+                                className={`texto-mlr ${errores.telefono ? "input-error" : ""}`}
                                 value={telefono}
                                 onChange={(e) => setTelefono(e.target.value)}
+                                placeholder="Número de telefono"
                             />
+                            {errores.telefono && <p className="error-ML">{errores.telefono}</p>}
                         </div>
                     </div>
                 </div>
             )}
-            
+
             {reservas.length > 0 && (
                 <div className="contenedor-tabla-ML">
                     <table className="tabla">
@@ -181,9 +231,7 @@ return (
                         <button
                             className="boton-ML rechazar"
                             onClick={() => {
-                                if (confirm("¿Seguro que desea cancelar la reserva?")) {
-                                    window.location.href = "/";
-                                }
+                                setVisible((prev) => ({...prev, advertencia:true}))
                             }}
                         >
                             RECHAZAR
@@ -197,6 +245,20 @@ return (
                         </button>
                     </div>
                 )}
+
+
+                <ModalAdvertencia visible={popUpVisible.advertencia}
+                            onClose={() => setVisible((prev) => ({...prev, advertencia:false}))}
+                            onAceptar={handleVolver}>
+                                <h2>¡Advertencia!</h2>
+                                <p>¿Esta seguro de que quiere deshacer las acciones realizadas?</p>
+                </ModalAdvertencia>
+
+                <ModalBase visible={popUpVisible.confirmacion}
+                    onClose={handleVolver}>
+                        <h2>Exito!</h2>
+                        <p>Se han cargado todas las reservas a nombre de {nombre} {apellido}</p>
+                </ModalBase>
             
     </main>
     );

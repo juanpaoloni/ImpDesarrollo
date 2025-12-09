@@ -6,6 +6,7 @@ import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./ut
 import { useState, useEffect } from "react";
 import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
 import { useRouter } from "next/navigation";
+import { ModalError } from "../components/Modal.jsx"
 
 type FormState = {
   fechaInicio: string;
@@ -21,6 +22,8 @@ export default function SeleccionarHabitaciones() {
     fechaFin: "",
     tipoHabitacion: "",
   });
+
+  const [popUpError, setVisible] = useState(false);
 
   const [filas, setFilas] = useState<Date[]>([]);
   const [columnas, setColumnas] = useState<string[]>([]); // números de habitación
@@ -40,6 +43,11 @@ export default function SeleccionarHabitaciones() {
   }, [seleccion]);
 
   const handleAceptar = async () => {
+    if(Object.keys(seleccion).length === 0){
+      setVisible(true);
+      return;
+    }
+
     try {
       const seleccionReserva = Object.fromEntries(
         Object.entries(seleccion).map(([numHab, fechasSet]) => [
@@ -78,7 +86,13 @@ export default function SeleccionarHabitaciones() {
         setActual.add(fechaStr);
       }
 
-      copia[numHab] = setActual; // asigno la nueva Set (nueva referencia)
+      if (setActual.size === 0) {
+        // eliminamos la key si el Set queda vacío
+        delete copia[numHab];
+      } else {
+        copia[numHab] = setActual;
+      }
+
       return copia;
     });
   };
@@ -227,6 +241,11 @@ export default function SeleccionarHabitaciones() {
           ACEPTAR
         </button>
       </div>
+
+      <ModalError visible={popUpError} onClose={() => setVisible(false)}>
+          <h2>¡Error!</h2> <p>Por favor, haga una selección antes de continuar</p>
+      </ModalError>
+
     </main>
   );
 }
