@@ -15,6 +15,9 @@ type FormState = {
 export default function MostrarEstadoHabitaciones() {
 
   // STATES
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const [err, setError] = useState({
     mensaje:"",
   });
@@ -58,6 +61,8 @@ export default function MostrarEstadoHabitaciones() {
     const fechas = generarFechas(form.fechaInicio, form.fechaFin);
     setFilas(fechas);
 
+    setIsLoading(true);
+
     try {
       const res = await fetch(
         `http://localhost:8080/habitaciones/estado?tipo=${form.tipoHabitacion}&fechaDesde=${form.fechaInicio}&fechaHasta=${form.fechaFin}`
@@ -76,6 +81,9 @@ export default function MostrarEstadoHabitaciones() {
       setEstadoHabitaciones([]);
       setColumnas([]);
     }
+
+    setIsLoading(false);
+
   };
 
 
@@ -126,8 +134,8 @@ export default function MostrarEstadoHabitaciones() {
               </select>
             </div>
 
-            <button className="btn-MEH" type="submit">
-              BUSCAR
+            <button className={`btn-MEH ${isLoading ? "cargando" : ""}`}  type="submit" disabled={isLoading}>
+              {isLoading ? "BUSCANDO..." : "BUSCAR"}
             </button>
           </form>
         </div>
