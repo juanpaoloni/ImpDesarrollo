@@ -4,8 +4,9 @@ import "../globals.css";
 import "./formReservarHabitacion.css"; // archivo CSS renombrado
 import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./utilsReservarHabitaciones";
 import { useState, useEffect } from "react";
-import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
+import { validarRangoFechas, validarFormatoFecha, validarFechaNoPasada } from "../components/Validaciones";
 import { useRouter } from "next/navigation";
+import { ModalError } from "../components/Modal.jsx"
 
 type FormState = {
   fechaInicio: string;
@@ -21,6 +22,16 @@ export default function SeleccionarHabitaciones() {
     fechaFin: "",
     tipoHabitacion: "",
   });
+
+  const [popUpError, setVisible] = useState({
+    noSelecciona:false,
+    noDisponible:false,
+    noHayDisponible:false,
+  });
+
+  const [hayDisponible, setHayDisponibles] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [filas, setFilas] = useState<Date[]>([]);
   const [columnas, setColumnas] = useState<string[]>([]); // números de habitación
@@ -40,6 +51,11 @@ export default function SeleccionarHabitaciones() {
   }, [seleccion]);
 
   const handleAceptar = async () => {
+    if(Object.keys(seleccion).length === 0){
+      setVisible((prev) => ({...prev, noSelecciona:true}));
+      return;
+    }
+
     try {
       const seleccionReserva = Object.fromEntries(
         Object.entries(seleccion).map(([numHab, fechasSet]) => [
@@ -78,18 +94,32 @@ export default function SeleccionarHabitaciones() {
         setActual.add(fechaStr);
       }
 
-      copia[numHab] = setActual; // asigno la nueva Set (nueva referencia)
+      if (setActual.size === 0) {
+        // eliminamos la key si el Set queda vacío
+        delete copia[numHab];
+      } else {
+        copia[numHab] = setActual;
+      }
+
       return copia;
     });
   };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
     setError({ mensaje: "" });
 
+    
+
     if (!validarFormatoFecha(form.fechaInicio)) {
       setError({ mensaje: "Por favor, completar la fecha de inicio." });
+      return;
+    }
+
+    if(!validarFechaNoPasada(form.fechaInicio)){
+      setError({ mensaje: "No puede reservar en fechas anteriores a la actual." });
       return;
     }
 
@@ -102,10 +132,13 @@ export default function SeleccionarHabitaciones() {
       setError({ mensaje: "La fecha inicial es posterior a la final." });
       return;
     }
+    
+    setHayDisponibles(false);
+    setIsLoading(true);
 
     const fechas = generarFechas(form.fechaInicio, form.fechaFin);
     setFilas(fechas);
-
+    
     try {
       const res = await fetch(
         `http://localhost:8080/habitaciones/estado?tipo=${form.tipoHabitacion}&fechaDesde=${form.fechaInicio}&fechaHasta=${form.fechaFin}`
@@ -126,6 +159,9 @@ export default function SeleccionarHabitaciones() {
       setEstadoHabitaciones([]);
       setColumnas([]);
     }
+
+    setIsLoading(false);
+
   };
 
   return (
@@ -160,8 +196,8 @@ export default function SeleccionarHabitaciones() {
               </select>
             </div>
 
-            <button className="btn-RH" type="submit">
-              BUSCAR
+            <button className={`btn-RH ${isLoading ? "cargando" : ""}`}  type="submit" disabled={isLoading}>
+              {isLoading ? "BUSCANDO..." : "BUSCAR"}
             </button>
           </form>
         </div>
@@ -191,10 +227,11 @@ export default function SeleccionarHabitaciones() {
                   return (
                     <tr className="tabla-fila-RH" key={i}>
                       <td>{fecha.toLocaleDateString("es-AR")}</td>
-
                       {estadoHabitaciones.map((hab, j) => {
                         // estadoPorFecha debe contener keys como fechaStr
+
                         const estado = hab.estadoPorFecha?.[fechaStr] ?? "LIBRE";
+
                         const numHab = String(hab.numeroHabitacion);
                         const seleccionada = seleccion[numHab]?.has(fechaStr);
 
@@ -207,6 +244,7 @@ export default function SeleccionarHabitaciones() {
                             className={`td-${estado}-RH ${seleccionada ? "td-seleccionada" : ""} ${!esSeleccionable ? "td-no-seleccionable" : ""}`}
                             onClick={() => {
                               if (esSeleccionable) toggleSeleccion(numHab, fechaStr);
+                              else if (!esSeleccionable) setVisible((prev) => ({...prev, noDisponible:true}));
                             }}
                           >
                             {estado}
@@ -227,6 +265,19 @@ export default function SeleccionarHabitaciones() {
           ACEPTAR
         </button>
       </div>
+
+      <ModalError visible={popUpError.noSelecciona} onClose={() => setVisible((prev) => ({...prev, noSelecciona:false}))}>
+          <h2>¡Error!</h2> <p>Por favor, haga una selección antes de continuar</p>
+      </ModalError>
+
+      <ModalError visible={popUpError.noDisponible} onClose={() => setVisible((prev) => ({...prev, noDisponible:false}))}>
+          <h2>¡Error!</h2> <p>La habitación que desea seleccionar no esta disponible</p>
+      </ModalError>
+
+      {/*<ModalError visible={popUpError.noHayDisponible} onClose={() => setVisible((prev) => ({...prev, noHayDisponible:false}))}>
+          <h2>¡Error!</h2> <p>No existen habitaciones disponibles en el periodo de fechas ingresado.</p>
+      </ModalError>*/}
+
     </main>
   );
 }

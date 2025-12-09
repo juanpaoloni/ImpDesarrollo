@@ -47,12 +47,27 @@ export function validarFechaNoFutura(valor) {
   const [anio, mes, dia] = valor.split("-").map(Number);
   const fecha = new Date(anio, mes - 1, dia);
 
+
+
   const hoy = new Date();
   hoy.setHours(0,0,0,0);
   fecha.setHours(0,0,0,0);
 
   return fecha <= hoy;
 }
+
+export function validarFechaNoPasada(valor) {
+  // convertir MM-DD-YYYY a Date
+  const [anio, mes, dia] = valor.split("-").map(Number);
+  const fecha = new Date(anio, mes - 1, dia);
+
+  const hoy = new Date();
+  hoy.setHours(0,0,0,0);
+  fecha.setHours(0,0,0,0);
+
+  return fecha >= hoy;
+}
+
 
 export function validarRangoFechas(fechaInicio, fechaFin) {
   const [anioI, mesI, diaI] = fechaInicio.split("-").map(Number);

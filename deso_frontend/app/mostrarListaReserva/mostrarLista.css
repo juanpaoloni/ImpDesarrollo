@@ -1,5 +1,6 @@
 .texto-mlr{
     color:black;
+    margin-left:5px;
 }
 
 .contenedor-botones-ML {
@@ -61,12 +62,13 @@
 
 .contenedor-campos-ML input {
     background-color: whitesmoke;
-    margin: 5px;
+    margin: 0px;
+    margin-bottom:20px;
     padding: 10px;
     color: black;
     border-radius: 5px;
     border: 1px solid #aaa;
-    width:97%;
+    width:100%;
 }
 
 .contenedor-campos-ML h3 {
@@ -80,7 +82,7 @@
   border: none; 
   border-top: 2px solid #b69f7f; 
   width: 85%; 
-  margin: 2px auto; 
+  margin: 0px auto; 
 }
 
 .cabecera-seleccion-ML {
@@ -148,4 +150,24 @@
 
 .tabla-fila-ML.tipo {
     text-align:left;
+}
+
+.error-ML {
+  position:absolute;
+  color: red;
+  font-size: 11px;
+  margin-top:-20px;
+  margin-left:4px;
+  white-space: pre-line;
+}
+
+.obligatorio-ML {
+    color: red;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+.input-error {
+    border-color: #ff4d4d !important;  /* borde rojo */
+    box-shadow: 0 0 3px rgba(255, 0, 0, 0.4);
 }
