@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './formFacturar.css';
 
+interface ResponsableIdentificado {
+    tipoResponsable: string;
+    nombreCompleto: string;
+    CUIT: string;
+}
 
 interface Occupant {
     apellido: string;
@@ -17,30 +22,109 @@ interface ResponsablePagoProps {
 
 const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProps) => {
     
-    const [responsableSeleccionado, setResponsableSeleccionado] = React.useState<Occupant | null>(null);
-    const [otroResponsableCuil, setOtroResponsableCuil] = React.useState('');
-    const [error, setError] = React.useState('');
+    const [responsableSeleccionadoInterno, setResponsableSeleccionadoInterno] = useState<Occupant | null>(null);
+    const [otroResponsableCuil, setOtroResponsableCuil] = useState('');
+    const [huespedExternoInfo, setHuespedExternoInfo] = useState<ResponsableIdentificado | null>(null);
+    const [error, setError] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
+    const searchCUIT = useCallback(async (cuitValue: string) => {
+        
+        setIsSearching(true);
+        setHuespedExternoInfo(null);
+        setError('');
+
+        try {
+            const response = await fetch(`http://localhost:8080/responsables/buscarPorCUIT?cuit=${cuitValue}`);
+            
+            if (response.ok && response.status !== 204 && response.status !== 404) {
+                const data: ResponsableIdentificado = await response.json();
+                setHuespedExternoInfo(data); 
+            } else {
+                setHuespedExternoInfo(null);
+            }
+        } catch (err) {
+            console.error('Error fetching CUIT info:', err);
+        } finally {
+            setIsSearching(false);
+        }
+    }, []); 
+
+    useEffect(() => {
+        if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current);
+        }
+
+        if (otroResponsableCuil.length === 13) { 
+            searchTimeoutRef.current = setTimeout(() => {
+                searchCUIT(otroResponsableCuil); 
+            }, 0); 
+        } else {
+            setHuespedExternoInfo(null);
+            setIsSearching(false); 
+        }
+
+        return () => {
+             if (searchTimeoutRef.current) {
+                clearTimeout(searchTimeoutRef.current);
+            }
+        };
+    }, [otroResponsableCuil, searchCUIT]);
 
     const handleSelectOccupant = (huesped: Occupant) => {
-        setResponsableSeleccionado(huesped);
+        setResponsableSeleccionadoInterno(huesped);
         setOtroResponsableCuil(''); 
+        setHuespedExternoInfo(null); 
+        setError('');
+    };
+
+    const handleCUILChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replaceAll(/[^0-9]/g, ''); 
+
+        if (value.length > 11) {
+            value = value.substring(0, 11); 
+        }
+
+        let formattedValue = value;
+        if (value.length > 2) {
+            formattedValue = value.slice(0, 2) + '-' + value.slice(2);
+        }
+        if (value.length > 10) { 
+            formattedValue = formattedValue.slice(0, 11) + '-' + formattedValue.slice(11);
+        }
+
+        setOtroResponsableCuil(formattedValue);
+        setResponsableSeleccionadoInterno(null); 
         setError('');
     };
 
     const handleConfirm = () => {
-        if (!responsableSeleccionado && !otroResponsableCuil.trim()) {
-            setError("Debe seleccionar un ocupante o ingresar un CUIL/CUIT externo.");
-            return;
+        let responsableFinal = null;
+
+        if (responsableSeleccionadoInterno) {
+            responsableFinal = `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre} (Huésped)`;
+        } 
+        else if (huespedExternoInfo) {
+            responsableFinal = `${huespedExternoInfo.nombreCompleto} (${huespedExternoInfo.tipoResponsable})`;
         }
 
-        const responsableFinal = responsableSeleccionado 
-            ? `${responsableSeleccionado.apellido}, ${responsableSeleccionado.nombre}` 
-            : `CUIL/CUIT: ${otroResponsableCuil.trim()}`;
-            
-        alert(`Confirmado: Responsable seleccionado - ${responsableFinal}`);
-        
-        onClose();
+        if (responsableFinal) {
+            alert(`Confirmado. Responsable: ${responsableFinal}`);
+            onClose();
+        } else {
+            setError("Debe seleccionar un huésped de la tabla o ingresar un CUIT registrado.");
+        }
     };
+
+
+    const displayResponsable = 
+        responsableSeleccionadoInterno 
+            ? `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre} (Huésped)`
+            : huespedExternoInfo
+            ? `${huespedExternoInfo.nombreCompleto} (${huespedExternoInfo.tipoResponsable})`
+            : "El responsable de pago aún no ha sido seleccionado.";
 
     return (
         <div className="modal-overlay">
@@ -66,7 +150,7 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
                                         <tr 
                                             key={huesped.numeroDocumento} 
                                             onClick={() => handleSelectOccupant(huesped)}
-                                            className={responsableSeleccionado?.numeroDocumento === huesped.numeroDocumento ? 'selected-row' : ''}
+                                            className={responsableSeleccionadoInterno?.numeroDocumento === huesped.numeroDocumento ? 'selected-row' : ''}
                                         >
                                             <td>{huesped.apellido}</td>
                                             <td>{huesped.nombre}</td>
@@ -87,19 +171,36 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
 
                     <div className="section-right">
                         <h3 className="section-title-pago-right">¿Desea elegir otro responsable de pago?</h3>
-                        <p className="input-label-pago">Ingrese su número de CUIL</p>
+                        <p className="input-label-pago">Ingrese su número de CUIT</p>
                         <input 
                             type="text" 
-                            placeholder="Ingrese Número de CUIL" 
+                            placeholder="XX-XXXXXXXX-X" 
                             value={otroResponsableCuil}
-                            onChange={(e) => {
-                                setOtroResponsableCuil(e.target.value);
-                                setResponsableSeleccionado(null); 
-                                setError('');
-                            }}
+                            onChange={handleCUILChange} 
                             className="cuit-input"
-                            maxLength={14} // <<<< APLICAMOS LA RESTRICCIÓN DE LONGITUD AQUÍ
+                            maxLength={13} 
                         />
+                        
+                        <div style={{ minHeight: '0px', marginTop: '0px' }}>
+                            {/* Mostramos el mensaje de búsqueda si la longitud es 13 */}
+                            {isSearching && otroResponsableCuil.length === 13 && (
+                                <p style={{ color: '#b69f7f', fontStyle: 'italic', margin: 0 }}>Buscando responsable...</p>
+                            )}
+                            {/* Mostramos la información del responsable externo encontrado */}
+                            {!isSearching && huespedExternoInfo && (
+                                <div style={{ border: '1px solid #4CAF50', padding: '10px', backgroundColor: '#e8f5e9', borderRadius: '5px', marginTop: '5px' }}>
+                                    <p style={{ margin: 0, fontWeight: 'bold', color: '#302922' }}>
+                                        {huespedExternoInfo.tipoResponsable === 'JURIDICA' ? 'Razón Social:' : 'Nombre/Apellido:'}
+                                    </p>
+                                    <p style={{ margin: '3px 0 0 0', color: '#302922' }}>{huespedExternoInfo.nombreCompleto}</p>
+                                </div>
+                            )}
+                            {/* Mostramos el mensaje de CUIT no encontrado solo si el campo está completo (13 caracteres) y la búsqueda finalizó sin resultados */}
+                            {!isSearching && otroResponsableCuil.length === 13 && !huespedExternoInfo && (
+                                <p style={{ color: 'red', margin: 0 }}>CUIT no encontrado/registrado.</p>
+                            )}
+                        </div>
+                        
                         <p className="note-pago">
                             Recuerde que solo puede seleccionar un responsable de pago
                         </p>
@@ -115,11 +216,7 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
                     <div className="status-area">
                         <span className="status-label">Responsable Seleccionado</span>
                         <div className="status-box">
-                            {responsableSeleccionado 
-                                ? `${responsableSeleccionado.apellido}, ${responsableSeleccionado.nombre}`
-                                : otroResponsableCuil.trim()
-                                ? `CUIL/CUIT: ${otroResponsableCuil}`
-                                : "El responsable de pago aún no ha sido seleccionado."}
+                            {displayResponsable}
                         </div>
                          {error && <p className="error-message-modal">{error}</p>}
                     </div>
