@@ -182,11 +182,9 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
                         />
                         
                         <div style={{ minHeight: '0px', marginTop: '0px' }}>
-                            {/* Mostramos el mensaje de búsqueda si la longitud es 13 */}
                             {isSearching && otroResponsableCuil.length === 13 && (
                                 <p style={{ color: '#b69f7f', fontStyle: 'italic', margin: 0 }}>Buscando responsable...</p>
                             )}
-                            {/* Mostramos la información del responsable externo encontrado */}
                             {!isSearching && huespedExternoInfo && (
                                 <div style={{ border: '1px solid #4CAF50', padding: '10px', backgroundColor: '#e8f5e9', borderRadius: '5px', marginTop: '5px' }}>
                                     <p style={{ margin: 0, fontWeight: 'bold', color: '#302922' }}>
@@ -195,7 +193,6 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
                                     <p style={{ margin: '3px 0 0 0', color: '#302922' }}>{huespedExternoInfo.nombreCompleto}</p>
                                 </div>
                             )}
-                            {/* Mostramos el mensaje de CUIT no encontrado solo si el campo está completo (13 caracteres) y la búsqueda finalizó sin resultados */}
                             {!isSearching && otroResponsableCuil.length === 13 && !huespedExternoInfo && (
                                 <p style={{ color: 'red', margin: 0 }}>CUIT no encontrado/registrado.</p>
                             )}
