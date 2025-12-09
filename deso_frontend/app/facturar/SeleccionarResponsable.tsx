@@ -14,13 +14,19 @@ interface Occupant {
     numeroDocumento: string;
 }
 
+interface ResponsableFinal {
+    nombre: string;
+    documento: string;
+}
+
 interface ResponsablePagoProps {
     habitacion: string;
     ocupantes: Occupant[];
     onClose: () => void;
+    onConfirmAndAdvance: (responsable: ResponsableFinal) => void;
 }
 
-const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProps) => {
+const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }: ResponsablePagoProps) => {
     
     const [responsableSeleccionadoInterno, setResponsableSeleccionadoInterno] = useState<Occupant | null>(null);
     const [otroResponsableCuil, setOtroResponsableCuil] = useState('');
@@ -101,18 +107,23 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
     };
 
     const handleConfirm = () => {
-        let responsableFinal = null;
+        let responsableFinal: ResponsableFinal | null = null;
 
         if (responsableSeleccionadoInterno) {
-            responsableFinal = `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre} (Huésped)`;
+            responsableFinal = {
+                nombre: `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre}`,
+                documento: `${responsableSeleccionadoInterno.tipoDocumento} ${responsableSeleccionadoInterno.numeroDocumento}`,
+            };
         } 
         else if (huespedExternoInfo) {
-            responsableFinal = `${huespedExternoInfo.nombreCompleto} (${huespedExternoInfo.tipoResponsable})`;
+            responsableFinal = {
+                nombre: huespedExternoInfo.nombreCompleto,
+                documento: huespedExternoInfo.CUIT,
+            };
         }
 
         if (responsableFinal) {
-            alert(`Confirmado. Responsable: ${responsableFinal}`);
-            onClose();
+            onConfirmAndAdvance(responsableFinal);
         } else {
             setError("Debe seleccionar un huésped de la tabla o ingresar un CUIT registrado.");
         }
@@ -120,11 +131,11 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose }: ResponsablePagoProp
 
 
     const displayResponsable = 
-        responsableSeleccionadoInterno 
-            ? `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre} (Huésped)`
-            : huespedExternoInfo
-            ? `${huespedExternoInfo.nombreCompleto} (${huespedExternoInfo.tipoResponsable})`
-            : "El responsable de pago aún no ha sido seleccionado.";
+    responsableSeleccionadoInterno 
+        ? `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre}`
+        : huespedExternoInfo
+        ? `${huespedExternoInfo.nombreCompleto}`
+        : "El responsable de pago aún no ha sido seleccionado.";
 
     return (
         <div className="modal-overlay">

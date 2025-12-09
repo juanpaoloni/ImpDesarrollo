@@ -1,3 +1,5 @@
+/* EN formFacturar.css */
+
 .titulo_fac {
     text-align: center;
     font-family: "Cinzel", serif;
@@ -155,20 +157,21 @@
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: 80%;
-    max-width: 900px; 
+    width: 90%;
+    max-width: 750px; 
     display: flex;
     flex-direction: column;
 }
 
 .modal-title {
     font-family: "Cinzel", serif;
-    font-size: 32px;
+    font-size: 36px; 
     font-weight: 600;
     color: #302922;
     margin-bottom: 20px;
     border-bottom: 2px solid #b69f7f;
     padding-bottom: 10px;
+    text-align: center; 
 }
 
 .modal-body-pago {
@@ -213,7 +216,7 @@
     border: 1px solid #ddd;
     text-align: left;
     font-size: 14px;
-    color: #302922; /* Color oscuro pero legible para datos no seleccionados */
+    color: #302922; 
 }
 
 .occupants-table th {
@@ -233,10 +236,9 @@
 
 .selected-row {
     background-color: #b69f7f !important;
-    color: white !important; /* CAMBIO CLAVE: Letra blanca para la fila seleccionada */
+    color: white !important; 
     font-weight: bold;
 }
-/* Asegura que el texto dentro de la fila seleccionada sea blanco */
 .selected-row td {
     color: white !important;
 }
@@ -433,4 +435,89 @@
 
 .btn-facturar-FAC:hover {
     background-color: #2a241e;
+}
+
+.items-selection-grid {
+    display: flex;
+    justify-content: space-around; 
+    padding: 25px 0; 
+    border-bottom: none; 
+}
+
+.item-column {
+    flex: 1; 
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    padding-top: 15px;
+}
+
+.consumption-column {
+    border-left: 1px solid #c0c0c0; 
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+.consumption-title {
+    font-size: 22px; 
+    font-weight: 700;
+    color: #302922;
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    text-align: center; 
+}
+
+.item-label-group {
+    font-size: 20px; 
+    color: #302922;
+    font-weight: 600; 
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.item-label-group input[type="checkbox"] {
+    width: 25px; 
+    height: 25px;
+    margin-right: 15px;
+    accent-color: #b69f7f; 
+}
+
+
+.items-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0 0 0;
+    border-top: 2px solid #b69f7f; 
+}
+
+.items-footer .status-area {
+    display: none; 
+}
+
+.large-btn-gray {
+    background-color: #999;
+    color: white;
+    padding: 15px 35px; 
+    font-size: 18px; 
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.large-btn-gray:hover {
+    background-color: #666;
+}
+
+.large-btn-confirm {
+    background-color: #b69f7f;
+    color: white;
+    padding: 15px 35px; 
+    font-size: 18px; 
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.large-btn-confirm:hover {
+    background-color: #a08e75;
 }
