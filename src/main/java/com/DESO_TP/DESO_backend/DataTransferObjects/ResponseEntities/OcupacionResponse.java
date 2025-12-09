@@ -8,19 +8,17 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
  *
  * @author jauni
  */
-import com.DESO_TP.DESO_backend.Services.HuespedService;
+import com.DESO_TP.EntidadesDominio.Habitacion;
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.Enumerados.EstadoOcupacion;
-import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
+import com.DESO_TP.EntidadesDominio.Servicio;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
 @AllArgsConstructor
@@ -34,13 +32,13 @@ public class OcupacionResponse {
     private EstadoOcupacion estado;
 
     // Relación con habitación
-    private Integer numeroHabitacion;
+    private Habitacion habitacion;
 
     // IDs de servicios
-    private List<Long> idsServicios;
+    private List<ServicioResponse> servicios;
 
     // IDs de huespedes
-    private List<HuespedId> idsHuespedes;
+//    private List<HuespedId> idsHuespedes;
     
     private List<HuespedResponse> huespedes;
     
@@ -53,18 +51,24 @@ public class OcupacionResponse {
         response.setEstado(ocupacion.getEstado());
 
         if(ocupacion.getHabitacion() != null)
-            response.setNumeroHabitacion(ocupacion.getHabitacion().getNumeroHabitacion());
+            response.setHabitacion(ocupacion.getHabitacion());
 
 
-        response.setIdsHuespedes(
-            ocupacion.getHuespedes() != null ?
-            ocupacion.getHuespedes()
-                .stream()
-                .map(h -> new HuespedId(h.getTipoDocumento(), h.getNumeroDocumento()))
-                .toList()
-            :
-            List.of()
-        );
+//        response.setIdsHuespedes(
+//            ocupacion.getHuespedes() != null ?
+//            ocupacion.getHuespedes()
+//                .stream()
+//                .map(h -> new HuespedId(h.getTipoDocumento(), h.getNumeroDocumento()))
+//                .toList()
+//            :
+//            List.of()
+//        );
+
+        if(ocupacion.getServicios() != null){
+            List<Servicio> listaServicios = ocupacion.getServicios();
+            List<ServicioResponse> serviciosDTO = listaServicios.stream().map(ServicioResponse::toResponse).toList();
+            response.setServicios(serviciosDTO);
+        }
         
         if (ocupacion.getHuespedes() != null) {
         List<Huesped> listaHuespedes = ocupacion.getHuespedes();

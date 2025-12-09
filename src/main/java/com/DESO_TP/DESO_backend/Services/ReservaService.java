@@ -7,13 +7,13 @@ package com.DESO_TP.DESO_backend.Services;
 import com.DESO_TP.DESO_backend.DataAccessObject.HabitacionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.ReservaDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.ReservaResponse;
+import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Habitacion;
 import com.DESO_TP.EntidadesDominio.Reserva;
 import com.DESO_TP.Enumerados.EstadoReserva;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 /**
@@ -44,6 +44,8 @@ public class ReservaService {
             r.setEstado(EstadoReserva.ACTIVA);
             LocalDate fechaHoy = LocalDate.now();
             r.setFechaReserva(fechaHoy);
+            r.setNombre(TextoUtils.capitalizarTexto(r.getNombre()));
+            r.setApellido(TextoUtils.capitalizarTexto(r.getApellido()));
             Habitacion hab = habitacionDAO.findById(r.getHabitacion().getNumeroHabitacion())
                     .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
 

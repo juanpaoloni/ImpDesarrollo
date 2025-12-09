@@ -50,4 +50,8 @@ public class Ocupacion {
     
     @ManyToMany(mappedBy = "ocupaciones")
     private List<Huesped> huespedes;
+    
+    @OneToMany(mappedBy = "ocupacion")
+    private List<Servicio> servicios;
+    
 }

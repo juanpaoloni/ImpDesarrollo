@@ -120,8 +120,7 @@ const OccupationsTable = ({
     );
 };
 
-// COMPONENTE: Modal para la Selección de Items a Facturar (Con Estilos Actualizados)
-const SelectItemsModal = ({ responsable, onClose }: { responsable: any, onClose: () => void }) => {
+const SelectItemsModal = ({ responsable, onClose, costos }: { responsable: any, onClose: () => void, costos: any }) => {
     const nombre = responsable?.nombre || 'Huésped';
     
     return (
@@ -150,13 +149,13 @@ const SelectItemsModal = ({ responsable, onClose }: { responsable: any, onClose:
                     <div className="item-column consumption-column" style={{ borderTop: '2px solid #b69f7f', paddingTop: '15px' }}>
                         <h4 className="consumption-title">Consumo</h4>
                         <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Bar ($700)
+                            <input type="checkbox" defaultChecked /> Bar ({costos.costoBar}$)
                         </label>
                         <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Sauna ($500)
+                            <input type="checkbox" defaultChecked /> Sauna ({costos.costoSauna}$)
                         </label>
                         <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Lavado y Planchado ($300)
+                            <input type="checkbox" defaultChecked /> Lavado y Planchado ({costos.costoLavado}$)
                         </label>
                     </div>
                 </div>
@@ -278,9 +277,26 @@ export default function Facturar() {
         }
 
     }
+
+    const [costos, setCostos] = useState({
+        costoBar:0,
+        costoSauna:0,
+        costoLavado:0,
+    })
     
     const handleFacturarClick = (occupation: any) => {
         setSelectedOccupation(occupation);
+
+        const costoB = occupation.servicios.find(s => s.tipo === "BAR")?.costoTotal ?? 0;
+        const costoS = occupation.servicios.find(s => s.tipo === "SAUNA")?.costoTotal ?? 0;
+        const costoL = occupation.servicios.find(s => s.tipo === "LAVADO_Y_PLANCHADO")?.costoTotal ?? 0;
+
+        setCostos({
+            costoBar: costoB,
+            costoSauna: costoS,
+            costoLavado: costoL,
+        })
+
         setFacturacionStage('SELECCION_RESPONSABLE'); 
         setShowModal(true);
     };
@@ -380,6 +396,7 @@ export default function Facturar() {
                 <SelectItemsModal 
                     responsable={responsableFacturacion}
                     onClose={handleGoBackToResponsible} 
+                    costos={costos}
                 />
             )}
         </main>
