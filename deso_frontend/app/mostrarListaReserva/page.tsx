@@ -40,7 +40,6 @@ export default function MostrarListaReserva() {
         cargarDatos();
     }, [searchParams]);
 
-    // --------- ENVIAR RESERVAS COMPLETAS ----------
     const enviarReservas = async () => {
         if (!apellido || !nombre || !telefono) {
             alert("Complete todos los campos obligatorios");
@@ -78,10 +77,28 @@ export default function MostrarListaReserva() {
         }
     };
 
+    const parseTipo = (tipo) => {
+        if(tipo === "INDIVIDUAL_ESTANDAR")
+            return "Individual Estándar";
+        else if(tipo === "DOBLE_ESTANDAR")
+            return "Doble Estándar";
+        else if(tipo === "DOBLE_SUPERIOR")
+            return "Doble Superior";
+        else if(tipo === "SUITE_DOBLE")
+            return "Suite Doble";
+        else if(tipo === "SUPERIOR_FAMILY_PLAN")
+            return "Superior Family Plan";
+        else return "?";
+    }
 
-    return (
-        <div className="w-full flex flex-col items-center p-6">
-            <h2 className="text-2xl font-bold mb-4">Listado de Reservas Seleccionadas</h2>
+
+return (
+    <main className="fondo">
+        <h1 className="titulo">Reservar Habitación</h1>
+        <div className="linea-corta"></div>
+        <h3 className="subtitulo">Verifique que las habitaciones seleccionadas sean las deseadas e ingrese los datos solicitados</h3>
+        
+        <div className="contenedor-principal-ML">
 
             {loading && <p>Cargando...</p>}
 
@@ -89,37 +106,11 @@ export default function MostrarListaReserva() {
                 <p className="text-gray-600 mt-4">No se encontraron resultados.</p>
             )}
 
+
             {reservas.length > 0 && (
-                <div className="w-full max-w-3xl border rounded shadow overflow-y-auto max-h-[400px] mt-4">
-                    <table className="w-full border-collapse">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="texto-mlr">Nro Habitación</th>
-                                <th className="texto-mlr">Tipo de Habitación</th>
-                                <th className="texto-mlr">Ingreso</th>
-                                <th className="texto-mlr">Egreso</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {reservas.map((fila, index) => (
-                                <tr key={index} className="hover:bg-gray-100">
-                                    <td className="texto-mlr">{fila[0]}</td>
-                                    <td className="texto-mlr">{fila[1]}</td>
-                                    <td className="texto-mlr">{fila[2]}</td>
-                                    <td className="texto-mlr">{fila[3]}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {/* ----------- DATOS DEL HUESPED ------------ */}
-            {reservas.length > 0 && (
-                <div className="mt-8 w-full max-w-xl border p-4 rounded shadow">
-                    <h3 className="text-xl texto-mlr mb-4">Reserva a Nombre de:</h3>
-
+                <div className="contenedor-campos-ML">
+                    <h3>RESERVA A NOMBRE DE...</h3>
+                    <div className="linea-corta-ML"></div>
                     <div className="flex flex-col gap-4">
                         <div>
                             <label className="texto-mlr">Apellido (*)</label>
@@ -153,29 +144,60 @@ export default function MostrarListaReserva() {
                     </div>
                 </div>
             )}
-
-            {/* ----------- BOTONES ------------ */}
+            
             {reservas.length > 0 && (
-                <div className="flex gap-6 mt-6">
-                    <button
-                        className="px-6 py-2 border border-red-500 text-red-500 rounded hover:bg-red-100"
-                        onClick={() => {
-                            if (confirm("¿Seguro que desea cancelar la reserva?")) {
-                                window.location.href = "/";
-                            }
-                        }}
-                    >
-                        Rechazar
-                    </button>
+                <div className="contenedor-tabla-ML">
+                    <table className="tabla">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="tabla-header-ML izquierdo">Número</th>
+                                <th className="tabla-header-ML">Tipo de Habitación</th>
+                                <th className="tabla-header-ML">Ingreso</th>
+                                <th className="tabla-header-ML derecho">Egreso</th>
+                            </tr>
+                        </thead>
 
-                    <button
-                        className="px-6 py-2 border border-green-600 text-green-600 rounded hover:bg-green-100"
-                        onClick={enviarReservas}
-                    >
-                        Aceptar
-                    </button>
+                        <tbody>
+                            {reservas.map((fila, index) => (
+                                <tr key={index}>
+                                    <td className="tabla-fila-ML">{fila[0]}</td>
+                                    <td className="tabla-fila-ML tipo">{parseTipo(fila[1])}</td>
+                                    <td className="tabla-fila-ML">{fila[2]}</td>
+                                    <td className="tabla-fila-ML">{fila[3]}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
-        </div>
+
+
+            </div>
+
+
+           
+                {reservas.length > 0 && (
+                     <div className="contenedor-botones-ML">
+                        <button
+                            className="boton-ML rechazar"
+                            onClick={() => {
+                                if (confirm("¿Seguro que desea cancelar la reserva?")) {
+                                    window.location.href = "/";
+                                }
+                            }}
+                        >
+                            RECHAZAR
+                        </button>
+
+                        <button
+                            className="boton-ML aceptar"
+                            onClick={enviarReservas}
+                        >
+                            ACEPTAR
+                        </button>
+                    </div>
+                )}
+            
+    </main>
     );
 }
