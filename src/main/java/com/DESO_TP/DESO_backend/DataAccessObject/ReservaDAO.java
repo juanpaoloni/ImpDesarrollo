@@ -16,4 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservaDAO extends CrudRepository<Reserva, Long>{
     List<Reserva> findByHabitacion_NumeroHabitacion(Integer numeroHabitacion);
+    
+    List<Reserva> findByApellidoAndNombre(String apellido, String nombre);
 }
+

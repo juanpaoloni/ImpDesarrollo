@@ -55,4 +55,8 @@ public class ReservaService {
         }
     }
     
+    public List<ReservaResponse> obtenerReservasCoincidentes(String apellido, String nombre){
+        List<Reserva> reservas = reservaRepository.findByApellidoAndNombre(apellido, nombre);
+        return reservas.stream().map(ReservaResponse::toResponse).toList();
+    }
 }

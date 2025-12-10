@@ -1,0 +1,263 @@
+"use client";
+
+import "../globals.css";
+import "../gestionarHuesped/formDarDeBaja.css";
+import { ModalBase, ModalAdvertencia, ModalError } from "../components/Modal.jsx";
+import { useState } from "react";
+import { useRouter } from "next/navigation"
+
+
+type Huesped = {
+  nombre: string;
+  apellido: string;
+  tipoDocumento: string;
+  numeroDocumento: string;
+};
+
+export default function cancelarReserva() {
+
+  const router = useRouter();
+
+  const [form, setForm] = useState({
+    nombre: "",
+    apellido: "",
+    tipoDocumento: "DNI",
+    numeroDocumento: "",
+  });
+
+  const[mostrarPopUp, setMostrarPopUp] = useState({
+    advertencia:false,
+    confirmacion:false,
+    fallo:false,
+  });
+  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
+  const [huespedSeleccionado, setHuespedSeleccionado] = useState<{
+    tipoDocumento: string;
+    numeroDocumento: string;
+    nombre: string;
+    apellido: string;
+  } | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBuscar = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setHuespedSeleccionado(null);
+
+    setTimeout(async () => {
+      const params = new URLSearchParams();
+      if (form.nombre) params.append("nombre", form.nombre);
+      if (form.apellido) params.append("apellido", form.apellido);
+      if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
+      if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
+
+      try {
+        const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
+        const data = await res.json();
+        setHuespedes(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error al buscar huéspedes:", err);
+        setHuespedes([]);
+      }
+
+      // limpiar las filas eliminadas
+    }, 300); // duración de la animación
+  };
+
+
+  const handleDarDeBaja = async () => {
+    try{
+
+      setMostrarPopUp((prev) => ({...prev, advertencia:true}));
+
+    }catch(error){
+      alert(error);
+    }
+  }
+
+  const handleAceptar = async () => {
+    setMostrarPopUp(prev => ({ ...prev, advertencia: false }));
+    
+    
+    try{
+      if (!huespedSeleccionado?.tipoDocumento || !huespedSeleccionado?.numeroDocumento) {
+        console.error("No hay huésped seleccionado");
+        throw new Error("No hay un huesped seleccionado.");
+      }
+
+      const tieneOcupacionesResponse = await fetch(`http://localhost:8080/huespedes/tieneOcupacion?tipoDocumento=${huespedSeleccionado.tipoDocumento}&nroDocumento=${huespedSeleccionado.numeroDocumento}`)
+      const tieneOcupaciones = await tieneOcupacionesResponse.json();
+      if(tieneOcupaciones){
+        setMostrarPopUp(prev => ({ ...prev, fallo: true }));
+        return;
+      }
+
+      const result = await fetch(`http://localhost:8080/huespedes/darDeBaja/${huespedSeleccionado.tipoDocumento}/${huespedSeleccionado.numeroDocumento}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+      if(!result.ok) throw new Error("No se pudo dar de baja al huesped.");
+
+      
+
+      setHuespedes([]);
+
+    }catch(err){
+      alert("Hubo un error.");
+    }
+
+    // Cuando este popup se cierra se seta en null la seleccion
+    setMostrarPopUp((prev) => ({...prev, confirmacion:true}));
+  }
+
+  const handleCerrarPopUp = async () => {
+    setMostrarPopUp(prev => ({ ...prev, confirmacion: false }));
+    setHuespedSeleccionado(null);
+  }
+
+  const handleModificar = () => {
+      router.push(`/modificarHuesped?tipoDocumento=${huespedSeleccionado?.tipoDocumento}&nroDocumento=${huespedSeleccionado?.numeroDocumento}`)
+  }
+
+  // A partir de aca empieza el return
+  //
+  //
+  return (
+    <main className="fondo">
+      <h1 className="titulo">Cancelar Reserva</h1>
+      <div className="linea-corta"></div>
+      <h3 className="subtitulo">Elija la/s reserva/s a cancelar</h3>
+
+
+      <div className="contenedor-principal">
+        <div>
+          <form onSubmit={handleBuscar}>
+            <div className="contenedor-campos">
+              <input
+                name="nombre"
+                value={form.nombre}
+                onChange={handleChange}
+                placeholder="Nombre"
+              />
+
+              <input
+                name="apellido"
+                value={form.apellido}
+                onChange={handleChange}
+                placeholder="Apellido"
+              />
+
+              <button type="submit" className="btn">
+                BUSCAR
+              </button>
+            </div>
+          </form>
+        </div>
+
+
+        <div className="tabla-contenedor">
+
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th className="tabla-header-izquierdo">Apellido</th>
+                <th className="tabla-header">Nombre</th>
+                <th className="tabla-header">Número Habitación</th>
+                <th className="tabla-header">Tipo Habitación</th>
+                <th className="tabla-header">Fecha Inicial</th>
+                <th className="tabla-header-derecho">Fecha Final</th>
+              </tr>
+            </thead>
+            <tbody>
+              {huespedes.length > 0 ? (
+                huespedes.map((h) => (
+                  <tr
+                    key={`${h.tipoDocumento}-${h.numeroDocumento}`}
+                    data-numero={h.numeroDocumento}
+                    data-tipo={h.tipoDocumento}
+                    onClick={() =>
+                      setHuespedSeleccionado({
+                        tipoDocumento: h.tipoDocumento,
+                        numeroDocumento: h.numeroDocumento,
+                        nombre: h.nombre,
+                        apellido: h.apellido,
+                      })
+                    }
+                    className={`
+                      ${huespedSeleccionado?.numeroDocumento === h.numeroDocumento &&
+                      huespedSeleccionado?.tipoDocumento === h.tipoDocumento
+                        ? "tabla-seleccionado"
+                        : "tabla-fila"}
+                    `}
+                  >
+
+                    <td className="tabla-columna">{h.nombre}</td>
+                    <td className="tabla-columna">{h.apellido}</td>
+                    <td className="tabla-columna">{h.tipoDocumento}</td>
+                    <td className="tabla-columna">{h.numeroDocumento}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="tabla-noEncontrado">
+                    No se encontraron huéspedes
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+              
+        </div>
+
+        {/*ACA EMPIEZAN LOS POPUPS*/}
+        <ModalBase
+          visible={mostrarPopUp.confirmacion}
+          onClose={
+            handleCerrarPopUp
+          }
+        >
+          
+          <h2>¡Exito!</h2>
+          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} ha sido dado de baja exitosamente.</p>
+        </ModalBase>
+        
+        <ModalError
+          visible={mostrarPopUp.fallo}
+          onClose={() => setMostrarPopUp(prev => ({ ...prev, fallo: false }))}
+          
+        >
+          <h2>¡Error!</h2>
+          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
+        </ModalError>
+
+
+        <ModalAdvertencia
+          visible={mostrarPopUp.advertencia}
+          onClose={() =>
+            setMostrarPopUp(prev => ({ ...prev, advertencia: false }))
+          }
+          onAceptar={handleAceptar}
+        >
+          <h2>¡Advertencia!</h2>
+          <p>¿Esta seguro que quiere eliminar al huesped<br/> {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido}?</p>
+        </ModalAdvertencia>
+
+
+      </div>
+
+      <div className="contenedor-boton">
+        <button className="btn" onClick={handleDarDeBaja} disabled={!huespedSeleccionado}>
+          DAR DE BAJA
+        </button>
+        <button className="btn" onClick={handleModificar} disabled={!huespedSeleccionado}>
+          MODIFICAR
+        </button>
+      </div>
+    </main>
+  );
+}

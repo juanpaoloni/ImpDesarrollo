@@ -46,7 +46,15 @@ public class ReservaController {
             return ResponseEntity.status(500).body("Error al crear reservas: " + e.getMessage());
         }
     }
-
+    
+    @GetMapping("/obtenerReservasPorPersona")
+    public List<ReservaResponse> obtenerReservasPorPersona(
+        @RequestParam (required = true) String apellido,
+        @RequestParam (required = true) String nombre){
+        
+        
+        return null;
+    }
 }
 
     
