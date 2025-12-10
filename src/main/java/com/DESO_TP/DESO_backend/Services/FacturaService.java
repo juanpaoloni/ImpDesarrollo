@@ -48,7 +48,7 @@ public class FacturaService {
         ResponsablePago responsableProxy;
         if(req.getTipoResponsable().equals("FISICA")) {
             responsableProxy = pfRepository.findById(req.getIdResponsable())
-                    .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
         } else {
             responsableProxy = pjRepository.findById(req.getIdResponsable())
                 .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));

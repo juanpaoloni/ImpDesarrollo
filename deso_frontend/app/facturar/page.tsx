@@ -7,7 +7,8 @@ import ResponsablePago from '../components/SeleccionarResponsable';
 import { parseFechaSinOffsetStr } from "../components/utilsMostrarHabitaciones.jsx";
 import { SeleccionarItemsFacturar } from "../components/SeleccionarItemsFacturar";
 import FacturaPreviewModal from "../components/FacturaPreviewModal";
-
+import { useRouter } from "next/navigation";
+import { ModalBase } from "../components/Modal.jsx"
 
 const TablaOcupaciones = ({
     data,
@@ -124,6 +125,8 @@ const TablaOcupaciones = ({
 
 
 export default function Facturar() {
+
+    const router = useRouter();
     const [form, setForm] = useState({
         numeroDeHabitación: "",
         horaSalida:"",
@@ -217,7 +220,7 @@ export default function Facturar() {
             const data = await response.json(); 
         
             if (data.length === 0) {
-                newErrors.numeroDeHabitación = "No se encontraron ocupaciones para la habitación correspondiente.";
+                newErrors.numeroDeHabitación = "No se encontraron ocupaciones.";
                 setErrors(newErrors);
                 setDatosOcupantes([]);
                 return;
@@ -228,7 +231,7 @@ export default function Facturar() {
         } 
         catch(error){
             console.error(error);
-            const errorMessageText = "Error al conectar con el servicio o habitación no encontrada.";
+            const errorMessageText = "Habitación no encontrada.";
             newErrors.numeroDeHabitación = errorMessageText;
             setErrors(newErrors);
             setDatosOcupantes([]); 
@@ -361,6 +364,9 @@ export default function Facturar() {
 
         return total;
     };
+
+    const [popupexito, setPopupexito] = useState(false);
+    const [idFac, setIdFactura] = useState("");
     
     const handleConfirmarFacturacion = async () => {
         let idResponsable;
@@ -420,12 +426,21 @@ export default function Facturar() {
 
             const idFactura = await facturaResponse.text(); // devuelve el numeroFactura
 
-            alert("Factura generada con éxito. ID: " + idFactura);
+            setIdFactura(idFactura);
+
+            setPopupexito(true);
         } catch (error) {
             console.error("Error al crear la factura:", error);
         }
     };
 
+    
+
+    const handleFinalizar = () => {
+        setIdFactura("");
+        setPopupexito(false);
+        router.push("/");
+    }
 
     return (
         <main className="fondo">
@@ -519,6 +534,12 @@ export default function Facturar() {
                 />
                 )}
 
+            {idFac && 
+            <ModalBase visible={popupexito} onClose={handleFinalizar}>
+                <h2>¡Exito!</h2>
+                <p>La factura N°{idFac} ha sido cargada exitosamente</p>
+            </ModalBase>
+            }
 
         </main>
     );

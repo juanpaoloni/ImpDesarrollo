@@ -54,7 +54,11 @@
 }
 
 .factura-item {
-    margin: 4px 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    align-items: center;
+    background: none; /* sacá esto si el rojo era solo para debug */
 }
 
 .factura-total-box {
@@ -101,4 +105,12 @@
 
 .factura-btn-confirm:hover {
     background: #45b44a;
+}
+
+.precio-fac {
+    text-align: right;
+}
+
+.nombre-item {
+    text-align: left;
 }

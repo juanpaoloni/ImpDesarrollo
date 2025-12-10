@@ -35,7 +35,7 @@ public class Factura {
     @Column
     private Float montoTotal;
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "idResponsable")
     private ResponsablePago responsable;
     
