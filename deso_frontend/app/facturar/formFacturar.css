@@ -123,7 +123,7 @@
   align-items: flex-start; 
   gap: 40px; 
   max-width: 1100px; 
-  margin: 0 auto; 
+  margin: 50 auto; 
   border-radius: 10px; 
 }
 
@@ -394,15 +394,17 @@
 }
 
 .error-message-modal {
+    position:absolute;
+    margin-top:70px;
     color: red;
     font-size: 12px;
-    margin-left: 10px;
+    margin-left: 120px;
 }
 
 .ocupaciones-wrapper-FAC {
     flex-grow: 1;
     width:fit-content;
-    height:500px;
+    height:430px;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     background-color: #e3d3b9;
@@ -585,4 +587,11 @@
 
 .large-btn-confirm:hover {
     background-color: #a08e75;
+}
+
+.linea-corta-FAC {
+  border: none; 
+  border-top: 2px solid #b69f7f; 
+  width: 85%; 
+  margin: 0px auto; 
 }

@@ -175,6 +175,14 @@ public class HuespedService {
 
         return HuespedResponse.toResponse(h); // o como lo construyas
     }
+
+    public String obtenerPosicionIVA(TipoDocumento tipo, String numero) {
+        HuespedId id = new HuespedId(tipo, numero);
+        Huesped h = huespedRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
+        
+        return h.getPosicionIVA().toString();
+    }
     
     
 

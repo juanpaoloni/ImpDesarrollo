@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import '../facturar/formFacturar.css';
 
 interface ResponsableIdentificado {
-    tipoResponsable: string;
+    idResponsable: string;
     nombreCompleto: string;
     CUIT: string;
 }
@@ -15,6 +15,7 @@ interface Occupant {
 }
 
 interface ResponsableFinal {
+    idResponsable: string;
     nombre: string;
     documento: string;
 }
@@ -111,14 +112,16 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
 
         if (responsableSeleccionadoInterno) {
             responsableFinal = {
+                idResponsable:"",
                 nombre: `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre}`,
                 documento: `${responsableSeleccionadoInterno.tipoDocumento} ${responsableSeleccionadoInterno.numeroDocumento}`,
             };
         } 
         else if (huespedExternoInfo) {
             responsableFinal = {
+                idResponsable:huespedExternoInfo.idResponsable,
                 nombre: huespedExternoInfo.nombreCompleto,
-                documento: huespedExternoInfo.CUIT,
+                documento: `CUIT ${huespedExternoInfo.CUIT}`,
             };
         }
 

@@ -65,5 +65,13 @@ public class HuespedController {
         return ResponseEntity.ok(respuesta);
     }
     
+    @GetMapping("/obtenerPosicionIVA")
+    public ResponseEntity<String> obtenerPosicionIVA(
+    @RequestParam(required = true) String tipoDocumento,
+    @RequestParam(required = true)String nroDocumento){
+        String respuesta = service.obtenerPosicionIVA(TipoDocumento.valueOf(tipoDocumento), nroDocumento);
+        return ResponseEntity.ok(respuesta);
+    }
+    
     
 }

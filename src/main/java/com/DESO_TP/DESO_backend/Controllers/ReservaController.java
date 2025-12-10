@@ -36,10 +36,6 @@ public class ReservaController {
             @RequestParam(required = true) Integer numeroHabitacion){
         return service.obtenerReservaPorNumeroHabitacion(numeroHabitacion);
     }
-
-    // ------------------------------------------------------------
-    //  NUEVO ENDPOINT PARA CREAR MÚLTIPLES RESERVAS
-    // ------------------------------------------------------------
     @PostMapping("/crearMultiples")
     public ResponseEntity<?> crearMultiplesReservas(@RequestBody List<Reserva> reservas) {
         try {

@@ -6,9 +6,10 @@ interface Props {
     responsable: any;
     onClose: () => void;
     costos: any;
+    onConfirm: (itemsSeleccionados: any) => void; // ← NUEVO
 }
 
-export const SeleccionarItemsFacturar = ({ responsable, onClose, costos }: Props) => {
+export const SeleccionarItemsFacturar = ({ responsable, onClose, costos, onConfirm }: Props) => {
     const nombre = responsable?.nombre || 'Huésped';
 
     const [items, setItems] = useState({
@@ -28,6 +29,21 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos }: Props
         (items.bar ? costos.costoBar : 0) +
         (items.sauna ? costos.costoSauna : 0) +
         (items.lavado ? costos.costoLavado : 0);
+
+    const handleAceptar = () => {
+        if(
+            (!items.estadia && (costos.costoEstadia != 0)) ||
+            (!items.bar && (costos.costoBar!= 0)) ||
+            (!items.sauna && (costos.costoSauna != 0)) ||
+            (!items.lavado && (costos.costoLavado != 0)) ||
+            (!items.montoTotal)
+        )
+        alert("te falla querido");
+        else{
+            onConfirm(items);
+            onClose();
+        }
+    }
 
     return (
         <div className="modal-overlay">
@@ -52,7 +68,7 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos }: Props
                                    checked={items.montoTotal}
                                    onChange={() => toggleItem("montoTotal")}
                             /> 
-                            Monto Total (${total})
+                            Monto Total (Previo al IVA) (${total})
                         </label>
 
                         <label className="item-label-group">
@@ -97,7 +113,7 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos }: Props
                     
                     <div style={{ flexGrow: 1 }}></div>
 
-                    <button onClick={() => alert('Facturando items...')} className="btn-modal-pago resized">
+                    <button onClick={handleAceptar} className="btn-modal-pago resized">
                         ACEPTAR
                     </button>
                 </div>

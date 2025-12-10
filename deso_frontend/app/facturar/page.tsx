@@ -5,7 +5,8 @@ import "../globals.css";
 import { useState } from "react";
 import ResponsablePago from '../components/SeleccionarResponsable';
 import { parseFechaSinOffsetStr } from "../components/utilsMostrarHabitaciones.jsx";
-import { SeleccionarItemsFacturar } from "../components/SeleccionarItemsFacturar"
+import { SeleccionarItemsFacturar } from "../components/SeleccionarItemsFacturar";
+import FacturaPreviewModal from "../components/FacturaPreviewModal";
 
 
 const TablaOcupaciones = ({
@@ -162,6 +163,16 @@ export default function Facturar() {
         };
         let isValid = true;
 
+
+        if(form.horaSalida.length < 5){
+            isValid=false;
+            newErrors.horaSalida = "Hora Incompleta."
+        }   
+        else if(Number(form.horaSalida.substring(0,2)) > 23 || Number(form.horaSalida.substring(2,4)) > 59){
+            isValid=false;
+            newErrors.horaSalida = "Hora Invalida."
+        }
+
         if (!roomNumberValue) {
             newErrors.numeroDeHabitación = "El número de habitación es obligatorio.";
             isValid = false;
@@ -188,6 +199,8 @@ export default function Facturar() {
             setDatosOcupantes(null); 
             return;
         }
+
+        
 
 
         setErrors({ numeroDeHabitación: "", horaSalida:"", });
@@ -232,7 +245,6 @@ export default function Facturar() {
     
     const handleFacturarClick = (occupation: any) => {
         setOcupacionSeleccionada(occupation);
-
         const costoB = occupation.servicios.find(s => s.tipo === "BAR")?.costoTotal ?? 0;
         const costoS = occupation.servicios.find(s => s.tipo === "SAUNA")?.costoTotal ?? 0;
         const costoL = occupation.servicios.find(s => s.tipo === "LAVADO_Y_PLANCHADO")?.costoTotal ?? 0;
@@ -292,14 +304,134 @@ export default function Facturar() {
         setEtapaFacturacion('SELECCION_RESPONSABLE');
     }
 
+    const handleHoraChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replaceAll(/[^0-9]/g, ''); 
+
+        if (value.length > 4) {
+            value = value.substring(0, 4); 
+        }
+
+        let formattedValue = value;
+        if (value.length > 2) {
+            formattedValue = value.slice(0, 2) + ':' + value.slice(2);
+        }
+
+        setForm((prev) => ({...prev, horaSalida:formattedValue}));
+
+    };
+
+    const [items, setItems] = useState({
+        montoTotal: false,
+        estadia: false,
+        bar: false,
+        sauna: false,
+        lavado: false,
+    });
+    const [mostrarFacturaPreview, setMostrarFacturaPreview] = useState(false);
+
+    const [posicionIVA, setPosicionIVA] = useState("");
+
+    const handleConfirmarItems = async (items) => {
+        setShowModal(false);
+        setItems(items);
+
+        const partes = responsableFacturacion?.documento.split(" ");
+        let response;
+        if(!(partes[0] === "CUIT")){
+            response = await fetch(`http://localhost:8080/huespedes/obtenerPosicionIVA?tipoDocumento=${partes[0]}&nroDocumento=${partes[1]}`);
+            const data = await response?.text();   
+            setPosicionIVA(String(data));
+        }
+        else {
+            setPosicionIVA("RESPONSABLE_INSCRIPTO")
+        }
+
+        setMostrarFacturaPreview(true);
+    }
+
+    const calcularTotal = () => {
+        let total = 0;
+
+        if (items.estadia) total += costos.costoEstadia;
+        if (items.bar) total += costos.costoBar;
+        if (items.sauna) total += costos.costoSauna;
+        if (items.lavado) total += costos.costoLavado;
+
+        total *=1.21;
+
+        return total;
+    };
     
+    const handleConfirmarFacturacion = async () => {
+        let idResponsable;
+        let tipoResponsable;
+
+        if (!responsableFacturacion?.idResponsable) {
+            tipoResponsable = "FISICA";
+            const partesDoc = responsableFacturacion?.documento.split(" ");
+
+            try {
+                const response = await fetch(
+                    `http://localhost:8080/responsables/cargarHuesped?tipoDocumento=${partesDoc[0]}&nroDocumento=${partesDoc[1]}`,
+                    { method: "POST" }
+                );
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Error al cargar el huésped como responsable");
+                }
+
+                // suponiendo que tu backend devuelve el id como texto
+                idResponsable = await response.text();
+            } catch (error) {
+                console.error("Error:", error);
+                return;
+            }
+        } else { // persona jurídica
+            tipoResponsable = "JURIDICA";
+            idResponsable = responsableFacturacion?.idResponsable;
+        }
+
+        const ocupacion = ocupacionSeleccionada?.idOcupacion;
+        const costoTotal = calcularTotal();
+
+        // ahora hacemos el PUT al endpoint de facturas
+        try {
+            const facturaResponse = await fetch(
+                "http://localhost:8080/facturas/cargarFactura",
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        monto: costoTotal,
+                        idResponsable: Number(idResponsable),
+                        idOcupacion: ocupacion,
+                        tipoResponsable: tipoResponsable
+                    })
+                }
+            );
+
+            if (!facturaResponse.ok) {
+                const errorText = await facturaResponse.text();
+                throw new Error(errorText || "Error al cargar la factura");
+            }
+
+            const idFactura = await facturaResponse.text(); // devuelve el numeroFactura
+
+            alert("Factura generada con éxito. ID: " + idFactura);
+        } catch (error) {
+            console.error("Error al crear la factura:", error);
+        }
+    };
+
+
     return (
         <main className="fondo">
             <h1 className="titulo">FACTURACIÓN</h1>
-            <div className="linea-corta"></div> 
-
-            <h1 className="titulo_fac">Datos del Check Out</h1>
-            <h3 className="subtitulo_fac">Ingrese el número de la habitación a facturar</h3>
+            <div className="linea-corta"></div>       
+            <h3 className="subtitulo">Ingrese el número de la habitación y seleccione la ocupación a facturar</h3>
 
             <div className="layout-horizontal">
                 
@@ -307,6 +439,7 @@ export default function Facturar() {
                     <form onSubmit={handleRequest}>
                         <div className="contenedor-campos-FAC">
                             <h2 className="texto-campos">Datos de la ocupacion</h2>
+                            <div className="linea-corta-FAC"></div>
                             <div> 
                                 <h3 className="arriba_bot">
                                     Número de Habitación 
@@ -331,15 +464,14 @@ export default function Facturar() {
                                     <span className="obligatorio"> (*)</span>
                                 </h3>
                                 <input 
-                                    name="numeroDeHabitación" 
+                                    name="horaSalida" 
                                     value={form.horaSalida} 
-                                    onChange={handleChange} 
-                                    placeholder="Numero de Habitación"
+                                    onChange={handleHoraChange} 
+                                    placeholder="Hora de Salida"
                                 
                                     className={errors.horaSalida ? 'input-error' : ''} 
                                 />
                                 {errors.horaSalida && (
-                                
                                     <p className="mensaje-error-campo">{errors.horaSalida}</p>
                                 )}
                               </div>
@@ -372,8 +504,22 @@ export default function Facturar() {
                     responsable={responsableFacturacion}
                     onClose={handleGoBackToResponsible} 
                     costos={costos}
+                    onConfirm={handleConfirmarItems}
                 />
             )}
+
+            {mostrarFacturaPreview && (
+                <FacturaPreviewModal
+                    responsable={responsableFacturacion}
+                    itemsSeleccionados={items}
+                    costos={costos}
+                    posicionIVA={posicionIVA}
+                    onClose={() => setMostrarFacturaPreview(false)}
+                    onConfirm={handleConfirmarFacturacion}
+                />
+                )}
+
+
         </main>
     );
 }

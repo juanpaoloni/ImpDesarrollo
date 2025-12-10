@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonaJuridicaResponse {
-    private String tipoResponsable; 
+    private Long idResponsable;
     private String nombreCompleto;  
     private String CUIT;
 }
