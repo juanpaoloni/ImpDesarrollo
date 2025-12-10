@@ -26,8 +26,6 @@ export default function cancelarReserva() {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
-    tipoDocumento: "DNI",
-    numeroDocumento: "",
   });
 
   const[mostrarPopUp, setMostrarPopUp] = useState({
@@ -59,7 +57,7 @@ export default function cancelarReserva() {
         const data = await res.json();
         setReservas(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Error al buscar huéspedes:", err);
+        console.error("Error al buscar reservas:", err);
         setReservas([]);
       }
 
@@ -70,6 +68,13 @@ export default function cancelarReserva() {
 
   const handleCancelarReserva = async () => {
     try{
+      const respuesta = await fetch(`http://localhost:8080/reservas/confirmarCancelacion?idReserva=${reservaSeleccionada?.idReserva}&motivo=aaaa`,
+        {method: "PUT"}
+      );
+
+
+      if(!respuesta.ok) alert (respuesta.json());
+      
 
       setMostrarPopUp((prev) => ({...prev, advertencia:true}));
 
