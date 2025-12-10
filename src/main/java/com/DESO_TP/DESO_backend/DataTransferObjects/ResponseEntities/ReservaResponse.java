@@ -26,7 +26,7 @@ public class ReservaResponse {
     private String telefono;
     private String nombre;
     private String apellido;
-    private Integer numeroHabitacion;     
+    private HabitacionResponse habitacion;    
     
     public static ReservaResponse toResponse(Reserva r){
         return new ReservaResponse(
@@ -38,7 +38,7 @@ public class ReservaResponse {
             r.getTelefono(),
             r.getNombre(),
             r.getApellido(),
-            r.getHabitacion().getNumeroHabitacion());
+            HabitacionResponse.toResponse(r.getHabitacion()));
     }
 }
 

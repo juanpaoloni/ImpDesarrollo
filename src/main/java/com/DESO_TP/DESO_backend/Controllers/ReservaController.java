@@ -52,8 +52,7 @@ public class ReservaController {
         @RequestParam (required = true) String apellido,
         @RequestParam (required = true) String nombre){
         
-        
-        return null;
+        return service.obtenerReservasCoincidentes(apellido, nombre);
     }
 }
 

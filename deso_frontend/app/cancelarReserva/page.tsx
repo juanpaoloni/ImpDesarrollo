@@ -7,11 +7,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation"
 
 
-type Huesped = {
+type Reserva = {
+  idReserva: number;
+  fechaInicio: string;
+  fechaFin: string;
   nombre: string;
   apellido: string;
-  tipoDocumento: string;
-  numeroDocumento: string;
+  habitacion: {
+    numeroHabitacion: number;
+    tipo: string;
+  }
 };
 
 export default function cancelarReserva() {
@@ -30,12 +35,9 @@ export default function cancelarReserva() {
     confirmacion:false,
     fallo:false,
   });
-  const [huespedes, setHuespedes] = useState<Huesped[]>([]);
-  const [huespedSeleccionado, setHuespedSeleccionado] = useState<{
-    tipoDocumento: string;
-    numeroDocumento: string;
-    nombre: string;
-    apellido: string;
+  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [reservaSeleccionada, setReservaSeleccionada] = useState<{
+    idReserva:number;
   } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -45,22 +47,20 @@ export default function cancelarReserva() {
 
   const handleBuscar = async (e: React.FormEvent) => {
     e.preventDefault();
-    setHuespedSeleccionado(null);
+    setReservaSeleccionada(null);
 
     setTimeout(async () => {
       const params = new URLSearchParams();
       if (form.nombre) params.append("nombre", form.nombre);
       if (form.apellido) params.append("apellido", form.apellido);
-      if (form.tipoDocumento) params.append("tipoDocumento", form.tipoDocumento);
-      if (form.numeroDocumento) params.append("nroDocumento", form.numeroDocumento);
 
       try {
-        const res = await fetch(`http://localhost:8080/huespedes/buscarHuespedes?${params.toString()}`);
+        const res = await fetch(`http://localhost:8080/reservas/obtenerReservasPorPersona?${params.toString()}`);
         const data = await res.json();
-        setHuespedes(Array.isArray(data) ? data : []);
+        setReservas(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error al buscar huéspedes:", err);
-        setHuespedes([]);
+        setReservas([]);
       }
 
       // limpiar las filas eliminadas
@@ -68,7 +68,7 @@ export default function cancelarReserva() {
   };
 
 
-  const handleDarDeBaja = async () => {
+  const handleCancelarReserva = async () => {
     try{
 
       setMostrarPopUp((prev) => ({...prev, advertencia:true}));
@@ -83,29 +83,22 @@ export default function cancelarReserva() {
     
     
     try{
-      if (!huespedSeleccionado?.tipoDocumento || !huespedSeleccionado?.numeroDocumento) {
-        console.error("No hay huésped seleccionado");
-        throw new Error("No hay un huesped seleccionado.");
+      if (!reservaSeleccionada?.idReserva) {
+        console.error("No hay reserva seleccionada");
+        throw new Error("No hay un reserva seleccionada.");
       }
 
-      const tieneOcupacionesResponse = await fetch(`http://localhost:8080/huespedes/tieneOcupacion?tipoDocumento=${huespedSeleccionado.tipoDocumento}&nroDocumento=${huespedSeleccionado.numeroDocumento}`)
-      const tieneOcupaciones = await tieneOcupacionesResponse.json();
-      if(tieneOcupaciones){
-        setMostrarPopUp(prev => ({ ...prev, fallo: true }));
-        return;
-      }
-
-      const result = await fetch(`http://localhost:8080/huespedes/darDeBaja/${huespedSeleccionado.tipoDocumento}/${huespedSeleccionado.numeroDocumento}`,
+      const result = await fetch(``,
         {
-          method: "DELETE"
+          method: "POST"
         }
       );
 
-      if(!result.ok) throw new Error("No se pudo dar de baja al huesped.");
+      if(!result.ok) throw new Error("No se pudo cancelar la reserva.");
 
       
 
-      setHuespedes([]);
+      setReservas([]);
 
     }catch(err){
       alert("Hubo un error.");
@@ -117,11 +110,7 @@ export default function cancelarReserva() {
 
   const handleCerrarPopUp = async () => {
     setMostrarPopUp(prev => ({ ...prev, confirmacion: false }));
-    setHuespedSeleccionado(null);
-  }
-
-  const handleModificar = () => {
-      router.push(`/modificarHuesped?tipoDocumento=${huespedSeleccionado?.tipoDocumento}&nroDocumento=${huespedSeleccionado?.numeroDocumento}`)
+    setReservaSeleccionada(null);
   }
 
   // A partir de aca empieza el return
@@ -174,37 +163,33 @@ export default function cancelarReserva() {
               </tr>
             </thead>
             <tbody>
-              {huespedes.length > 0 ? (
-                huespedes.map((h) => (
+              {reservas.length > 0 ? (
+                reservas.map((res) => (
                   <tr
-                    key={`${h.tipoDocumento}-${h.numeroDocumento}`}
-                    data-numero={h.numeroDocumento}
-                    data-tipo={h.tipoDocumento}
+                    key={`${res.idReserva}`}
                     onClick={() =>
-                      setHuespedSeleccionado({
-                        tipoDocumento: h.tipoDocumento,
-                        numeroDocumento: h.numeroDocumento,
-                        nombre: h.nombre,
-                        apellido: h.apellido,
+                      setReservaSeleccionada({
+                        idReserva: res.idReserva
                       })
                     }
                     className={`
-                      ${huespedSeleccionado?.numeroDocumento === h.numeroDocumento &&
-                      huespedSeleccionado?.tipoDocumento === h.tipoDocumento
+                      ${reservaSeleccionada?.idReserva === res.idReserva
                         ? "tabla-seleccionado"
                         : "tabla-fila"}
                     `}
                   >
 
-                    <td className="tabla-columna">{h.nombre}</td>
-                    <td className="tabla-columna">{h.apellido}</td>
-                    <td className="tabla-columna">{h.tipoDocumento}</td>
-                    <td className="tabla-columna">{h.numeroDocumento}</td>
+                    <td className="tabla-columna">{res.apellido}</td>
+                    <td className="tabla-columna">{res.nombre}</td>
+                    <td className="tabla-columna">{res.habitacion.numeroHabitacion}</td>
+                    <td className="tabla-columna">{res.habitacion.tipo}</td>
+                    <td className="tabla-columna">{res.fechaInicio}</td>
+                    <td className="tabla-columna">{res.fechaFin}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="tabla-noEncontrado">
+                  <td colSpan={6} className="tabla-noEncontrado">
                     No se encontraron huéspedes
                   </td>
                 </tr>
@@ -223,7 +208,7 @@ export default function cancelarReserva() {
         >
           
           <h2>¡Exito!</h2>
-          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} ha sido dado de baja exitosamente.</p>
+          <p>El huesped  ha sido dado de baja exitosamente.</p>
         </ModalBase>
         
         <ModalError
@@ -232,7 +217,7 @@ export default function cancelarReserva() {
           
         >
           <h2>¡Error!</h2>
-          <p>El huesped {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido} no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
+          <p>El huesped no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
         </ModalError>
 
 
@@ -244,18 +229,15 @@ export default function cancelarReserva() {
           onAceptar={handleAceptar}
         >
           <h2>¡Advertencia!</h2>
-          <p>¿Esta seguro que quiere eliminar al huesped<br/> {huespedSeleccionado?.nombre} {huespedSeleccionado?.apellido}?</p>
+          <p>¿Esta seguro que quiere eliminar al huesped<br/>?</p>
         </ModalAdvertencia>
 
 
       </div>
 
       <div className="contenedor-boton">
-        <button className="btn" onClick={handleDarDeBaja} disabled={!huespedSeleccionado}>
-          DAR DE BAJA
-        </button>
-        <button className="btn" onClick={handleModificar} disabled={!huespedSeleccionado}>
-          MODIFICAR
+        <button className="btn" onClick={handleCancelarReserva} disabled={!reservaSeleccionada}>
+          CANCELAR
         </button>
       </div>
     </main>
