@@ -32,7 +32,7 @@ public class OcupacionResponse {
     private EstadoOcupacion estado;
 
     // Relación con habitación
-    private Habitacion habitacion;
+    private HabitacionResponse habitacion;
 
     // IDs de servicios
     private List<ServicioResponse> servicios;
@@ -51,7 +51,7 @@ public class OcupacionResponse {
         response.setEstado(ocupacion.getEstado());
 
         if(ocupacion.getHabitacion() != null)
-            response.setHabitacion(ocupacion.getHabitacion());
+            response.setHabitacion(HabitacionResponse.toResponse(ocupacion.getHabitacion()));
 
 
 //        response.setIdsHuespedes(

@@ -2,7 +2,7 @@
 
 import "../globals.css";
 import "./formReservarHabitacion.css"; // archivo CSS renombrado
-import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./utilsReservarHabitaciones";
+import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "../components/utilsMostrarHabitaciones";
 import { useState, useEffect } from "react";
 import { validarRangoFechas, validarFormatoFecha, validarFechaNoPasada } from "../components/Validaciones";
 import { useRouter } from "next/navigation";

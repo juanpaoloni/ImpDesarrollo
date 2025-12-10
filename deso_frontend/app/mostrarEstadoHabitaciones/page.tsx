@@ -2,7 +2,7 @@
 
 import "../globals.css";
 import "./formMostrarHabitaciones.css"; // archivo CSS renombrado
-import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./utilsMostrarHabitaciones";
+import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "../components/utilsMostrarHabitaciones";
 import { useState } from "react";
 import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
 type FormState = {

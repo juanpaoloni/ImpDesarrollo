@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './formFacturar.css';
+import '../facturar/formFacturar.css';
 
 interface ResponsableIdentificado {
     tipoResponsable: string;
@@ -140,44 +140,46 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
     return (
         <div className="modal-overlay">
             <div className="modal-content-pago">
-                <h1 className="modal-title">Seleccionar responsable de Pago</h1>
+                <h1 className="modal-title">SELECCIONAR RESPONSABLE DE PAGO</h1>
                 
                 <div className="modal-body-pago">
                     
                     <div className="section-left">
                         <h3 className="section-title-pago">Ocupantes de la Habitación N°{habitacion}</h3>
-                        <table className="occupants-table">
-                            <thead>
-                                <tr>
-                                    <th>Apellido</th>
-                                    <th>Nombre</th>
-                                    <th>Tipo de Documento</th>
-                                    <th>Número de Documento</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {ocupantes.length > 0 ? (
-                                    ocupantes.map((huesped, index) => (
-                                        <tr 
-                                            key={huesped.numeroDocumento} 
-                                            onClick={() => handleSelectOccupant(huesped)}
-                                            className={responsableSeleccionadoInterno?.numeroDocumento === huesped.numeroDocumento ? 'selected-row' : ''}
-                                        >
-                                            <td>{huesped.apellido}</td>
-                                            <td>{huesped.nombre}</td>
-                                            <td>{huesped.tipoDocumento}</td>
-                                            <td>{huesped.numeroDocumento}</td>
-                                        </tr>
-                                    ))
-                                ) : (
+                        <div className="tabla-wrapper-SRP">
+                            <table className="occupants-table">
+                                <thead>
                                     <tr>
-                                        <td colSpan={4} style={{ textAlign: 'center', padding: '15px' }}>
-                                            No se encontraron huéspedes para esta ocupación.
-                                        </td>
+                                        <th>Apellido</th>
+                                        <th>Nombre</th>
+                                        <th>Tipo de Documento</th>
+                                        <th>Número de Documento</th>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {ocupantes.length > 0 ? (
+                                        ocupantes.map((huesped, index) => (
+                                            <tr 
+                                                key={huesped.numeroDocumento} 
+                                                onClick={() => handleSelectOccupant(huesped)}
+                                                className={responsableSeleccionadoInterno?.numeroDocumento === huesped.numeroDocumento ? 'selected-row' : ''}
+                                            >
+                                                <td>{huesped.apellido}</td>
+                                                <td>{huesped.nombre}</td>
+                                                <td>{huesped.tipoDocumento}</td>
+                                                <td>{huesped.numeroDocumento}</td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={4} style={{ textAlign: 'center', padding: '15px' }}>
+                                                No se encontraron huéspedes para esta ocupación.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div className="section-right">
@@ -197,7 +199,7 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
                                 <p style={{ color: '#b69f7f', fontStyle: 'italic', margin: 0 }}>Buscando responsable...</p>
                             )}
                             {!isSearching && huespedExternoInfo && (
-                                <div style={{ border: '1px solid #4CAF50', padding: '10px', backgroundColor: '#e8f5e9', borderRadius: '5px', marginTop: '5px' }}>
+                                <div className="confirmacion-cuit-SRP">
                                     <p style={{ margin: 0, fontWeight: 'bold', color: '#302922' }}>
                                         {huespedExternoInfo.tipoResponsable === 'JURIDICA' ? 'Razón Social:' : 'Nombre/Apellido:'}
                                     </p>
@@ -205,19 +207,16 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
                                 </div>
                             )}
                             {!isSearching && otroResponsableCuil.length === 13 && !huespedExternoInfo && (
-                                <p style={{ color: 'red', margin: 0 }}>CUIT no encontrado/registrado.</p>
+                                <p className="error-cuit-SRP">CUIT no encontrado/registrado.</p>
                             )}
                         </div>
                         
-                        <p className="note-pago">
-                            Recuerde que solo puede seleccionar un responsable de pago
-                        </p>
                     </div>
 
                 </div>
 
                 <div className="modal-footer-pago">
-                    <button onClick={onClose} className="btn-modal-pago cancel">
+                    <button onClick={onClose} className="btn-modal-pago">
                         CANCELAR
                     </button>
                     
@@ -229,7 +228,7 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
                          {error && <p className="error-message-modal">{error}</p>}
                     </div>
 
-                    <button onClick={handleConfirm} className="btn-modal-pago confirm">
+                    <button onClick={handleConfirm} className="btn-modal-pago">
                         CONFIRMAR
                     </button>
                 </div>

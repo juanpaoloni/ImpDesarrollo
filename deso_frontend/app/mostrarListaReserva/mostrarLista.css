@@ -141,6 +141,9 @@
 }
 
 .tabla-fila-ML {
+    font-size:20px;
+    padding:10px;
+    
     opacity: 1;
     color: black;
     text-align: center;

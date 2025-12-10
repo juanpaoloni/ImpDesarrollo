@@ -1,13 +1,14 @@
 "use client";
 
-import Navbar from "../components/Navbar.jsx";
 import "./formFacturar.css"
 import "../globals.css";
 import { useState } from "react";
-import ResponsablePago from './SeleccionarResponsable';
+import ResponsablePago from '../components/SeleccionarResponsable';
+import { parseFechaSinOffsetStr } from "../components/utilsMostrarHabitaciones.jsx";
+import { SeleccionarItemsFacturar } from "../components/SeleccionarItemsFacturar"
 
 
-const OccupationsTable = ({
+const TablaOcupaciones = ({
     data,
     hasSearched,
     onFacturarClick
@@ -120,62 +121,6 @@ const OccupationsTable = ({
     );
 };
 
-const SelectItemsModal = ({ responsable, onClose, costos }: { responsable: any, onClose: () => void, costos: any }) => {
-    const nombre = responsable?.nombre || 'Huésped';
-    
-    return (
-        <div className="modal-overlay">
-            <div className="modal-content-pago"> 
-                <h1 className="modal-title">Selección de Items</h1>
-                
-                <h3 className="section-title-pago" style={{ paddingLeft: '20px', margin: '10px 0 20px 0', border: 'none' }}>
-                    Seleccione los ítems a Facturar por: 
-                    <span style={{ fontWeight: 'normal', fontStyle: 'italic', marginLeft: '5px' }}>
-                        {nombre}
-                    </span>
-                </h3>
-                
-                <div className="modal-body-pago items-selection-grid">
-                    
-                    <div className="item-column item-column-large">
-                        <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Monto Total ($4840)
-                        </label>
-                        <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Estadía ($2500)
-                        </label>
-                    </div>
-                    
-                    <div className="item-column consumption-column" style={{ borderTop: '2px solid #b69f7f', paddingTop: '15px' }}>
-                        <h4 className="consumption-title">Consumo</h4>
-                        <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Bar ({costos.costoBar}$)
-                        </label>
-                        <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Sauna ({costos.costoSauna}$)
-                        </label>
-                        <label className="item-label-group">
-                            <input type="checkbox" defaultChecked /> Lavado y Planchado ({costos.costoLavado}$)
-                        </label>
-                    </div>
-                </div>
-
-                <div className="modal-footer-pago items-footer">
-                    <button onClick={onClose} className="btn-modal-pago cancel large-btn-gray">
-                        VOLVER ATRAS
-                    </button>
-                    
-                    <div style={{ flexGrow: 1 }}></div>
-
-                    <button onClick={() => alert('Facturando items...')} className="btn-modal-pago confirm large-btn-confirm">
-                        ACEPTAR
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 
 export default function Facturar() {
     const [form, setForm] = useState({
@@ -188,13 +133,13 @@ export default function Facturar() {
         horaSalida:"",
     });
 
-    const [occupantsData, setOccupantsData] = useState<any[] | null>(null);
+    const [datosOcupantes, setDatosOcupantes] = useState<any[] | null>(null);
     const [hasSearched, setHasSearched] = useState(false); 
 
     const [showModal, setShowModal] = useState(false);
-    const [selectedOccupation, setSelectedOccupation] = useState<any | null>(null);
+    const [ocupacionSeleccionada, setOcupacionSeleccionada] = useState<any | null>(null);
 
-    const [facturacionStage, setFacturacionStage] = useState('SELECCION_RESPONSABLE'); 
+    const [etapaFacturacion, setEtapaFacturacion] = useState('SELECCION_RESPONSABLE'); 
     const [responsableFacturacion, setResponsableFacturacion] = useState(null); 
 
 
@@ -231,7 +176,7 @@ export default function Facturar() {
 
         if (!isValid) {
             setErrors(newErrors);
-            setOccupantsData(null);
+            setDatosOcupantes(null);
             return; 
         }
         
@@ -240,13 +185,13 @@ export default function Facturar() {
         if (isNaN(roomNumber) || roomNumber <= 0) {
             newErrors.numeroDeHabitación = "Ingrese un número de habitación válido\n(> 0).";
             setErrors(newErrors);
-            setOccupantsData(null); 
+            setDatosOcupantes(null); 
             return;
         }
 
 
         setErrors({ numeroDeHabitación: "", horaSalida:"", });
-        setOccupantsData(null); 
+        setDatosOcupantes(null); 
 
         try{
             const response = await fetch(`http://localhost:8080/ocupaciones/obtenerPorHabitacion?numeroHabitacion=${roomNumber}`);
@@ -261,11 +206,11 @@ export default function Facturar() {
             if (data.length === 0) {
                 newErrors.numeroDeHabitación = "No se encontraron ocupaciones para la habitación correspondiente.";
                 setErrors(newErrors);
-                setOccupantsData([]);
+                setDatosOcupantes([]);
                 return;
             }
 
-            setOccupantsData(data); 
+            setDatosOcupantes(data); 
             setErrors({ numeroDeHabitación: "", horaSalida:"", });
         } 
         catch(error){
@@ -273,7 +218,7 @@ export default function Facturar() {
             const errorMessageText = "Error al conectar con el servicio o habitación no encontrada.";
             newErrors.numeroDeHabitación = errorMessageText;
             setErrors(newErrors);
-            setOccupantsData([]); 
+            setDatosOcupantes([]); 
         }
 
     }
@@ -282,10 +227,11 @@ export default function Facturar() {
         costoBar:0,
         costoSauna:0,
         costoLavado:0,
+        costoEstadia:0,
     })
     
     const handleFacturarClick = (occupation: any) => {
-        setSelectedOccupation(occupation);
+        setOcupacionSeleccionada(occupation);
 
         const costoB = occupation.servicios.find(s => s.tipo === "BAR")?.costoTotal ?? 0;
         const costoS = occupation.servicios.find(s => s.tipo === "SAUNA")?.costoTotal ?? 0;
@@ -295,26 +241,55 @@ export default function Facturar() {
             costoBar: costoB,
             costoSauna: costoS,
             costoLavado: costoL,
+            costoEstadia: definirCostoEstadia(occupation.habitacion.tipo, occupation.fechaInicio, occupation.fechaFin),
         })
 
-        setFacturacionStage('SELECCION_RESPONSABLE'); 
+        setEtapaFacturacion('SELECCION_RESPONSABLE'); 
         setShowModal(true);
+    };
+
+    const definirCostoEstadia = (tipoHabitacion, fechaInicioStr, fechaFinStr) => {
+        const tarifaPorTipo = {
+            INDIVIDUAL_ESTANDAR: 50800,
+            DOBLE_ESTANDAR: 70230,
+            DOBLE_SUPERIOR: 90560,
+            SUITE_DOBLE: 110500,
+            SUPERIOR_FAMILY_PLAN: 128600,
+        };
+
+        const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        const costoPorNoche = tarifaPorTipo[tipoHabitacion];
+        if (!costoPorNoche) return 0;
+
+        // Convertir string YYYY-MM-DD → Date UTC sin offset
+        const start = parseFechaSinOffsetStr(fechaInicioStr);
+        const end = parseFechaSinOffsetStr(fechaFinStr);
+
+        // diferencia en ms
+        const diffMs = end.getTime() - start.getTime();
+        if (diffMs <= 0) return 0;
+
+        // noches
+        const cantidadDias = Math.ceil(diffMs / MS_PER_DAY);
+
+        return cantidadDias * costoPorNoche;
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setSelectedOccupation(null);
+        setOcupacionSeleccionada(null);
         setResponsableFacturacion(null); 
-        setFacturacionStage('SELECCION_RESPONSABLE'); 
+        setEtapaFacturacion('SELECCION_RESPONSABLE'); 
     };
 
     const handleConfirmResponsible = (responsable: any) => {
         setResponsableFacturacion(responsable);
-        setFacturacionStage('SELECCION_ITEMS');
+        setEtapaFacturacion('SELECCION_ITEMS');
     };
     
     const handleGoBackToResponsible = () => {
-        setFacturacionStage('SELECCION_RESPONSABLE');
+        setEtapaFacturacion('SELECCION_RESPONSABLE');
     }
 
     
@@ -376,24 +351,24 @@ export default function Facturar() {
                       </form>
                   </div>
                 
-                <OccupationsTable 
-                    data={occupantsData} 
+                <TablaOcupaciones 
+                    data={datosOcupantes} 
                     hasSearched={hasSearched} 
                     onFacturarClick={handleFacturarClick} 
                 />
             </div>
         
-            {showModal && selectedOccupation && facturacionStage === 'SELECCION_RESPONSABLE' && (
+            {showModal && ocupacionSeleccionada && etapaFacturacion === 'SELECCION_RESPONSABLE' && (
                 <ResponsablePago 
                     habitacion={form.numeroDeHabitación}
-                    ocupantes={selectedOccupation.huespedes || []} 
+                    ocupantes={ocupacionSeleccionada.huespedes || []} 
                     onClose={handleCloseModal}
                     onConfirmAndAdvance={handleConfirmResponsible} 
                 />
             )}
 
-            {showModal && facturacionStage === 'SELECCION_ITEMS' && responsableFacturacion && (
-                <SelectItemsModal 
+            {showModal && etapaFacturacion === 'SELECCION_ITEMS' && responsableFacturacion && (
+                <SeleccionarItemsFacturar 
                     responsable={responsableFacturacion}
                     onClose={handleGoBackToResponsible} 
                     costos={costos}

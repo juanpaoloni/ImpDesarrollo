@@ -153,21 +153,34 @@
 }
 
 .modal-content-pago {
-    background-color: #e6e6e6;
+    background-color: #e3d3b9;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 750px; 
+    max-width: 1000px; 
     display: flex;
     flex-direction: column;
+    user-select:none;
+}
+
+.modal-content-pago-IF {
+    background-color: #e3d3b9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px; 
+    display: flex;
+    flex-direction: column;
+    user-select:none;
 }
 
 .modal-title {
     font-family: "Cinzel", serif;
     font-size: 36px; 
     font-weight: 600;
-    color: #302922;
+    color: #433c32;
     margin-bottom: 20px;
     border-bottom: 2px solid #b69f7f;
     padding-bottom: 10px;
@@ -176,33 +189,69 @@
 
 .modal-body-pago {
     display: flex;
+    flex-direction:row;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.modal-body-pago-IF {
+    display: flex;
+    flex-direction:column;
     gap: 30px;
     margin-bottom: 20px;
 }
 
 .section-left {
-    flex: 2; 
+    flex: 2;
+    max-height:200px;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    background-color: #e3d3b9;
+    border-bottom: 2px solid #b69f7f;
 }
 
 .section-right {
     flex: 1; 
     padding-left: 20px;
-    border-left: 1px solid #ccc;
+    border-left: 2px solid #b69f7f;
+    background-color: #e3d3b9;
 }
 
 .section-title-pago {
     font-size: 18px;
     font-weight: bold;
     color: #3d352c;
-    margin-bottom: 15px;
+    padding:5px;
+    text-align: center;
+    background-color: #b69f7f;
+        border-top-left-radius:10px;
+    border-top-right-radius:10px;
 }
+
+.section-title-pago-SRP {
+    font-size: 18px;
+    font-weight: bold;
+    color: #3d352c;
+    padding:5px;
+    text-align: center;
+    background-color: #b69f7f;
+}
+
 .section-title-pago-right {
     font-size: 18px;
     font-weight: bold;
     color: #3d352c;
     margin-top: 0;
+    text-align:center;
+    margin-bottom:20px;
 }
 
+.tabla-wrapper-SRP {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
 
 .occupants-table {
     width: 100%;
@@ -213,14 +262,13 @@
 
 .occupants-table th, .occupants-table td {
     padding: 10px;
-    border: 1px solid #ddd;
     text-align: left;
     font-size: 14px;
     color: #302922; 
 }
 
 .occupants-table th {
-    background-color: #f0f0f0;
+    background-color: #b69f7f;
     font-weight: 600;
     color: #3d352c;
 }
@@ -235,7 +283,7 @@
 }
 
 .selected-row {
-    background-color: #b69f7f !important;
+    background-color: #716350 !important;
     color: white !important; 
     font-weight: bold;
 }
@@ -244,19 +292,43 @@
 }
 
 .input-label-pago {
+    position:absolute;
     font-size: 14px;
     color: #302922; 
-    margin-bottom: 5px;
+    margin-top:-20px;
 }
 
 .cuit-input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 2px solid #b69f7f;
+    background-color:whitesmoke;
     border-radius: 5px;
     margin-bottom: 15px;
     box-sizing: border-box;
     color: #302922; 
+}
+
+.error-cuit-SRP {
+    border: 2px solid red;
+    background-color: rgba(255,0,0,0.1);
+    text-align: center;
+    width: 16%;
+    padding: 10px;
+
+    color:red;
+    margin-top:-6;
+    position:absolute;
+}
+
+.confirmacion-cuit-SRP {
+    border: 1px solid #4CAF50;
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+    margin-top: -6px;
+    position:absolute;
+    width:16%;
 }
 
 .note-pago {
@@ -271,7 +343,7 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 20px;
-    border-top: 1px solid #ccc;
+    border-top: 2px solid #b69f7f;
 }
 
 .btn-modal-pago {
@@ -282,24 +354,17 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s;
-}
-
-.btn-modal-pago.cancel {
-    background-color: #888;
-    color: white;
-}
-
-.btn-modal-pago.cancel:hover {
-    background-color: #666;
-}
-
-.btn-modal-pago.confirm {
     background-color: #b69f7f;
     color: white;
 }
 
-.btn-modal-pago.confirm:hover {
-    background-color: #a08e75;
+.btn-modal-pago.resized {
+    width:200px;
+}
+
+
+.btn-modal-pago:hover {
+    background-color: #7b7061;
 }
 
 .status-area {
