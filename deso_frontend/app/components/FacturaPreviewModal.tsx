@@ -2,6 +2,7 @@
 
 import React from "react";
 import "./FacturaPreviewModal.css";
+import { useState } from "react";
 
 type ItemsSeleccionados = {
     montoTotal: boolean;
@@ -57,6 +58,8 @@ const FacturaPreviewModal: React.FC<Props> = ({
 
     const totalFinal = calcularTotal();
 
+
+
     return (
         <div className="factura-overlay">
             <div className="factura-modal">
@@ -72,28 +75,40 @@ const FacturaPreviewModal: React.FC<Props> = ({
 
                 <div className="factura-items-box">
                     {itemsSeleccionados.estadia && (
-                        <p className="factura-item">
-                            Estadía: ${costos.costoEstadia}
-                        </p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Estadía:</span> 
+                            <span className="precio-fac">${costos.costoEstadia}</span>
+                        </div>
                     )}
                     {itemsSeleccionados.bar && (
-                        <p className="factura-item">Bar: ${costos.costoBar}</p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Bar:</span> 
+                            <span className="precio-fac">${costos.costoBar}</span>
+                        </div>
                     )}
                     {itemsSeleccionados.sauna && (
-                        <p className="factura-item">
-                            Sauna: ${costos.costoSauna}
-                        </p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Sauna:</span> 
+                            <span className="precio-fac">${costos.costoSauna}</span>
+                        </div>
                     )}
                     {itemsSeleccionados.lavado && (
-                        <p className="factura-item">
-                            Lavado y Planchado: ${costos.costoLavado}
-                        </p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Lavado y Planchado:</span> 
+                            <span className="precio-fac">${costos.costoLavado}</span>
+                        </div>
                     )}
                     <div className="linea-corta-FPM"></div>
-                    <p className="factura-item">Subtotal: ${totalFinal}</p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Sub-total:</span> 
+                            <span className="precio-fac">${totalFinal}</span>
+                        </div>
 
                     {posicionIVA === "RESPONSABLE_INSCRIPTO" && ( 
-                        <p>IVA: ${(totalFinal*0.21).toFixed(2)}</p>
+                        <div className="factura-item">
+                            <span className="nombre-item">Impuesto al valor agregado:</span> 
+                            <span className="precio-fac">${(totalFinal*0.21).toFixed(2)}</span>
+                        </div>
                     )}
                 </div>
 

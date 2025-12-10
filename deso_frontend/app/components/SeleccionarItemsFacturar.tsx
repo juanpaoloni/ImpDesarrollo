@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ModalError } from "./Modal.jsx"
 
 interface Props {
     responsable: any;
@@ -11,6 +12,8 @@ interface Props {
 
 export const SeleccionarItemsFacturar = ({ responsable, onClose, costos, onConfirm }: Props) => {
     const nombre = responsable?.nombre || 'Huésped';
+
+    const [popuperror, setPopuperror] = useState(false);
 
     const [items, setItems] = useState({
         montoTotal: false,
@@ -38,7 +41,7 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos, onConfi
             (!items.lavado && (costos.costoLavado != 0)) ||
             (!items.montoTotal)
         )
-        alert("te falla querido");
+        setPopuperror(true);
         else{
             onConfirm(items);
             onClose();
@@ -68,7 +71,7 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos, onConfi
                                    checked={items.montoTotal}
                                    onChange={() => toggleItem("montoTotal")}
                             /> 
-                            Monto Total (Previo al IVA) (${total})
+                            Monto Total (Sin IVA) (${total})
                         </label>
 
                         <label className="item-label-group">
@@ -118,6 +121,15 @@ export const SeleccionarItemsFacturar = ({ responsable, onClose, costos, onConfi
                     </button>
                 </div>
             </div>
-        </div>
+            {popuperror && (
+                <ModalError 
+                    visible={popuperror}
+                    onClose={() => setPopuperror(false)}
+                >
+                    <h2>¡Error!</h2>
+                    <p>Aseguresé de tildar todos los campos que tengan un costo mayor a 0.</p>
+                </ModalError>
+            )}
+        </div>    
     );
 };
