@@ -24,7 +24,7 @@ public interface ReservaDAO extends CrudRepository<Reserva, Long>{
     List<Reserva> findByApellidoAndNombre(String apellido, String nombre);
     
     @Modifying
-    @Query("UPDATE Reserva r SET r.estadoReserva = :estado WHERE r.id = :id")
+    @Query("UPDATE Reserva r SET r.estado = :estado WHERE r.idReserva = :id")
     void actualizarEstado(@Param("id") Long id, @Param("estado") EstadoReserva estado);
 }
 
