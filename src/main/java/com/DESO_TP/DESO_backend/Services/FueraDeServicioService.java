@@ -22,9 +22,14 @@ public class FueraDeServicioService {
     @Autowired
     private FueraDeServicioDAO fueraDeServicioRepository;
     
-    public List<FueraDeServicioResponse> obtenerFueraDeServicioPorNumeroHabitacion(Integer numeroHabitacion){
+    public List<FueraDeServicioResponse> obtenerResponsePorNumeroHabitacion(Integer numeroHabitacion){
         List<FueraDeServicio> fueraDeServicioLista = fueraDeServicioRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
         return fueraDeServicioLista.stream().map(FueraDeServicioResponse::toResponse).toList();
+    }
+    
+    public List<FueraDeServicio> obtenerEntidadPorNumeroHabitacion(Integer numeroHabitacion){
+        List<FueraDeServicio> fueraDeServicioLista = fueraDeServicioRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
+        return fueraDeServicioLista;
     }
    
     

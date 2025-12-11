@@ -17,9 +17,14 @@ public class OcupacionService {
     private OcupacionDAO ocupacionRepository;
    
 
-    public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(Integer numeroHabitacion){
+    public List<OcupacionResponse> obtenerResponsePorNumeroHabitacion(Integer numeroHabitacion){
         List<Ocupacion> ocupaciones = ocupacionRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
         return ocupaciones.stream().map(OcupacionResponse::toResponse).toList();
+    }
+    
+    public List<Ocupacion> obtenerEntidadPorNumeroHabitacion(Integer numeroHabitacion){
+        List<Ocupacion> ocupaciones = ocupacionRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
+        return ocupaciones;
     }
     
     public List<OcupacionResponse> ocupacionesPorHuesped(TipoDocumento tipoDocumento, String nroDocumento) {

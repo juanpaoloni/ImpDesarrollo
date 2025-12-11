@@ -35,7 +35,7 @@ public class ReservaController {
     @GetMapping("/obtenerPorHabitacion")
     public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(
             @RequestParam(required = true) Integer numeroHabitacion){
-        return service.obtenerReservaPorNumeroHabitacion(numeroHabitacion);
+        return service.obtenerResponsePorNumeroHabitacion(numeroHabitacion);
     }
     @PostMapping("/crearMultiples")
     public ResponseEntity<?> crearMultiplesReservas(@RequestBody List<Reserva> reservas) {

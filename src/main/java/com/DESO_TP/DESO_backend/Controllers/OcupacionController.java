@@ -30,6 +30,6 @@ public class OcupacionController {
     @GetMapping("/obtenerPorHabitacion")
     public List<OcupacionResponse> obtenerOcupacionPorNumeroHabitacion(
             @RequestParam(required = true) Integer numeroHabitacion){
-        return service.obtenerOcupacionPorNumeroHabitacion(numeroHabitacion);
+        return service.obtenerResponsePorNumeroHabitacion(numeroHabitacion);
     }
 }

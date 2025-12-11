@@ -383,12 +383,12 @@
 }
 
 .status-box {
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: rgb(255, 245, 232);
+    text-align:center;
+    letter-spacing:2px;
     padding: 8px 15px;
     flex-grow: 1;
-    border-radius: 5px;
-    color: #302922;
+    color: #626262;
     font-style: italic;
     font-size: 14px;
 }

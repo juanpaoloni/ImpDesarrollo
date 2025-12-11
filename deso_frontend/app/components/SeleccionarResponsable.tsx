@@ -224,7 +224,7 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
                     </button>
                     
                     <div className="status-area">
-                        <span className="status-label">Responsable Seleccionado</span>
+                        <span className="status-label"></span>
                         <div className="status-box">
                             {displayResponsable}
                         </div>

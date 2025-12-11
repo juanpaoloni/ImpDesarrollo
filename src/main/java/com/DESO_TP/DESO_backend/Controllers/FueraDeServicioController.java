@@ -29,7 +29,7 @@ public class FueraDeServicioController {
     @GetMapping("/obtenerPorHabitacion")
     public List<FueraDeServicioResponse> obtenerFueraDeServicioPorNumeroHabitacion(
     @RequestParam(required = true) Integer numeroHabitacion){
-        return service.obtenerFueraDeServicioPorNumeroHabitacion(numeroHabitacion);
+        return service.obtenerResponsePorNumeroHabitacion(numeroHabitacion);
     }
     
 }

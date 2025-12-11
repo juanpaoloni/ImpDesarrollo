@@ -31,10 +31,16 @@ public class ReservaService {
     @Autowired
     private ReservaDAO reservaRepository;
     
-    public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(Integer numeroHabitacion){
+    public List<ReservaResponse> obtenerResponsePorNumeroHabitacion(Integer numeroHabitacion){
         List<Reserva> reservas = reservaRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
         
         return reservas.stream().map(ReservaResponse::toResponse).toList();
+    }
+    
+    public List<Reserva> obtenerEntidadPorNumeroHabitacion(Integer numeroHabitacion){
+        List<Reserva> reservas = reservaRepository.findByHabitacion_NumeroHabitacion(numeroHabitacion);
+        
+        return reservas;
     }
     
      @Autowired
