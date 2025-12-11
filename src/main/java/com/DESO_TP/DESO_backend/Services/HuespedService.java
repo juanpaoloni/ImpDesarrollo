@@ -6,18 +6,16 @@ import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
+import com.DESO_TP.DESO_backend.Services.Mediator.HuespedOcupacionMediator;
 import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,14 +28,14 @@ public class HuespedService {
     @Autowired
     private DireccionDAO direccionRepository;
     
-    @Lazy
     @Autowired
-    private OcupacionService ocupacionService;
-    
+    private HuespedOcupacionMediator mediator;
+
     public boolean tieneOcupaciones(String tipoDocumento, String nroDocumento){
-        List<OcupacionResponse> ocupaciones = ocupacionService.ocupacionesPorHuesped(TipoDocumento.valueOf(tipoDocumento), nroDocumento);
-    
-        return !ocupaciones.isEmpty();
+        return mediator.huespedTieneOcupaciones(
+            TipoDocumento.valueOf(tipoDocumento), 
+            nroDocumento
+        );
     }
     
     
