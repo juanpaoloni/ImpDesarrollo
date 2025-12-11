@@ -2,7 +2,8 @@
 
 import "../globals.css";
 import "../gestionarHuesped/formDarDeBaja.css";
-import { ModalBase, ModalAdvertencia, ModalError } from "../components/Modal.jsx";
+import "./cancelacionReserva.css";
+import { ModalBase, ModalAdvertencia, ModalMotivo } from "../components/Modal.jsx";
 import { useState } from "react";
 import { useRouter } from "next/navigation"
 
@@ -11,6 +12,7 @@ type Reserva = {
   idReserva: number;
   fechaInicio: string;
   fechaFin: string;
+  estado: string;
   nombre: string;
   apellido: string;
   habitacion: {
@@ -35,6 +37,8 @@ export default function cancelarReserva() {
   });
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [reservaSeleccionada, setReservaSeleccionada] = useState<{
+    nombre: string;
+    apellido: string;
     idReserva:number;
   } | null>(null);
 
@@ -43,19 +47,38 @@ export default function cancelarReserva() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const [errorApellido, setErrorApellido]= useState(false);
+
   const handleBuscar = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if(!form.apellido){
+      setErrorApellido(true);
+      return;
+    }
+    else{
+      setErrorApellido(false);
+    }
+
+    
+
     setReservaSeleccionada(null);
 
     setTimeout(async () => {
       const params = new URLSearchParams();
-      if (form.nombre) params.append("nombre", form.nombre);
+      params.append("nombre", form.nombre);
       if (form.apellido) params.append("apellido", form.apellido);
 
       try {
         const res = await fetch(`http://localhost:8080/reservas/obtenerReservasPorPersona?${params.toString()}`);
         const data = await res.json();
-        setReservas(Array.isArray(data) ? data : []);
+        const filtradas = Array.isArray(data)
+          ? data.filter(r => r.estado !== "CANCELADA")
+          : [];
+
+        setReservas(filtradas);
+
+        if(res.ok) setBusco(true);
       } catch (err) {
         console.error("Error al buscar reservas:", err);
         setReservas([]);
@@ -63,18 +86,12 @@ export default function cancelarReserva() {
 
       // limpiar las filas eliminadas
     }, 300); // duración de la animación
+
   };
 
 
   const handleCancelarReserva = async () => {
     try{
-      const respuesta = await fetch(`http://localhost:8080/reservas/confirmarCancelacion?idReserva=${reservaSeleccionada?.idReserva}&motivo=aaaa`,
-        {method: "PUT"}
-      );
-
-
-      if(!respuesta.ok) alert (respuesta.json());
-      
 
       setMostrarPopUp((prev) => ({...prev, advertencia:true}));
 
@@ -83,7 +100,7 @@ export default function cancelarReserva() {
     }
   }
 
-  const handleAceptar = async () => {
+  const handleAceptar = async (motivo:string) => {
     setMostrarPopUp(prev => ({ ...prev, advertencia: false }));
     
     
@@ -93,15 +110,12 @@ export default function cancelarReserva() {
         throw new Error("No hay un reserva seleccionada.");
       }
 
-      const result = await fetch(``,
-        {
-          method: "POST"
-        }
+      const respuesta = await fetch(`http://localhost:8080/reservas/confirmarCancelacion?idReserva=${reservaSeleccionada?.idReserva}&motivo=${motivo}`,
+        {method: "PUT"}
       );
 
-      if(!result.ok) throw new Error("No se pudo cancelar la reserva.");
-
-      
+      const rta = await respuesta.text();
+      if(!respuesta.ok) alert (rta);
 
       setReservas([]);
 
@@ -111,12 +125,21 @@ export default function cancelarReserva() {
 
     // Cuando este popup se cierra se seta en null la seleccion
     setMostrarPopUp((prev) => ({...prev, confirmacion:true}));
+
+    setForm({
+      nombre:"",
+      apellido:"",
+    })
+
   }
 
   const handleCerrarPopUp = async () => {
     setMostrarPopUp(prev => ({ ...prev, confirmacion: false }));
+    setBusco(false);
     setReservaSeleccionada(null);
   }
+
+  const [busco, setBusco] = useState(false);
 
   // A partir de aca empieza el return
   //
@@ -131,7 +154,22 @@ export default function cancelarReserva() {
       <div className="contenedor-principal">
         <div>
           <form onSubmit={handleBuscar}>
-            <div className="contenedor-campos">
+            <div className="contenedor-campos-CR">
+              <h3 className="texto-campos-CR">Datos del Reservante</h3>
+              <div className="linea-corta-CR"></div>
+
+              <div>
+              <input
+                name="apellido"
+                value={form.apellido}
+                onChange={handleChange}
+                placeholder="Apellido"
+                className={errorApellido? "input-error-CR" : ""}
+              />
+              {errorApellido && <p className="mensaje-error-campo-CR">El apellido no puede estar vacio</p>}
+              </div>
+
+
               <input
                 name="nombre"
                 value={form.nombre}
@@ -139,12 +177,7 @@ export default function cancelarReserva() {
                 placeholder="Nombre"
               />
 
-              <input
-                name="apellido"
-                value={form.apellido}
-                onChange={handleChange}
-                placeholder="Apellido"
-              />
+             
 
               <button type="submit" className="btn">
                 BUSCAR
@@ -169,12 +202,16 @@ export default function cancelarReserva() {
             </thead>
             <tbody>
               {reservas.length > 0 ? (
-                reservas.map((res) => (
+                reservas
+                ?.filter(res => res.estado !== "CANCELADA")
+                .map((res) => (
                   <tr
                     key={`${res.idReserva}`}
                     onClick={() =>
                       setReservaSeleccionada({
-                        idReserva: res.idReserva
+                        idReserva: res.idReserva,
+                        nombre: res.nombre,
+                        apellido: res.apellido,
                       })
                     }
                     className={`
@@ -194,9 +231,17 @@ export default function cancelarReserva() {
                 ))
               ) : (
                 <tr>
+                  {(busco &&
                   <td colSpan={6} className="tabla-noEncontrado">
-                    No se encontraron huéspedes
+                    No existen reservas para los criterios de búsqueda ingresados o ya estan canceladas
                   </td>
+                  )}
+
+                  {(!busco &&
+                  <td colSpan={6} className="tabla-noEncontrado">
+                    Ingrese el apellido y, opcionalmente, el nombre del reservante
+                  </td>
+                  )}
                 </tr>
               )}
             </tbody>
@@ -213,20 +258,20 @@ export default function cancelarReserva() {
         >
           
           <h2>¡Exito!</h2>
-          <p>El huesped  ha sido dado de baja exitosamente.</p>
+          <p>La reserva fue cancelada correctamente.</p>
         </ModalBase>
         
-        <ModalError
+        {/*<ModalError
           visible={mostrarPopUp.fallo}
           onClose={() => setMostrarPopUp(prev => ({ ...prev, fallo: false }))}
           
         >
           <h2>¡Error!</h2>
           <p>El huesped no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
-        </ModalError>
+        </ModalError>*/}
 
 
-        <ModalAdvertencia
+        {/*<ModalAdvertencia
           visible={mostrarPopUp.advertencia}
           onClose={() =>
             setMostrarPopUp(prev => ({ ...prev, advertencia: false }))
@@ -234,15 +279,23 @@ export default function cancelarReserva() {
           onAceptar={handleAceptar}
         >
           <h2>¡Advertencia!</h2>
-          <p>¿Esta seguro que quiere eliminar al huesped<br/>?</p>
-        </ModalAdvertencia>
+          <p>¿Esta seguro que quiere cancelar la reserva de<br/>{reservaSeleccionada?.nombre} {reservaSeleccionada?.apellido}?</p>
+        </ModalAdvertencia>*/}
+
+        <ModalMotivo
+          visible={mostrarPopUp.advertencia}
+          onClose={() =>
+            setMostrarPopUp(prev => ({ ...prev, advertencia: false }))
+          }
+          onAceptar={(motivo:string) => handleAceptar(motivo)}
+        />
 
 
       </div>
 
       <div className="contenedor-boton">
         <button className="btn" onClick={handleCancelarReserva} disabled={!reservaSeleccionada}>
-          CANCELAR
+          CANCELAR RESERVA
         </button>
       </div>
     </main>

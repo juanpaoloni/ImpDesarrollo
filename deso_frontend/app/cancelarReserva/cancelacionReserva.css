@@ -1,0 +1,50 @@
+.contenedor-campos-CR {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding:10px;
+    background-color: whitesmoke;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 5px 8px rgba(0,0,0,0.15);
+    max-width: 300px
+}
+
+.contenedor-campos-CR input {
+    background-color: whitesmoke;
+    margin: 5px;
+    padding: 10px;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+}
+
+.input-error-CR {
+    border: 1px solid red !important;
+    box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.25);
+}
+
+.linea-corta-CR {
+  border: none; 
+  border-top: 2px solid #b69f7f; 
+  width: 85%; 
+  margin: 0px auto; 
+}
+
+.texto-campos-CR{
+    font-weight: bold;
+    color:rgb(81, 66, 44);
+    text-shadow: 0px 3px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    letter-spacing: 3px;
+}
+
+.mensaje-error-campo-CR {
+    position:absolute;
+    color: red;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: -5px; 
+    margin-left: 5px; 
+    white-space: pre-line;
+}
