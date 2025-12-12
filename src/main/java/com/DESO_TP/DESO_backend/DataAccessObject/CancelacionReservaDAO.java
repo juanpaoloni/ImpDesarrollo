@@ -4,8 +4,8 @@
  */
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
-import com.DESO_TP.EntidadesDominio.Huesped;
-import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
+import com.DESO_TP.EntidadesDominio.CancelacionReserva;
+import com.DESO_TP.EntidadesDominio.IDs.CancelacionReservaId;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author jauni
  */
-
 @Repository
-public interface HuespedDAO extends CrudRepository<Huesped, HuespedId> {
+public interface CancelacionReservaDAO extends CrudRepository<CancelacionReserva, CancelacionReservaId> {
+    
 }

@@ -6,18 +6,16 @@ import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
+import com.DESO_TP.DESO_backend.Services.Mediator.HuespedOcupacionMediator;
 import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,14 +28,14 @@ public class HuespedService {
     @Autowired
     private DireccionDAO direccionRepository;
     
-    @Lazy
     @Autowired
-    private OcupacionService ocupacionService;
-    
+    private HuespedOcupacionMediator mediator;
+
     public boolean tieneOcupaciones(String tipoDocumento, String nroDocumento){
-        List<OcupacionResponse> ocupaciones = ocupacionService.ocupacionesPorHuesped(TipoDocumento.valueOf(tipoDocumento), nroDocumento);
-    
-        return !ocupaciones.isEmpty();
+        return mediator.huespedTieneOcupaciones(
+            TipoDocumento.valueOf(tipoDocumento), 
+            nroDocumento
+        );
     }
     
     
@@ -68,7 +66,6 @@ public class HuespedService {
     
     public HuespedResponse crearHuesped(HuespedRequest req) {
 
-        // Construir la dirección a partir del request
         DireccionRequest dreq = req.getDireccion();
         Direccion d = new Direccion();
 
@@ -81,10 +78,8 @@ public class HuespedService {
         d.setProvincia(dreq.getProvincia());
         d.setPais(dreq.getPais());
 
-        // Guardar la dirección primero
         direccionRepository.save(d);
 
-        // Crear entidad huésped
         Huesped h = new Huesped();
         h.setTipoDocumento(req.getTipoDocumento());
         h.setNumeroDocumento(req.getNumeroDocumento());
@@ -123,7 +118,6 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
 
-        // Actualizar datos
         h.setNombre(req.getNombre());
         h.setApellido(req.getApellido());
         h.setCUIT(req.getCUIT());
@@ -134,7 +128,6 @@ public class HuespedService {
         h.setTelefono(req.getTelefono());
         h.setOcupacion(req.getOcupacion());
 
-        // Actualizar dirección
         if (req.getDireccion() != null) {
             DireccionRequest dreq = req.getDireccion();
             Direccion d = h.getDireccion();
@@ -173,7 +166,15 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
 
-        return HuespedResponse.toResponse(h); // o como lo construyas
+        return HuespedResponse.toResponse(h);
+    }
+
+    public String obtenerPosicionIVA(TipoDocumento tipo, String numero) {
+        HuespedId id = new HuespedId(tipo, numero);
+        Huesped h = huespedRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
+        
+        return h.getPosicionIVA().toString();
     }
     
     

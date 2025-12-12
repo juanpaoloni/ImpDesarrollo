@@ -2,10 +2,11 @@
 
 import "../globals.css";
 import "./formReservarHabitacion.css"; // archivo CSS renombrado
-import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "./utilsReservarHabitaciones";
+import { generarFechas, parseFechaSinOffsetStr , parseFechaSinOffset} from "../components/utilsMostrarHabitaciones";
 import { useState, useEffect } from "react";
-import { validarRangoFechas, validarFormatoFecha } from "../components/Validaciones";
+import { validarRangoFechas, validarFormatoFecha, validarFechaNoPasada } from "../components/Validaciones";
 import { useRouter } from "next/navigation";
+import { ModalError } from "../components/Modal.jsx"
 
 type FormState = {
   fechaInicio: string;
@@ -21,6 +22,16 @@ export default function SeleccionarHabitaciones() {
     fechaFin: "",
     tipoHabitacion: "",
   });
+
+  const [popUpError, setVisible] = useState({
+    noSelecciona:false,
+    noDisponible:false,
+    noHayDisponible:false,
+  });
+
+  const [hayDisponible, setHayDisponibles] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [filas, setFilas] = useState<Date[]>([]);
   const [columnas, setColumnas] = useState<string[]>([]); // números de habitación
@@ -40,6 +51,11 @@ export default function SeleccionarHabitaciones() {
   }, [seleccion]);
 
   const handleAceptar = async () => {
+    if(Object.keys(seleccion).length === 0){
+      setVisible((prev) => ({...prev, noSelecciona:true}));
+      return;
+    }
+
     try {
       const seleccionReserva = Object.fromEntries(
         Object.entries(seleccion).map(([numHab, fechasSet]) => [
@@ -78,18 +94,32 @@ export default function SeleccionarHabitaciones() {
         setActual.add(fechaStr);
       }
 
-      copia[numHab] = setActual; // asigno la nueva Set (nueva referencia)
+      if (setActual.size === 0) {
+        // eliminamos la key si el Set queda vacío
+        delete copia[numHab];
+      } else {
+        copia[numHab] = setActual;
+      }
+
       return copia;
     });
   };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
     setError({ mensaje: "" });
 
+    
+
     if (!validarFormatoFecha(form.fechaInicio)) {
       setError({ mensaje: "Por favor, completar la fecha de inicio." });
+      return;
+    }
+
+    if(!validarFechaNoPasada(form.fechaInicio)){
+      setError({ mensaje: "No puede reservar en fechas anteriores a la actual." });
       return;
     }
 
@@ -102,10 +132,13 @@ export default function SeleccionarHabitaciones() {
       setError({ mensaje: "La fecha inicial es posterior a la final." });
       return;
     }
+    
+    setHayDisponibles(false);
+    setIsLoading(true);
 
     const fechas = generarFechas(form.fechaInicio, form.fechaFin);
     setFilas(fechas);
-
+    
     try {
       const res = await fetch(
         `http://localhost:8080/habitaciones/estado?tipo=${form.tipoHabitacion}&fechaDesde=${form.fechaInicio}&fechaHasta=${form.fechaFin}`
@@ -126,30 +159,33 @@ export default function SeleccionarHabitaciones() {
       setEstadoHabitaciones([]);
       setColumnas([]);
     }
+
+    setIsLoading(false);
+
   };
 
   return (
     <main className="fondo">
-      <h2 className="titulo">Seleccionar habitaciones</h2>
+      <h2 className="titulo">Reservar Habitación</h2>
       <div className="linea-corta"></div>
       <h1 className="subtitulo">
-        Ingrese el rango de fechas y el tipo de habitación para ver el estado de las mismas
+        Ingrese el rango de fechas y el tipo de habitación, luego seleccione las habitaciones que desea reservar
       </h1>
-      <div className="contenedor-campos-labels-MEH">
-        <div className="contenedor-campos-MEH">
+      <div className="contenedor-campos-labels-RH">
+        <div className="contenedor-campos-RH">
           <form onSubmit={handleSubmit}>
             <div>
-              <p className="label-MEH">Fecha Desde</p>
+              <p className="label-RH">Fecha Desde</p>
               <input type="date" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} />
             </div>
 
             <div>
-              <p className="label-MEH">Fecha Hasta</p>
+              <p className="label-RH">Fecha Hasta</p>
               <input type="date" name="fechaFin" value={form.fechaFin} onChange={handleChange} />
             </div>
 
             <div>
-              <p className="label-MEH">Tipo de habitacion</p>
+              <p className="label-RH">Tipo de habitacion</p>
               <select name="tipoHabitacion" value={form.tipoHabitacion} onChange={handleChange}>
                 <option value="">Cualquier Tipo</option>
                 <option value="INDIVIDUAL_ESTANDAR">Individual Estándar</option>
@@ -160,41 +196,42 @@ export default function SeleccionarHabitaciones() {
               </select>
             </div>
 
-            <button className="btn-MEH" type="submit">
-              BUSCAR
+            <button className={`btn-RH ${isLoading ? "cargando" : ""}`}  type="submit" disabled={isLoading}>
+              {isLoading ? "BUSCANDO..." : "BUSCAR"}
             </button>
           </form>
         </div>
-        {err.mensaje && <p className="error-MEH">{err.mensaje}</p>}
+        {err.mensaje && <p className="error-RH">{err.mensaje}</p>}
       </div>
 
-      <div className="tabla-contenedor-principal-MEH">
+      <div className="tabla-contenedor-principal-RH">
         {filas.length > 0 && columnas.length > 0 && (
-          <div className="tabla-contenedor-MEH">
-            <table className="tabla-MEH">
+          <div className="tabla-contenedor-RH">
+            <table className="tabla-RH">
               <thead>
                 <tr>
-                  <th className="tabla-header-MEH">Fecha</th>
+                  <th className="tabla-header-RH">Fecha</th>
                   {columnas.map((numHab, i) => (
-                    <th className="tabla-header-MEH" key={i}>
+                    <th className="tabla-header-RH" key={i}>
                       Hab {numHab}
                     </th>
                   ))}
                 </tr>
               </thead>
 
-              <tbody className="tbody-animado-MEH">
+              <tbody className="tbody-animado-RH">
                 {filas.map((fecha, i) => {
                   // Asegurate que parseFechaSinOffset devuelva exactamente la key usada en estadoPorFecha
                   const fechaStr = parseFechaSinOffset(fecha);
 
                   return (
-                    <tr className="tabla-fila-MEH" key={i}>
+                    <tr className="tabla-fila-RH" key={i}>
                       <td>{fecha.toLocaleDateString("es-AR")}</td>
-
                       {estadoHabitaciones.map((hab, j) => {
                         // estadoPorFecha debe contener keys como fechaStr
+
                         const estado = hab.estadoPorFecha?.[fechaStr] ?? "LIBRE";
+
                         const numHab = String(hab.numeroHabitacion);
                         const seleccionada = seleccion[numHab]?.has(fechaStr);
 
@@ -204,9 +241,10 @@ export default function SeleccionarHabitaciones() {
                         return (
                           <td
                             key={`${i}-${j}-${numHab}`}
-                            className={`td-${estado} ${seleccionada ? "td-seleccionada" : ""} ${!esSeleccionable ? "td-no-seleccionable" : ""}`}
+                            className={`td-${estado}-RH ${seleccionada ? "td-seleccionada" : ""} ${!esSeleccionable ? "td-no-seleccionable" : ""}`}
                             onClick={() => {
                               if (esSeleccionable) toggleSeleccion(numHab, fechaStr);
+                              else if (!esSeleccionable) setVisible((prev) => ({...prev, noDisponible:true}));
                             }}
                           >
                             {estado}
@@ -222,11 +260,24 @@ export default function SeleccionarHabitaciones() {
         )}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: 20 }}>
-        <button onClick={handleAceptar} className="btn-MEH" style={{ marginTop: "20px" }}>
+      <div style={{ textAlign: "center", marginTop: 0 }}>
+        <button onClick={handleAceptar} className="btn2-RH" style={{ marginTop: "20px" }}>
           ACEPTAR
         </button>
       </div>
+
+      <ModalError visible={popUpError.noSelecciona} onClose={() => setVisible((prev) => ({...prev, noSelecciona:false}))}>
+          <h2>¡Error!</h2> <p>Por favor, haga una selección antes de continuar</p>
+      </ModalError>
+
+      <ModalError visible={popUpError.noDisponible} onClose={() => setVisible((prev) => ({...prev, noDisponible:false}))}>
+          <h2>¡Error!</h2> <p>La habitación que desea seleccionar no esta disponible</p>
+      </ModalError>
+
+      {/*<ModalError visible={popUpError.noHayDisponible} onClose={() => setVisible((prev) => ({...prev, noHayDisponible:false}))}>
+          <h2>¡Error!</h2> <p>No existen habitaciones disponibles en el periodo de fechas ingresado.</p>
+      </ModalError>*/}
+
     </main>
   );
 }

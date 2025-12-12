@@ -31,9 +31,6 @@ public class Ocupacion {
     @Column
     private LocalDate fechaFin;
     
-    @Column
-    private LocalTime horaSalida;
-    
     @Enumerated(EnumType.STRING)
     @Column(name="estadoOcupacion")
     private EstadoOcupacion estado;
@@ -50,4 +47,8 @@ public class Ocupacion {
     
     @ManyToMany(mappedBy = "ocupaciones")
     private List<Huesped> huespedes;
+    
+    @OneToMany(mappedBy = "ocupacion")
+    private List<Servicio> servicios;
+    
 }

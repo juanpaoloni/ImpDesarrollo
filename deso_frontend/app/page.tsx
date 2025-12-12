@@ -20,7 +20,7 @@ export default function MenuPrincipal() {
           </button>
         </Link>
 
-        <Link href="/darDeBajaHuesped">
+        <Link href="/gestionarHuesped">
           <button className="boton">
             <img src="/huesped.png" className="iconos_boton"/>
              <h3 className="letra_btn">Gestionar Huespedes</h3>

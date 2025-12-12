@@ -30,6 +30,12 @@
   border: 3px solid rgb(225, 201, 47)
 }
 
+.modal-contenido.texto {
+  background-color: rgb(241, 241, 241);
+  border: 3px solid rgb(80, 80, 80)
+}
+
+
 .modal-contenido h2 {
   color: rgb(255, 255, 255);
   font-size:30px;
@@ -106,4 +112,26 @@
 @keyframes popup {
   from { transform: scale(0.8); opacity: 0; }
   to   { transform: scale(1); opacity: 1; }
+}
+
+.modal-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+
+.mensaje-error-campo-M {
+    position:absolute;
+    color: rgb(255, 0, 0);
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: -5px; 
+    margin-left: 5px; 
+    white-space: pre-line;
 }

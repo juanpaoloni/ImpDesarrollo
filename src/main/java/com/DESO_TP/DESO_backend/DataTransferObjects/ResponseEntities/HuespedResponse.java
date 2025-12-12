@@ -18,6 +18,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class HuespedResponse {
 
     private TipoDocumento tipoDocumento;
@@ -33,37 +34,38 @@ public class HuespedResponse {
     private String telefono;
     private String ocupacion;
 
-    private DireccionResponse direccion; // devolvés el DTO completo
+    private DireccionResponse direccion;
     
     public static HuespedResponse toResponse(Huesped h) {
 
         Direccion d = h.getDireccion();
 
-        DireccionResponse direccionDTO = new DireccionResponse(
-                d.getIdDireccion(),
-                d.getCalle(),
-                d.getNumero(),
-                d.getDepartamento(),
-                d.getPiso(),
-                d.getCodigoPostal(),
-                d.getLocalidad(),
-                d.getProvincia(),
-                d.getPais()
-        );
+        DireccionResponse direccionDTO = DireccionResponse.builder()
+                .idDireccion(d.getIdDireccion())
+                .calle(d.getCalle())
+                .numero(d.getNumero())
+                .departamento(d.getDepartamento())
+                .piso(d.getPiso())
+                .codigoPostal(d.getCodigoPostal())
+                .localidad(d.getLocalidad())
+                .provincia(d.getProvincia())
+                .pais(d.getPais())
+                .build();
 
-        return new HuespedResponse(
-                h.getTipoDocumento(),
-                h.getNumeroDocumento(),
-                h.getNombre(),
-                h.getApellido(),
-                h.getCUIT(),
-                h.getPosicionIVA(),
-                h.getFechaNacimiento(),
-                h.getNacionalidad(),
-                h.getEmail(),
-                h.getTelefono(),
-                h.getOcupacion(),
-                direccionDTO
-        );
+        return HuespedResponse.builder()
+                .tipoDocumento(h.getTipoDocumento())
+                .numeroDocumento(h.getNumeroDocumento())
+                .nombre(h.getNombre())
+                .apellido(h.getApellido())
+                .CUIT(h.getCUIT())
+                .posicionIVA(h.getPosicionIVA())
+                .fechaNacimiento(h.getFechaNacimiento())
+                .nacionalidad(h.getNacionalidad())
+                .email(h.getEmail())
+                .telefono(h.getTelefono())
+                .ocupacion(h.getOcupacion())
+                .direccion(direccionDTO)
+                .build();
     }
 }
+

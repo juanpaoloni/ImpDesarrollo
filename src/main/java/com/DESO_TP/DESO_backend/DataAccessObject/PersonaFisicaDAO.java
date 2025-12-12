@@ -4,8 +4,9 @@
  */
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
-import com.DESO_TP.EntidadesDominio.Huesped;
-import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
+import com.DESO_TP.EntidadesDominio.PersonaFisica;
+import com.DESO_TP.Enumerados.TipoDocumento;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author jauni
  */
-
 @Repository
-public interface HuespedDAO extends CrudRepository<Huesped, HuespedId> {
+public interface PersonaFisicaDAO extends CrudRepository<PersonaFisica, Long> {
+    Optional<PersonaFisica> findByHuesped_TipoDocumentoAndHuesped_NumeroDocumento(TipoDocumento tipo, String nro);
 }

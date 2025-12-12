@@ -6,6 +6,7 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
 
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,11 +17,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class EstadoHabitacionResponse {
     private Integer numeroHabitacion;
     private Map<String, String> estadoPorFecha;
     
     public static EstadoHabitacionResponse toResponse(Integer num, Map<String, String> estadoPorFecha){
-        return new EstadoHabitacionResponse(num, estadoPorFecha);
+        return EstadoHabitacionResponse.builder()
+            .numeroHabitacion(num)
+            .estadoPorFecha(estadoPorFecha)
+            .build();
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,12 +35,8 @@ public class ReservaController {
     @GetMapping("/obtenerPorHabitacion")
     public List<ReservaResponse> obtenerReservaPorNumeroHabitacion(
             @RequestParam(required = true) Integer numeroHabitacion){
-        return service.obtenerReservaPorNumeroHabitacion(numeroHabitacion);
+        return service.obtenerResponsePorNumeroHabitacion(numeroHabitacion);
     }
-
-    // ------------------------------------------------------------
-    //  NUEVO ENDPOINT PARA CREAR MÚLTIPLES RESERVAS
-    // ------------------------------------------------------------
     @PostMapping("/crearMultiples")
     public ResponseEntity<?> crearMultiplesReservas(@RequestBody List<Reserva> reservas) {
         try {
@@ -50,7 +47,24 @@ public class ReservaController {
             return ResponseEntity.status(500).body("Error al crear reservas: " + e.getMessage());
         }
     }
-
+    
+    @GetMapping("/obtenerReservasPorPersona")
+    public List<ReservaResponse> obtenerReservasPorPersona(
+        @RequestParam (required = true) String apellido,
+        @RequestParam (required = true) String nombre){
+        
+        return service.obtenerReservasCoincidentes(apellido, nombre);
+    }
+    
+    @PutMapping("/confirmarCancelacion")
+    public ResponseEntity confirmarCancelacion(
+             @RequestParam (required = true) Long idReserva, 
+             @RequestParam (required = true)String motivo){
+        
+        service.confirmacionCancelarReserva(idReserva, motivo);
+        
+        return ResponseEntity.ok("Reserva cancelada con Éxito");
+    }
 }
 
     

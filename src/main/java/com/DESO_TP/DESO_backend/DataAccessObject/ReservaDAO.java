@@ -5,8 +5,12 @@
 package com.DESO_TP.DESO_backend.DataAccessObject;
 
 import com.DESO_TP.EntidadesDominio.Reserva;
+import com.DESO_TP.Enumerados.EstadoReserva;
 import java.util.List;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,4 +20,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservaDAO extends CrudRepository<Reserva, Long>{
     List<Reserva> findByHabitacion_NumeroHabitacion(Integer numeroHabitacion);
+    
+    List<Reserva> findByApellidoAndNombre(String apellido, String nombre);
+    
+    List<Reserva> findByApellido(String apellido);
+    
+    @Modifying
+    @Query("UPDATE Reserva r SET r.estado = :estado WHERE r.idReserva = :id")
+    void actualizarEstado(@Param("id") Long id, @Param("estado") EstadoReserva estado);
 }
+
