@@ -37,11 +37,7 @@ public class ResponsablePagoService {
 
         PersonaJuridica juridica = responsableOpt.get();
         
-        return new PersonaJuridicaResponse(
-            juridica.getIdResponsable(),
-            juridica.getRazonSocial(), 
-            juridica.getCuit()         
-        );
+        return PersonaJuridicaResponse.toResponse(juridica); 
     }
     
     public ResponseEntity<Long> cargarHuespedComoResponsable(TipoDocumento tipo, String nro){

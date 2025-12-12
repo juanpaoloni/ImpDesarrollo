@@ -16,29 +16,24 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class HabitacionResponse {
 
     private Integer numeroHabitacion;
-
     private TipoHabitacion tipo;
-
     private EstadoHabitacion estado;
-
     private String descripcion;
-
     private Integer capacidad;
-
     private Float costoPorNoche;
-    
-    
+
     public static HabitacionResponse toResponse(Habitacion h) {
-        return new HabitacionResponse(
-            h.getNumeroHabitacion(),
-            h.getTipo(),
-            h.getEstado(),
-            h.getDescripcion(),
-            h.getCapacidad(),
-            h.getCostoPorNoche()
-        );
+        return HabitacionResponse.builder()
+            .numeroHabitacion(h.getNumeroHabitacion())
+            .tipo(h.getTipo())
+            .estado(h.getEstado())
+            .descripcion(h.getDescripcion())
+            .capacidad(h.getCapacidad())
+            .costoPorNoche(h.getCostoPorNoche())
+            .build();
     }
 }

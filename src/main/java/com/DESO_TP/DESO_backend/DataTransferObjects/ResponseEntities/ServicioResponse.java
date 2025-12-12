@@ -11,12 +11,14 @@ package com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities;
 import com.DESO_TP.EntidadesDominio.Servicio;
 import com.DESO_TP.Enumerados.TipoServicio;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ServicioResponse {
 
     private Long idOcupacion;       // Id de la ocupacion asociada
@@ -28,11 +30,11 @@ public class ServicioResponse {
     public static ServicioResponse toResponse(Servicio s) {
         if (s == null) return null;
 
-        return new ServicioResponse(
-            s.getIdServicio().getIdOcupacion(),
-            s.getTipo(),
-            s.getIdServicio().getDescripcion(),
-            s.getCosto_total()
-        );
+        return ServicioResponse.builder()
+            .idOcupacion(s.getIdServicio().getIdOcupacion())
+            .tipo(s.getTipo())
+            .descripcion(s.getIdServicio().getDescripcion())
+            .costoTotal(s.getCosto_total())
+            .build();
     }
 }

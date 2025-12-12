@@ -66,7 +66,6 @@ public class HuespedService {
     
     public HuespedResponse crearHuesped(HuespedRequest req) {
 
-        // Construir la dirección a partir del request
         DireccionRequest dreq = req.getDireccion();
         Direccion d = new Direccion();
 
@@ -79,10 +78,8 @@ public class HuespedService {
         d.setProvincia(dreq.getProvincia());
         d.setPais(dreq.getPais());
 
-        // Guardar la dirección primero
         direccionRepository.save(d);
 
-        // Crear entidad huésped
         Huesped h = new Huesped();
         h.setTipoDocumento(req.getTipoDocumento());
         h.setNumeroDocumento(req.getNumeroDocumento());
@@ -121,7 +118,6 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huesped no encontrado"));
 
-        // Actualizar datos
         h.setNombre(req.getNombre());
         h.setApellido(req.getApellido());
         h.setCUIT(req.getCUIT());
@@ -132,7 +128,6 @@ public class HuespedService {
         h.setTelefono(req.getTelefono());
         h.setOcupacion(req.getOcupacion());
 
-        // Actualizar dirección
         if (req.getDireccion() != null) {
             DireccionRequest dreq = req.getDireccion();
             Direccion d = h.getDireccion();
@@ -171,7 +166,7 @@ public class HuespedService {
         Huesped h = huespedRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
 
-        return HuespedResponse.toResponse(h); // o como lo construyas
+        return HuespedResponse.toResponse(h);
     }
 
     public String obtenerPosicionIVA(TipoDocumento tipo, String numero) {

@@ -18,6 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ReservaResponse {
+
     private Long idReserva;
     private LocalDate fechaReserva;
     private LocalDate fechaInicio;
@@ -26,19 +27,21 @@ public class ReservaResponse {
     private String telefono;
     private String nombre;
     private String apellido;
-    private HabitacionResponse habitacion;    
-    
-    public static ReservaResponse toResponse(Reserva r){
-        return new ReservaResponse(
-            r.getIdReserva(),
-            r.getFechaReserva(),
-            r.getFechaInicio(),
-            r.getFechaFin(),
-            r.getEstado(),
-            r.getTelefono(),
-            r.getNombre(),
-            r.getApellido(),
-            HabitacionResponse.toResponse(r.getHabitacion()));
+    private HabitacionResponse habitacion;
+
+    public static ReservaResponse toResponse(Reserva r) {
+        return ReservaResponse.builder()
+            .idReserva(r.getIdReserva())
+            .fechaReserva(r.getFechaReserva())
+            .fechaInicio(r.getFechaInicio())
+            .fechaFin(r.getFechaFin())
+            .estado(r.getEstado())
+            .telefono(r.getTelefono())
+            .nombre(r.getNombre())
+            .apellido(r.getApellido())
+            .habitacion(HabitacionResponse.toResponse(r.getHabitacion()))
+            .build();
     }
 }
+
 
