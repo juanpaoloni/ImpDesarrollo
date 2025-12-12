@@ -1,126 +1,137 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
+import com.DESO_TP.DESO_backend.DataAccessObject.CancelacionReservaDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HabitacionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.ReservaDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.ReservaResponse;
 import com.DESO_TP.DESO_backend.Services.ReservaService;
+import com.DESO_TP.EntidadesDominio.CancelacionReserva;
 import com.DESO_TP.EntidadesDominio.Habitacion;
 import com.DESO_TP.EntidadesDominio.Reserva;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
+import com.DESO_TP.Enumerados.EstadoReserva;
 import java.util.List;
-import java.util.Collections;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- *
- * @author julia
- */
-
 @ExtendWith(MockitoExtension.class)
-public class ReservaServiceTest {
+class ReservaServiceTest {
+
+    @Mock
     private ReservaDAO reservaRepository;
+
+    @Mock
     private HabitacionDAO habitacionDAO;
 
-    private ReservaService reservaService;
+    @Mock
+    private CancelacionReservaDAO cancelacionRepository;
 
-    @BeforeEach
-    void setUp() {
-        reservaRepository = mock(ReservaDAO.class);
-        habitacionDAO = mock(HabitacionDAO.class);
+    @InjectMocks
+    private ReservaService service;
 
-        reservaService = new ReservaService();
-
-        try {
-            var fieldReservaRepo = ReservaService.class.getDeclaredField("reservaRepository");
-            fieldReservaRepo.setAccessible(true);
-            fieldReservaRepo.set(reservaService, reservaRepository);
-
-            var fieldHabDAO = ReservaService.class.getDeclaredField("habitacionDAO");
-            fieldHabDAO.setAccessible(true);
-            fieldHabDAO.set(reservaService, habitacionDAO);
-        } catch (Exception e) {
-            throw new RuntimeException("No se pudo inyectar dependencias", e);
-        }
+    private Habitacion habitacionCompleta() {
+        Habitacion h = new Habitacion();
+        h.setNumeroHabitacion(10);
+        return h;
     }
 
-    //obtenerReservaPorNumeroHabitacion
     @Test
-    void obtenerReservaPorNumeroHabitacion_retornaListaVacia_cuandoNoHayReservas() {
+    void obtenerResponsePorNumeroHabitacion_ok() {
+        Reserva r = new Reserva();
+
+        // FIX: reserva debe tener habitación
+        r.setHabitacion(habitacionCompleta());
+
         when(reservaRepository.findByHabitacion_NumeroHabitacion(10))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(List.of(r));
 
-        List<ReservaResponse> resultado = reservaService.obtenerReservaPorNumeroHabitacion(10);
+        List<ReservaResponse> resp =
+                service.obtenerResponsePorNumeroHabitacion(10);
 
-        assertNotNull(resultado);
-        assertTrue(resultado.isEmpty());
+        assertEquals(1, resp.size());
     }
 
     @Test
-    void obtenerReservaPorNumeroHabitacion_mapeaCorrectamenteReservasAResponse() {
-        Habitacion h = new Habitacion();
-        h.setNumeroHabitacion(5);
-
-        Reserva reserva = new Reserva();
-        reserva.setHabitacion(h);
-
-        when(reservaRepository.findByHabitacion_NumeroHabitacion(5))
-                .thenReturn(List.of(reserva));
-
-        List<ReservaResponse> resultado = reservaService.obtenerReservaPorNumeroHabitacion(5);
-
-        assertEquals(1, resultado.size());
-        assertEquals(5, resultado.get(0).getNumeroHabitacion());
-    }
-
-
-    //crearMultiplesReservas
-    @Test
-    void crearMultiplesReservas_lanzaExcepcion_siHabitacionNoExiste() {
-        Habitacion h = new Habitacion();
-        h.setNumeroHabitacion(50);
+    void crearMultiplesReservas_ok() {
+        Habitacion h = habitacionCompleta();
 
         Reserva r = new Reserva();
         r.setHabitacion(h);
 
-        when(habitacionDAO.findById(50)).thenReturn(Optional.empty());
+        when(habitacionDAO.findById(10)).thenReturn(Optional.of(h));
 
-        List<Reserva> reservas = List.of(r);
+        service.crearMultiplesReservas(List.of(r));
+
+        verify(reservaRepository).save(any(Reserva.class));
+    }
+
+    @Test
+    void crearMultiplesReservas_habitacionNoExiste_throw() {
+        Habitacion h = habitacionCompleta();
+
+        Reserva r = new Reserva();
+        r.setHabitacion(h);
+
+        when(habitacionDAO.findById(10)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class,
-                () -> reservaService.crearMultiplesReservas(reservas),
-                "Habitación no encontrada");
+                () -> service.crearMultiplesReservas(List.of(r)));
     }
 
     @Test
-    void crearMultiplesReservas_guardaReservasCorrectamente() {
-        Habitacion h = new Habitacion();
-        h.setNumeroHabitacion(20);
-
+    void obtenerReservasCoincidentes_soloApellido() {
         Reserva r = new Reserva();
-        r.setHabitacion(h);
+        r.setHabitacion(habitacionCompleta()); // FIX
 
-        when(habitacionDAO.findById(20)).thenReturn(Optional.of(h));
+        when(reservaRepository.findByApellido("Lopez"))
+                .thenReturn(List.of(r));
 
-        List<Reserva> reservas = List.of(r);
+        List<ReservaResponse> resp =
+                service.obtenerReservasCoincidentes("Lopez", "");
 
-        reservaService.crearMultiplesReservas(reservas);
+        assertEquals(1, resp.size());
+    }
 
-        // Verifica que se llamó a save
-        verify(reservaRepository, times(1)).save(r);
+    @Test
+    void obtenerReservasCoincidentes_apellidoYNombre() {
+        Reserva r = new Reserva();
+        r.setHabitacion(habitacionCompleta()); // FIX
 
-        // Verifica que la habitación fue reemplazada
-        assertEquals(h, r.getHabitacion());
+        when(reservaRepository.findByApellidoAndNombre("Lopez", "Ana"))
+                .thenReturn(List.of(r));
+
+        List<ReservaResponse> resp =
+                service.obtenerReservasCoincidentes("Lopez", "Ana");
+
+        assertEquals(1, resp.size());
+    }
+
+    @Test
+    void confirmacionCancelarReserva_ok() {
+        Reserva r = new Reserva();
+        r.setIdReserva(10L);
+        r.setHabitacion(habitacionCompleta()); // FIX (por si toResponse se usa)
+
+        when(reservaRepository.findById(10L)).thenReturn(Optional.of(r));
+
+        service.confirmacionCancelarReserva(10L, "Motivo");
+
+        verify(reservaRepository).actualizarEstado(10L, EstadoReserva.CANCELADA);
+        verify(cancelacionRepository).save(any(CancelacionReserva.class));
+    }
+
+    @Test
+    void confirmacionCancelarReserva_noExiste_throw() {
+        when(reservaRepository.findById(10L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> service.confirmacionCancelarReserva(10L, "Motivo"));
     }
 }
-

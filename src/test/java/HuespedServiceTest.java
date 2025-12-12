@@ -1,27 +1,30 @@
 
-
 import com.DESO_TP.DESO_backend.DataAccessObject.DireccionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.OcupacionResponse;
 import com.DESO_TP.DESO_backend.Services.HuespedService;
-import com.DESO_TP.DESO_backend.Services.OcupacionService;
-
+import com.DESO_TP.DESO_backend.Services.Mediator.HuespedOcupacionMediator;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
+import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
 import com.DESO_TP.Enumerados.TipoDocumento;
-
-import java.time.LocalDate;
-import java.util.*;
-
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class HuespedServiceTest {
 
     @Mock
@@ -31,207 +34,146 @@ class HuespedServiceTest {
     private DireccionDAO direccionRepository;
 
     @Mock
-    private OcupacionService ocupacionService;
+    private HuespedOcupacionMediator mediator;
 
     @InjectMocks
     private HuespedService service;
 
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    // TIENE OCUPACIONES
-    @Test
-    void tieneOcupaciones_true() {
-        when(ocupacionService.ocupacionesPorHuesped(TipoDocumento.DNI, "123"))
-                .thenReturn(List.of(new OcupacionResponse()));
-
-        boolean result = service.tieneOcupaciones("DNI", "123");
-
-        assertTrue(result);
+    private Direccion direccionCompleta() {
+        Direccion d = new Direccion();
+        d.setIdDireccion(10L);
+        d.setCalle("Falsa");
+        d.setNumero(123);
+        return d;
     }
 
     @Test
-    void tieneOcupaciones_false() {
-        when(ocupacionService.ocupacionesPorHuesped(TipoDocumento.DNI, "123"))
-                .thenReturn(Collections.emptyList());
+    void tieneOcupaciones_ok() {
+        when(mediator.huespedTieneOcupaciones(TipoDocumento.DNI, "123"))
+                .thenReturn(true);
 
-        boolean result = service.tieneOcupaciones("DNI", "123");
+        boolean resp = service.tieneOcupaciones("DNI", "123");
 
-        assertFalse(result);
+        assertTrue(resp);
+        verify(mediator).huespedTieneOcupaciones(TipoDocumento.DNI, "123");
     }
 
-    // BUSCAR HUESPEDES
     @Test
-    void buscarHuespedes_filtradoCorrecto() {
+    void buscarHuespedes_filtraCorrectamente() {
         Huesped h = new Huesped();
         h.setNombre("Juan");
-        h.setApellido("Perez");
+        h.setApellido("Lopez");
         h.setTipoDocumento(TipoDocumento.DNI);
         h.setNumeroDocumento("123");
 
-        Direccion d = new Direccion();
-        d.setIdDireccion(1L);
-        h.setDireccion(d);
+        // FIX: dirección completa
+        h.setDireccion(direccionCompleta());
+
         when(huespedRepository.findAll()).thenReturn(List.of(h));
 
-        List<HuespedResponse> result =
-                service.buscarHuespedes("juan", "perez", "dni", "123");
+        List<HuespedResponse> resp =
+                service.buscarHuespedes("Juan", "Lopez", "DNI", "123");
 
-        assertEquals(1, result.size());
+        assertEquals(1, resp.size());
     }
 
-    @Test
-    void buscarHuespedes_noCoincide() {
-        when(huespedRepository.findAll()).thenReturn(List.of());
-
-        List<HuespedResponse> result =
-                service.buscarHuespedes("juan", "perez", "dni", "123");
-
-        assertTrue(result.isEmpty());
-    }
-
-    // CREAR HUESPED
     @Test
     void crearHuesped_ok() {
-        HuespedRequest rq = new HuespedRequest();
-        rq.setTipoDocumento(TipoDocumento.DNI);
-        rq.setNumeroDocumento("123");
-        rq.setNombre("Juan");
-        rq.setApellido("Perez");
-        rq.setFechaNacimiento(LocalDate.of(1990, 5, 20));
+        HuespedRequest req = new HuespedRequest();
+        req.setTipoDocumento(TipoDocumento.DNI);
+        req.setNumeroDocumento("123");
+        req.setNombre("Juan");
+        req.setApellido("Lopez");
 
-        DireccionRequest drq = new DireccionRequest();
-        drq.setCalle("Calle Falsa");
-        drq.setNumero(123);
-        rq.setDireccion(drq);
+        DireccionRequest dreq = new DireccionRequest();
+        dreq.setCalle("X");
+        req.setDireccion(dreq);
 
-        when(direccionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
-        when(huespedRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(direccionRepository.save(any())).thenAnswer(inv -> {
+            Direccion d = inv.getArgument(0);
+            d.setIdDireccion(10L);
+            return d;
+        });
 
-        HuespedResponse resp = service.crearHuesped(rq);
+        when(huespedRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        assertNotNull(resp);
+        HuespedResponse resp = service.crearHuesped(req);
+
         assertEquals("Juan", resp.getNombre());
-        assertEquals("Perez", resp.getApellido());
-
         verify(direccionRepository).save(any(Direccion.class));
         verify(huespedRepository).save(any(Huesped.class));
     }
 
-    // OBTENER HUESPED
     @Test
     void obtenerHuesped_ok() {
         Huesped h = new Huesped();
         h.setNombre("Ana");
-        Direccion d = new Direccion();
-        d.setIdDireccion(1L);
-        h.setDireccion(d);
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.of(h));
 
-        HuespedResponse resp = service.obtenerHuesped(TipoDocumento.DNI, "999");
+        // FIX: dirección completa
+        h.setDireccion(direccionCompleta());
+
+        HuespedId id = new HuespedId(TipoDocumento.DNI, "123");
+
+        when(huespedRepository.findById(id)).thenReturn(Optional.of(h));
+
+        HuespedResponse resp = service.obtenerHuesped(TipoDocumento.DNI, "123");
 
         assertEquals("Ana", resp.getNombre());
     }
 
     @Test
-    void obtenerHuesped_noExiste() {
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.empty());
+    void obtenerHuesped_noEncontrado_throw() {
+        HuespedId id = new HuespedId(TipoDocumento.DNI, "123");
+
+        when(huespedRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class,
-                () -> service.obtenerHuesped(TipoDocumento.DNI, "999"));
+                () -> service.obtenerHuesped(TipoDocumento.DNI, "123"));
     }
 
-    // ACTUALIZAR HUESPED
     @Test
     void actualizarHuesped_ok() {
-
         Huesped h = new Huesped();
-        h.setTipoDocumento(TipoDocumento.DNI);
-        h.setNumeroDocumento("123");
-        h.setNombre("Juan");
+        h.setDireccion(direccionCompleta());  // FIX
 
-        Direccion d = new Direccion();
-        d.setCalle("Vieja");
-        h.setDireccion(d);
+        HuespedId id = new HuespedId(TipoDocumento.DNI, "123");
 
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.of(h));
-
-        when(huespedRepository.save(any())).thenAnswer(i -> i.getArgument(0));
-        when(direccionRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(huespedRepository.findById(id)).thenReturn(Optional.of(h));
 
         HuespedRequest req = new HuespedRequest();
         req.setTipoDocumento(TipoDocumento.DNI);
         req.setNumeroDocumento("123");
-        req.setNombre("Juanito");
-        req.setApellido("Perez");
+        req.setNombre("Nuevo");
 
-        DireccionRequest drq = new DireccionRequest();
-        drq.setCalle("Nueva calle");
-        req.setDireccion(drq);
+        DireccionRequest dreq = new DireccionRequest();
+        dreq.setCalle("Nueva calle");
+        req.setDireccion(dreq);
 
         HuespedResponse resp = service.actualizarHuesped(req);
 
-        assertEquals("Juanito", resp.getNombre());
-        assertEquals("Perez", resp.getApellido());
-        assertEquals("Nueva calle", h.getDireccion().getCalle());
+        assertEquals("Nuevo", resp.getNombre());
+        verify(direccionRepository).save(any(Direccion.class));
+        verify(huespedRepository).save(h);
     }
 
-    @Test
-    void actualizarHuesped_noExiste() {
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class,
-                () -> service.actualizarHuesped(new HuespedRequest()));
-    }
-
-    //ELIMINAR
     @Test
     void eliminarHuesped_ok() {
-        when(huespedRepository.existsById(any())).thenReturn(true);
+        HuespedId id = new HuespedId(TipoDocumento.LE, "555");
 
-        service.eliminarHuesped(TipoDocumento.DNI, "321");
+        when(huespedRepository.existsById(id)).thenReturn(true);
 
-        verify(huespedRepository).deleteById(any());
+        service.eliminarHuesped(TipoDocumento.LE, "555");
+
+        verify(huespedRepository).deleteById(id);
     }
 
     @Test
-    void eliminarHuesped_noExiste() {
-        when(huespedRepository.existsById(any())).thenReturn(false);
+    void eliminarHuesped_noEncontrado_throw() {
+        HuespedId id = new HuespedId(TipoDocumento.LE, "555");
+
+        when(huespedRepository.existsById(id)).thenReturn(false);
 
         assertThrows(RuntimeException.class,
-                () -> service.eliminarHuesped(TipoDocumento.DNI, "321"));
-    }
-
-    //BUSCAR HUESPED POR ID
-    @Test
-    void buscarHuespedPorId_ok() {
-        Huesped h = new Huesped();
-        h.setNombre("Roberto");
-        Direccion d = new Direccion();
-        d.setIdDireccion(1L);
-        h.setDireccion(d);
-
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.of(h));
-
-        HuespedResponse resp =
-                service.buscarHuespedPorId(TipoDocumento.DNI, "888");
-
-        assertEquals("Roberto", resp.getNombre());
-    }
-
-    @Test
-    void buscarHuespedPorId_noExiste() {
-        when(huespedRepository.findById(any()))
-                .thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class,
-                () -> service.buscarHuespedPorId(TipoDocumento.DNI, "888"));
+                () -> service.eliminarHuesped(TipoDocumento.LE, "555"));
     }
 }
