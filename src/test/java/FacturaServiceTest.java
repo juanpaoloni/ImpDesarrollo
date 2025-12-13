@@ -1,8 +1,7 @@
 import com.DESO_TP.DESO_backend.DataAccessObject.FacturaDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.OcupacionDAO;
-import com.DESO_TP.DESO_backend.DataAccessObject.PersonaFisicaDAO;
-import com.DESO_TP.DESO_backend.DataAccessObject.PersonaJuridicaDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
+import com.DESO_TP.DESO_backend.Services.FactoryMethod.ResponsablePagoFactory;
 import com.DESO_TP.DESO_backend.Services.FacturaService;
 import com.DESO_TP.EntidadesDominio.Factura;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
@@ -25,10 +24,7 @@ import org.springframework.http.ResponseEntity;
 class FacturaServiceTest {
 
     @Mock
-    private PersonaFisicaDAO pfRepository;
-
-    @Mock
-    private PersonaJuridicaDAO pjRepository;
+    private ResponsablePagoFactory responsablePagoFactory;
 
     @Mock
     private FacturaDAO facturaRepository;
@@ -53,20 +49,27 @@ class FacturaServiceTest {
         Ocupacion ocup = new Ocupacion();
         ocup.setIdOcupacion(20L);
 
-        when(pfRepository.findById(10L)).thenReturn(Optional.of(pf));
-        when(ocupacionRepository.findById(20L)).thenReturn(Optional.of(ocup));
-        when(facturaRepository.save(any())).thenAnswer(inv -> {
-            Factura f = inv.getArgument(0);
-            f.setNumeroFactura(99L);
-            return f;
-        });
+        when(responsablePagoFactory.obtener("FISICA", 10L))
+            .thenReturn(pf);
+
+        when(ocupacionRepository.findById(20L))
+            .thenReturn(Optional.of(ocup));
+
+        when(facturaRepository.save(any()))
+            .thenAnswer(inv -> {
+                Factura f = inv.getArgument(0);
+                f.setNumeroFactura(99L);
+                return f;
+            });
 
         ResponseEntity<Long> resp = service.cargarFactura(req);
 
         assertEquals(99L, resp.getBody());
-        verify(pfRepository).findById(10L);
+
+        verify(responsablePagoFactory).obtener("FISICA", 10L);
         verify(facturaRepository).save(any(Factura.class));
     }
+
 
     @Test
     void cargarFactura_conResponsableJuridica_ok() {
@@ -82,20 +85,27 @@ class FacturaServiceTest {
         Ocupacion ocup = new Ocupacion();
         ocup.setIdOcupacion(20L);
 
-        when(pjRepository.findById(11L)).thenReturn(Optional.of(pj));
-        when(ocupacionRepository.findById(20L)).thenReturn(Optional.of(ocup));
-        when(facturaRepository.save(any())).thenAnswer(inv -> {
-            Factura f = inv.getArgument(0);
-            f.setNumeroFactura(50L);
-            return f;
-        });
+        when(responsablePagoFactory.obtener("JURIDICA", 11L))
+            .thenReturn(pj);
+
+        when(ocupacionRepository.findById(20L))
+            .thenReturn(Optional.of(ocup));
+
+        when(facturaRepository.save(any()))
+            .thenAnswer(inv -> {
+                Factura f = inv.getArgument(0);
+                f.setNumeroFactura(50L);
+                return f;
+            });
 
         ResponseEntity<Long> resp = service.cargarFactura(req);
 
         assertEquals(50L, resp.getBody());
-        verify(pjRepository).findById(11L);
+
+        verify(responsablePagoFactory).obtener("JURIDICA", 11L);
         verify(facturaRepository).save(any(Factura.class));
     }
+
 
     @Test
     void cargarFactura_responsableNoExiste_throw() {
@@ -104,10 +114,12 @@ class FacturaServiceTest {
         req.setIdResponsable(10L);
         req.setIdOcupacion(20L);
 
-        when(pfRepository.findById(10L)).thenReturn(Optional.empty());
+        when(responsablePagoFactory.obtener("FISICA", 10L))
+            .thenThrow(new RuntimeException("Responsable no encontrado"));
 
         assertThrows(RuntimeException.class, () -> service.cargarFactura(req));
     }
+
 
     @Test
     void cargarFactura_ocupacionNoExiste_throw() {
@@ -116,9 +128,13 @@ class FacturaServiceTest {
         req.setIdResponsable(10L);
         req.setIdOcupacion(20L);
 
-        when(pfRepository.findById(10L)).thenReturn(Optional.of(new PersonaFisica()));
-        when(ocupacionRepository.findById(20L)).thenReturn(Optional.empty());
+        when(responsablePagoFactory.obtener("FISICA", 10L))
+            .thenReturn(new PersonaFisica());
+
+        when(ocupacionRepository.findById(20L))
+            .thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> service.cargarFactura(req));
     }
+
 }

@@ -387,7 +387,6 @@ export default function Facturar() {
                     throw new Error(errorText || "Error al cargar el huésped como responsable");
                 }
 
-                // suponiendo que tu backend devuelve el id como texto
                 idResponsable = await response.text();
             } catch (error) {
                 console.error("Error:", error);

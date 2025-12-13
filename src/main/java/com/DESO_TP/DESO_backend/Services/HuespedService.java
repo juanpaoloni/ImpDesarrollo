@@ -6,7 +6,6 @@ import com.DESO_TP.DESO_backend.DataAccessObject.HuespedDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
-import com.DESO_TP.DESO_backend.Services.Mediator.HuespedOcupacionMediator;
 import com.DESO_TP.DESO_backend.Utils.TextoUtils;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.DESO_TP.DESO_backend.Services.Facade.HuespedOcupacionFacade;
 
 @Service
 @RequiredArgsConstructor
@@ -29,10 +29,10 @@ public class HuespedService {
     private DireccionDAO direccionRepository;
     
     @Autowired
-    private HuespedOcupacionMediator mediator;
+    private HuespedOcupacionFacade facade;
 
     public boolean tieneOcupaciones(String tipoDocumento, String nroDocumento){
-        return mediator.huespedTieneOcupaciones(
+        return facade.huespedTieneOcupaciones(
             TipoDocumento.valueOf(tipoDocumento), 
             nroDocumento
         );

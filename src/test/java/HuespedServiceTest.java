@@ -5,7 +5,6 @@ import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.DireccionReq
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.HuespedRequest;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HuespedResponse;
 import com.DESO_TP.DESO_backend.Services.HuespedService;
-import com.DESO_TP.DESO_backend.Services.Mediator.HuespedOcupacionMediator;
 import com.DESO_TP.EntidadesDominio.Direccion;
 import com.DESO_TP.EntidadesDominio.Huesped;
 import com.DESO_TP.EntidadesDominio.IDs.HuespedId;
@@ -23,6 +22,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import com.DESO_TP.DESO_backend.Services.Facade.HuespedOcupacionFacade;
 
 @ExtendWith(MockitoExtension.class)
 class HuespedServiceTest {
@@ -34,7 +34,7 @@ class HuespedServiceTest {
     private DireccionDAO direccionRepository;
 
     @Mock
-    private HuespedOcupacionMediator mediator;
+    private HuespedOcupacionFacade mediator;
 
     @InjectMocks
     private HuespedService service;

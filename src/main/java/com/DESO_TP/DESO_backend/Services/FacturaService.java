@@ -6,13 +6,10 @@ package com.DESO_TP.DESO_backend.Services;
 
 import com.DESO_TP.DESO_backend.DataAccessObject.FacturaDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.OcupacionDAO;
-import com.DESO_TP.DESO_backend.DataAccessObject.PersonaFisicaDAO;
-import com.DESO_TP.DESO_backend.DataAccessObject.PersonaJuridicaDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.RequestEntities.FacturaRequest;
+import com.DESO_TP.DESO_backend.Services.FactoryMethod.ResponsablePagoFactory;
 import com.DESO_TP.EntidadesDominio.Factura;
 import com.DESO_TP.EntidadesDominio.Ocupacion;
-import com.DESO_TP.EntidadesDominio.PersonaFisica;
-import com.DESO_TP.EntidadesDominio.PersonaJuridica;
 import com.DESO_TP.EntidadesDominio.ResponsablePago;
 import com.DESO_TP.Enumerados.EstadoFactura;
 import java.time.LocalDate;
@@ -28,45 +25,40 @@ import org.springframework.stereotype.Service;
 public class FacturaService {
     
     @Autowired
-    private PersonaFisicaDAO pfRepository;
-            
-    @Autowired
-    private PersonaJuridicaDAO pjRepository;
-    
-    @Autowired
     private FacturaDAO facturaRepository;
 
     @Autowired
     private OcupacionDAO ocupacionRepository;
     
+    @Autowired
+    private ResponsablePagoFactory responsablePagoFactory;
+
     public ResponseEntity<Long> cargarFactura(FacturaRequest req) {
+
         Factura nueva = new Factura();
         nueva.setEstado(EstadoFactura.GENERADA);
         nueva.setFecha(LocalDate.now());
         nueva.setMontoTotal(req.getMonto());
-        
-        ResponsablePago responsableProxy;
-        if(req.getTipoResponsable().equals("FISICA")) {
-            responsableProxy = pfRepository.findById(req.getIdResponsable())
-                .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
-        } else {
-            responsableProxy = pjRepository.findById(req.getIdResponsable())
-                .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
-        }
-        
-        nueva.setResponsable(responsableProxy);
-        
+
+        ResponsablePago responsable =
+            responsablePagoFactory.obtener(
+                req.getTipoResponsable(), // puede ser persona "FISICA" o "JURIDICA"
+                req.getIdResponsable()
+            );
+
+        nueva.setResponsable(responsable);
+
         Ocupacion o = ocupacionRepository.findById(req.getIdOcupacion())
-                    .orElseThrow(() -> new RuntimeException("Ocupacion no encontrada"));
-        
+            .orElseThrow(() -> new RuntimeException("Ocupacion no encontrada"));
+
         nueva.setOcupacion(o);
-        
         nueva.setNotaCredito(null);
-        
+
         facturaRepository.save(nueva);
-        
+
         return ResponseEntity.ok(nueva.getNumeroFactura());
     }
+
     
     
     

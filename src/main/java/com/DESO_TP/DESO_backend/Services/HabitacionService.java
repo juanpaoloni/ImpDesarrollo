@@ -9,7 +9,6 @@ import com.DESO_TP.DESO_backend.DataAccessObject.HabitacionDAO;
 import com.DESO_TP.DESO_backend.DataAccessObject.ReservaDAO;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.EstadoHabitacionResponse;
 import com.DESO_TP.DESO_backend.DataTransferObjects.ResponseEntities.HabitacionResponse;
-import com.DESO_TP.DESO_backend.Services.Mediator.HabitacionEstadoMediator;
 import com.DESO_TP.DESO_backend.Utils.ServiceUtils;
 import com.DESO_TP.EntidadesDominio.Habitacion;
 import java.time.LocalDate;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.DESO_TP.DESO_backend.Services.Facade.HabitacionEstadoFacade;
 
 /**
  *
@@ -32,7 +32,7 @@ public class HabitacionService {
     private HabitacionDAO habitacionRepository;
     
     @Autowired
-    private HabitacionEstadoMediator estadoMediator;
+    private HabitacionEstadoFacade facade;
 
     public List<EstadoHabitacionResponse> obtenerEstadoPorTipo(String tipo, String fDesde, String fHasta) {
 
@@ -49,7 +49,7 @@ public class HabitacionService {
 
             for (LocalDate fecha : rango) {
                 estados.put(fecha.toString(),
-                    estadoMediator.obtenerEstadoHabitacionEnFecha(h.getNumeroHabitacion(), fecha)
+                    facade.obtenerEstadoHabitacionEnFecha(h.getNumeroHabitacion(), fecha)
                 );
             }
 
@@ -94,13 +94,4 @@ public class HabitacionService {
         return reservasSeleccionadas;
         
     }
-    
-    @Autowired
-    private HabitacionDAO habitacionDAO;
-
-    @Autowired
-    private ReservaDAO reservaDAO;
-
-
-
 }

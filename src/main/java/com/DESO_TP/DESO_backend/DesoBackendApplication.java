@@ -1,7 +1,5 @@
 package com.DESO_TP.DESO_backend;
 
-import com.DESO_TP.DESO_backend.Utils.ServiceUtils;
-import java.util.List;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
