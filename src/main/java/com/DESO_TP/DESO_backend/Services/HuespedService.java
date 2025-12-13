@@ -177,7 +177,11 @@ public class HuespedService {
         return h.getPosicionIVA().toString();
     }
     
-    
+    public boolean tieneDuplicados(TipoDocumento tipo, String numero){
+        HuespedId id = new HuespedId(tipo, numero);
+        
+        return huespedRepository.existsById(id);
+    }
 
 
 }

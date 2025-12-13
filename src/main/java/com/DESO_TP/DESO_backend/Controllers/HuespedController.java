@@ -73,5 +73,12 @@ public class HuespedController {
         return ResponseEntity.ok(respuesta);
     }
     
+    @GetMapping("/tieneDuplicados")
+    public ResponseEntity<Boolean> tieneDuplicados(
+    @RequestParam(required = true) String tipoDocumento,
+    @RequestParam(required = true)String nroDocumento){
+        return ResponseEntity.ok(service.tieneDuplicados(TipoDocumento.valueOf(tipoDocumento), nroDocumento));
+    }
+    
     
 }

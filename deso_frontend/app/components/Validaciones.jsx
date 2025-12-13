@@ -34,7 +34,7 @@ export function validarNumerico(valor){
 }
 
 export function validarTelefono(valor){
-    return /^\+?[0-9]{10,16}$/.test(valor)
+    return /^\+?[0-9]{10,12}$/.test(valor)
 }
 
 export function validarFormatoFecha(valor) {

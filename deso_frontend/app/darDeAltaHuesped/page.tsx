@@ -4,8 +4,12 @@ import "../globals.css"
 import {validarNumerico, validarTexto, validarDocumento, validarTelefono, validarEmail, validarCuit, validarFechaNoFutura, validarDepartamento } from "../components/Validaciones.jsx"
 import "./formHuesped.css"; 
 import { useState } from "react";
+import { ModalBase, ModalAdvertencia } from "../components/Modal.jsx";
+import { useRouter } from "next/navigation";
 
 export default function darDeAlta() {
+
+  const router = useRouter();
 
   const [errores, setErrores] = useState({
     nombre: "",
@@ -280,7 +284,12 @@ const verificarYMostrarErrores = () => {
   return hayErrores;
 }
 
-const handleSubmit = async (e) => {
+const [popupvisible, setVisible] = useState({
+  advertencia:false,
+  confirmacion:false,
+})
+
+const handleSubmit = async (e: any) => {
   e.preventDefault();
 
   resetErrores();
@@ -291,6 +300,14 @@ const handleSubmit = async (e) => {
 
 
   try {
+    const hayDuplicadosResponse = await fetch (`http://localhost:8080/huespedes/tieneDuplicados?tipoDocumento=${form.tipoDocumento}&nroDocumento=${form.numeroDocumento}`)
+    const hayDuplicados = await hayDuplicadosResponse.text();
+
+    if(hayDuplicados === "true"){
+      setVisible((prev) => ({...prev, advertencia:true}));
+      return;
+    }
+
     const response = await fetch("http://localhost:8080/huespedes/darDeAlta", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -301,9 +318,8 @@ const handleSubmit = async (e) => {
       throw new Error("Error al guardar el huésped");
     }
 
-    alert("Huésped guardado con éxito");
+    setVisible((prev) => ({...prev, confirmacion:true}));
 
-    // Limpiar formulario
     limpiarFormulario();
 
   } catch (error) {
@@ -468,6 +484,17 @@ const handleSubmit = async (e) => {
           <button type="submit" className="btn-DAH">Dar de Alta</button>
         </div>
       </form>
+
+      <ModalAdvertencia visible={popupvisible.advertencia} onClose={() => (setVisible((prev) => ({...prev, advertencia:false})))} onAceptar={() => router.push(`/modificarHuesped?tipoDocumento=${form.tipoDocumento}&nroDocumento=${form.numeroDocumento}`)}>
+        <h2>¡Advertencia!</h2>
+        <p>El tipo y numero de documento que esta intentando ingresar ya existen en el sistema<br/>¿Desea modificar al huésped existente en su lugar?</p>
+      </ModalAdvertencia>
+
+      <ModalBase visible={popupvisible.confirmacion} onClose={() => (setVisible((prev) => ({...prev, confirmacion:false})))}>
+        <h2>¡Exito!</h2>
+        <p>El huesped fue cargado correctamente.</p>
+      </ModalBase>
+
     </main>
   );
 }

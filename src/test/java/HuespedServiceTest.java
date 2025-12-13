@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.DESO_TP.DESO_backend.Services.Facade.HuespedOcupacionFacade;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(MockitoExtension.class)
 class HuespedServiceTest {
@@ -174,4 +175,33 @@ class HuespedServiceTest {
         assertThrows(RuntimeException.class,
                 () -> service.eliminarHuesped(TipoDocumento.LE, "555"));
     }
+    
+        @Test
+    void tieneDuplicados_cuandoExiste_devuelveTrue() {
+        TipoDocumento tipo = TipoDocumento.DNI;
+        String numero = "12345678";
+        HuespedId id = new HuespedId(tipo, numero);
+
+        when(huespedRepository.existsById(id)).thenReturn(true);
+
+        boolean resultado = service.tieneDuplicados(tipo, numero);
+
+        assertTrue(resultado);
+        verify(huespedRepository).existsById(id);
+    }
+
+    @Test
+    void tieneDuplicados_cuandoNoExiste_devuelveFalse() {
+        TipoDocumento tipo = TipoDocumento.DNI;
+        String numero = "87654321";
+        HuespedId id = new HuespedId(tipo, numero);
+
+        when(huespedRepository.existsById(id)).thenReturn(false);
+
+        boolean resultado = service.tieneDuplicados(tipo, numero);
+
+        assertFalse(resultado);
+        verify(huespedRepository).existsById(id);
+    }
+    
 }
