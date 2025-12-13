@@ -66,7 +66,6 @@ class HuespedServiceTest {
         h.setTipoDocumento(TipoDocumento.DNI);
         h.setNumeroDocumento("123");
 
-        // FIX: dirección completa
         h.setDireccion(direccionCompleta());
 
         when(huespedRepository.findAll()).thenReturn(List.of(h));
@@ -109,7 +108,6 @@ class HuespedServiceTest {
         Huesped h = new Huesped();
         h.setNombre("Ana");
 
-        // FIX: dirección completa
         h.setDireccion(direccionCompleta());
 
         HuespedId id = new HuespedId(TipoDocumento.DNI, "123");
@@ -134,7 +132,7 @@ class HuespedServiceTest {
     @Test
     void actualizarHuesped_ok() {
         Huesped h = new Huesped();
-        h.setDireccion(direccionCompleta());  // FIX
+        h.setDireccion(direccionCompleta());
 
         HuespedId id = new HuespedId(TipoDocumento.DNI, "123");
 

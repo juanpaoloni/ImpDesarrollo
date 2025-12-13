@@ -36,7 +36,7 @@ class ReservaServiceTest {
     @InjectMocks
     private ReservaService service;
 
-    private Habitacion habitacionCompleta() {
+    private Habitacion habitacionInstanciaMock() {
         Habitacion h = new Habitacion();
         h.setNumeroHabitacion(10);
         return h;
@@ -46,8 +46,7 @@ class ReservaServiceTest {
     void obtenerResponsePorNumeroHabitacion_ok() {
         Reserva r = new Reserva();
 
-        // FIX: reserva debe tener habitación
-        r.setHabitacion(habitacionCompleta());
+        r.setHabitacion(habitacionInstanciaMock());
 
         when(reservaRepository.findByHabitacion_NumeroHabitacion(10))
                 .thenReturn(List.of(r));
@@ -60,7 +59,7 @@ class ReservaServiceTest {
 
     @Test
     void crearMultiplesReservas_ok() {
-        Habitacion h = habitacionCompleta();
+        Habitacion h = habitacionInstanciaMock();
 
         Reserva r = new Reserva();
         r.setHabitacion(h);
@@ -74,7 +73,7 @@ class ReservaServiceTest {
 
     @Test
     void crearMultiplesReservas_habitacionNoExiste_throw() {
-        Habitacion h = habitacionCompleta();
+        Habitacion h = habitacionInstanciaMock();
 
         Reserva r = new Reserva();
         r.setHabitacion(h);
@@ -88,7 +87,7 @@ class ReservaServiceTest {
     @Test
     void obtenerReservasCoincidentes_soloApellido() {
         Reserva r = new Reserva();
-        r.setHabitacion(habitacionCompleta()); // FIX
+        r.setHabitacion(habitacionInstanciaMock());
 
         when(reservaRepository.findByApellido("Lopez"))
                 .thenReturn(List.of(r));
@@ -102,7 +101,7 @@ class ReservaServiceTest {
     @Test
     void obtenerReservasCoincidentes_apellidoYNombre() {
         Reserva r = new Reserva();
-        r.setHabitacion(habitacionCompleta()); // FIX
+        r.setHabitacion(habitacionInstanciaMock());
 
         when(reservaRepository.findByApellidoAndNombre("Lopez", "Ana"))
                 .thenReturn(List.of(r));
@@ -117,7 +116,7 @@ class ReservaServiceTest {
     void confirmacionCancelarReserva_ok() {
         Reserva r = new Reserva();
         r.setIdReserva(10L);
-        r.setHabitacion(habitacionCompleta()); // FIX (por si toResponse se usa)
+        r.setHabitacion(habitacionInstanciaMock()); 
 
         when(reservaRepository.findById(10L)).thenReturn(Optional.of(r));
 
