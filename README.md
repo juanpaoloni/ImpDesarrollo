@@ -11,6 +11,7 @@ Detalles a tener en cuenta:
     de la conexión tienen que modificar las siguientes líneas que tenemos en "application.properties":
 
     spring.datasource.username=root          -- aca envez de root pongan el usuario que quieran
+    
     spring.datasource.password=cachito123    -- envez de cachito123 pongan la contraseña que corresponda
 
     es MUY importante que esta conexión con la base de datos se haga correctamente por que si no el backend no va a ejecutar, y aunque ejecute no haría nada.
