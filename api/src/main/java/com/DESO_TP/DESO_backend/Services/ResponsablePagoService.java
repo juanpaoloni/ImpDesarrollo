@@ -55,4 +55,14 @@ public class ResponsablePagoService {
         return ResponseEntity.ok(nueva.getIdResponsable());
     }
     
+    public ResponseEntity<String> darDeBaja(String cuit){
+        if(!personaJuridicaRepository.existsByCuit(cuit)){
+            throw new RuntimeException("Responsable no encontrado");
+        }
+        
+        personaJuridicaRepository.deleteByCuit(cuit);
+        
+        return ResponseEntity.ok("Responsable eliminado con éxito");
+    }
+    
 }

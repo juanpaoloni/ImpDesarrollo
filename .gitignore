@@ -69,3 +69,7 @@ frontend/.vscode-test
 # ==============================
 
 .DS_Store
+
+# Cosos del front que estan donde no van
+
+node_modules/

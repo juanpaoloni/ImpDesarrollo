@@ -32,4 +32,9 @@ public class ResponsablePagoController {
         return service.cargarHuespedComoResponsable(TipoDocumento.valueOf(tipoDocumento), nroDocumento);
     }
     
+    @DeleteMapping("/darDeBaja")
+    public ResponseEntity<String> darDeBaja(@RequestParam String cuit){       
+        return service.darDeBaja(cuit);
+    }
+    
 }

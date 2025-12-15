@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface PersonaJuridicaDAO extends CrudRepository<PersonaJuridica, Long> {
     Optional<PersonaJuridica> findByCuit(String cuit); 
+    Boolean existsByCuit(String cuit);
+    void deleteByCuit(String cuit);
 }
