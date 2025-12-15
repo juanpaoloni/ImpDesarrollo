@@ -9,10 +9,12 @@ Detalles a tener en cuenta:
 
     Si se quiere cambiar el nombre de la base de datos a utilizar pueden modificar esa linea (lo que esta justo despues de "//localhost:3306/"). Además, si se quiere modificar las credenciales
     de la conexión tienen que modificar las siguientes líneas que tenemos en "application.properties":
+    
 
     spring.datasource.username=root          -- aca envez de root pongan el usuario que quieran
     
     spring.datasource.password=cachito123    -- envez de cachito123 pongan la contraseña que corresponda
+    
 
     es MUY importante que esta conexión con la base de datos se haga correctamente por que si no el backend no va a ejecutar, y aunque ejecute no haría nada.
 
@@ -57,8 +59,11 @@ Detalles a tener en cuenta:
     @GetMapping: es el que más usamos, se uso en cosas como obtener la lista de huéspedes que coincidan con los campos de "Buscar Huésped", obtener los estados de las habitaciones, entre muchos otros.
 
     Ejemplos: http://localhost:8080/huespedes/buscarHuespedes?tipoDocumento=DNI
+    
               http://localhost:8080/huespedes/buscarHuespedes?apellido=Vega&nombre=Carolina
+    
               http://localhost:8080/habitaciones/obtenerPorTipo?tipo=INDIVIDUAL_ESTANDAR
+    
               http://localhost:8080/habitaciones/estado?tipo=&fechaDesde=2025-12-01&fechaHasta=2025-12-31
 
     @DeleteMapping: se uso en dar de baja huésped y, aunque no lo hayamos implementado en el frontend, se agrego el Dar de baja responsable de pago.
