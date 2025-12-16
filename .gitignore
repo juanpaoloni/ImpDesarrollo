@@ -73,3 +73,7 @@ frontend/.vscode-test
 # Cosos del front que estan donde no van
 
 node_modules/
+
+# jacoco
+jacoco.exec
+target/site/jacoco/
