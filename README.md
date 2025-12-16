@@ -2,6 +2,9 @@ Como es indicado en el enunciado del trabajo práctico, el codigo esta dividido 
 y se uso una base de datos relacional MySQL.
 
 Detalles a tener en cuenta:
+
+  - Hacer un clean and build la primera vez que lo ejecutan.
+
   - Se hizo uso de Hibernate para generar de manera automatica las tablas en la base de datos. Más especificamente, ingresa el usuario y contraseña correspondiente de la conexión y, en la misma,
     busca un schema/database llamado "desarrollo" como puede ser visto en la siguiente linea del archivo "application.properties":
 
