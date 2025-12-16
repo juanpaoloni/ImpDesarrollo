@@ -4,6 +4,8 @@
 
 # Build output
 /target/
+target/
+**/target/
 
 # IDE / editor
 *.iml
