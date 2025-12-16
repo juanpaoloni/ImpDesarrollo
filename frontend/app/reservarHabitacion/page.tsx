@@ -148,6 +148,20 @@ export default function SeleccionarHabitaciones() {
 
       setEstadoHabitaciones(data);
 
+      const hayAlgunaLibre = data.some((hab: any) =>
+      Object.values(hab.estadoPorFecha ?? {}).some(
+        (estado) => estado === "LIBRE"
+      )
+    );
+
+    if (!hayAlgunaLibre) {
+      setVisible((prev) => ({ ...prev, noHayDisponible: true }));
+      setFilas([]);
+      setColumnas([]);
+      setIsLoading(false);
+      return;
+    }
+
       // columnas = lista de números de habitación
       const nums = data.map((h: any) => String(h.numeroHabitacion));
       setColumnas(nums);
@@ -274,9 +288,9 @@ export default function SeleccionarHabitaciones() {
           <h2>¡Error!</h2> <p>La habitación que desea seleccionar no esta disponible</p>
       </ModalError>
 
-      {/*<ModalError visible={popUpError.noHayDisponible} onClose={() => setVisible((prev) => ({...prev, noHayDisponible:false}))}>
+      <ModalError visible={popUpError.noHayDisponible} onClose={() => setVisible((prev) => ({...prev, noHayDisponible:false}))}>
           <h2>¡Error!</h2> <p>No existen habitaciones disponibles en el periodo de fechas ingresado.</p>
-      </ModalError>*/}
+      </ModalError>
 
     </main>
   );
