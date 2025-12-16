@@ -4,7 +4,7 @@ export function validarDocumento(tipo, valor){
     const t = tipo.toUpperCase();
 
 
-    if(["DNI", "LE", "LC"].includes(t))
+    if(["DNI", "LE", "LC", "OTRO"].includes(t))
         return /^[0-9]{7,10}$/.test(valor);
     else if (t === "PASAPORTE")
         return /^[a-zA-Z]{2}[0-9]{3,10}$/.test(valor);

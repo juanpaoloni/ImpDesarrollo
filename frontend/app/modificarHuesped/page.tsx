@@ -59,7 +59,7 @@ export default function modificarHuesped() {
 
         const normalizado: Huesped = {
           ...data,
-          cuit: data.CUIT,                 
+          CUIT: data.CUIT,                 
           direccion: {
             ...data.direccion
           }
@@ -85,7 +85,7 @@ export default function modificarHuesped() {
   const [errores, setErrores] = useState({
     nombre: "",
     apellido: "",
-    cuit: "",
+    CUIT: "",
     tipoDocumento: "",
     numeroDocumento: "",
     posicionIVA: "",
@@ -109,7 +109,7 @@ export default function modificarHuesped() {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
-    cuit: "",
+    CUIT: "",
     tipoDocumento: "DNI",
     numeroDocumento: "",
     posicionIVA: "CONSUMIDOR_FINAL",
@@ -148,7 +148,7 @@ export default function modificarHuesped() {
     setErrores({
       nombre: "",
       apellido: "",
-      cuit: "",
+      CUIT: "",
       tipoDocumento: "",
       numeroDocumento: "",
       posicionIVA: "",
@@ -174,7 +174,7 @@ export default function modificarHuesped() {
       setForm({
       nombre: "",
       apellido: "",
-      cuit: "",
+      CUIT: "",
       tipoDocumento: "DNI",
       numeroDocumento: "",
       posicionIVA: "CONSUMIDOR_FINAL",
@@ -208,13 +208,13 @@ const verificarYMostrarErrores = () => {
     hayErrores = true;
   }
 
-  if (!validarCuit(form.cuit, form.posicionIVA) && !(form.cuit.length)){
-    setErrores((prev) => ({...prev, cuit: "Solo puede estar vacio si es exento"}));
+  if (!validarCuit(form.CUIT, form.posicionIVA) && !(form.CUIT.length)){
+    setErrores((prev) => ({...prev, CUIT: "Solo puede estar vacio si es exento"}));
     hayErrores = true;
   }
 
-  if (!validarCuit(form.cuit, form.posicionIVA) && (form.cuit.length)){
-    setErrores((prev) => ({...prev, cuit: "El cuit debe tener 11 numeros"}));
+  if (!validarCuit(form.CUIT, form.posicionIVA) && (form.CUIT.length)){
+    setErrores((prev) => ({...prev, CUIT: "El CUIT debe tener 11 numeros"}));
     hayErrores = true;
   }
 
@@ -435,8 +435,8 @@ const handleSubmit = async (e) => {
 
               <div>
                 <p className="label-MH">CUIT</p>
-                <input name="cuit" value={form.cuit ?? ""} onChange={handleChange} placeholder="CUIT" />
-                {errores.cuit && <p className="error-MH">{errores.cuit}</p>}
+                <input name="CUIT" value={form.CUIT ?? ""} onChange={handleChange} placeholder="CUIT" />
+                {errores.CUIT && <p className="error-MH">{errores.CUIT}</p>}
               </div>
 
 

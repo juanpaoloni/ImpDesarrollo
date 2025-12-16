@@ -38,8 +38,8 @@ export default function Sidebar() {
           <Link href="/darDeAltaHuesped">
             <button className="sidebar-item" onClick={toggleSidebar}>Dar de Alta un Huesped</button>
           </Link>
-          <Link href="/darDeBajaHuesped">
-            <button className="sidebar-item" onClick={toggleSidebar}>Dar de Baja un Huesped</button>
+          <Link href="/gestionarHuesped">
+            <button className="sidebar-item" onClick={toggleSidebar}>Buscar Huéspedes</button>
           </Link>
           <Link href="/facturar">
             <button className="sidebar-item" onClick={toggleSidebar}>Facturar una estadía</button>
