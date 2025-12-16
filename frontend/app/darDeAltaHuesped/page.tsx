@@ -14,7 +14,7 @@ export default function darDeAlta() {
   const [errores, setErrores] = useState({
     nombre: "",
     apellido: "",
-    cuit: "",
+    CUIT: "",
     tipoDocumento: "",
     numeroDocumento: "",
     posicionIVA: "",
@@ -38,7 +38,7 @@ export default function darDeAlta() {
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
-    cuit: "",
+    CUIT: "",
     tipoDocumento: "DNI",
     numeroDocumento: "",
     posicionIVA: "CONSUMIDOR_FINAL",
@@ -77,7 +77,7 @@ export default function darDeAlta() {
     setErrores({
       nombre: "",
       apellido: "",
-      cuit: "",
+      CUIT: "",
       tipoDocumento: "",
       numeroDocumento: "",
       posicionIVA: "",
@@ -103,7 +103,7 @@ export default function darDeAlta() {
       setForm({
       nombre: "",
       apellido: "",
-      cuit: "",
+      CUIT: "",
       tipoDocumento: "DNI",
       numeroDocumento: "",
       posicionIVA: "CONSUMIDOR_FINAL",
@@ -142,13 +142,21 @@ const verificarYMostrarErrores = () => {
     hayErrores = true;
   }
 
-  if (!validarCuit(form.cuit, form.posicionIVA) && !(form.cuit.length)){
-    setErrores((prev) => ({...prev, cuit: "Solo puede estar vacio si es exento"}));
+  // Si NO es exento y el CUIT está vacío
+  if (form.posicionIVA !== "EXENTO" && !form.CUIT) {
+    setErrores(prev => ({
+      ...prev,
+      CUIT: "El CUIT es obligatorio salvo para exentos."
+    }));
     hayErrores = true;
   }
 
-  if (!validarCuit(form.cuit, form.posicionIVA) && (form.cuit.length)){
-    setErrores((prev) => ({...prev, cuit: "El cuit debe tener 11 numeros"}));
+  // Si hay CUIT pero es inválido
+  if (form.CUIT && !validarCuit(form.CUIT, form.posicionIVA)) {
+    setErrores(prev => ({
+      ...prev,
+      CUIT: "El CUIT debe tener 11 números válidos."
+    }));
     hayErrores = true;
   }
 
@@ -374,8 +382,8 @@ const handleSubmit = async (e: any) => {
 
               <div>
                 <p className="label-DAH">CUIT</p>
-                <input name="cuit" value={form.cuit} onChange={handleChange} placeholder="CUIT" />
-                {errores.cuit && <p className="error-DAH">{errores.cuit}</p>}
+                <input name="CUIT" value={form.CUIT} onChange={handleChange} placeholder="CUIT" />
+                {errores.CUIT && <p className="error-DAH">{errores.CUIT}</p>}
               </div>
 
 
