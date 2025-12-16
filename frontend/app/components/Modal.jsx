@@ -73,6 +73,7 @@ export function ModalMotivo({ visible, onClose, onAceptar }) {
   if (!visible) return null;
 
   const handleAceptar = () => {
+    mostrarError(false);
     if (motivo.trim().length === 0) {
       mostrarError(true);
       return;

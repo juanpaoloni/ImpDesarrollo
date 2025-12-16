@@ -80,5 +80,12 @@ public class HuespedController {
         return ResponseEntity.ok(service.tieneDuplicados(TipoDocumento.valueOf(tipoDocumento), nroDocumento));
     }
     
+   @GetMapping("/esMayorDeEdad")
+   public ResponseEntity<Boolean> esMayorDeEdad(
+    @RequestParam(required = true) String tipoDocumento,
+    @RequestParam(required = true)String nroDocumento){
+       return ResponseEntity.ok(service.esMayorDeEdad(TipoDocumento.valueOf(tipoDocumento), nroDocumento));
+    }
+    
     
 }

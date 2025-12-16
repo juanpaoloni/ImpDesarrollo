@@ -123,7 +123,6 @@ export default function cancelarReserva() {
       alert("Hubo un error.");
     }
 
-    // Cuando este popup se cierra se seta en null la seleccion
     setMostrarPopUp((prev) => ({...prev, confirmacion:true}));
 
     setForm({
@@ -260,27 +259,6 @@ export default function cancelarReserva() {
           <h2>¡Exito!</h2>
           <p>La reserva fue cancelada correctamente.</p>
         </ModalBase>
-        
-        {/*<ModalError
-          visible={mostrarPopUp.fallo}
-          onClose={() => setMostrarPopUp(prev => ({ ...prev, fallo: false }))}
-          
-        >
-          <h2>¡Error!</h2>
-          <p>El huesped no puede <br/> ser eliminado pues se ha alojado<br/> en el Hotel en alguna oportunidad</p>
-        </ModalError>*/}
-
-
-        {/*<ModalAdvertencia
-          visible={mostrarPopUp.advertencia}
-          onClose={() =>
-            setMostrarPopUp(prev => ({ ...prev, advertencia: false }))
-          }
-          onAceptar={handleAceptar}
-        >
-          <h2>¡Advertencia!</h2>
-          <p>¿Esta seguro que quiere cancelar la reserva de<br/>{reservaSeleccionada?.nombre} {reservaSeleccionada?.apellido}?</p>
-        </ModalAdvertencia>*/}
 
         <ModalMotivo
           visible={mostrarPopUp.advertencia}

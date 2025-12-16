@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.DESO_TP.DESO_backend.Services.Facade.HuespedOcupacionFacade;
+import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ExtendWith(MockitoExtension.class)
@@ -204,4 +205,55 @@ class HuespedServiceTest {
         verify(huespedRepository).existsById(id);
     }
     
+    @Test
+    void esMayorDeEdad_cuandoEsMayor_devuelveTrue() {
+        TipoDocumento tipo = TipoDocumento.DNI;
+        String numero = "123";
+        HuespedId id = new HuespedId(tipo, numero);
+
+        Huesped h = new Huesped();
+        h.setFechaNacimiento(LocalDate.now().minusYears(20));
+
+        when(huespedRepository.findById(id)).thenReturn(Optional.of(h));
+
+        boolean resp = service.esMayorDeEdad(tipo, numero);
+
+        assertTrue(resp);
+        verify(huespedRepository).findById(id);
+    }
+    
+    @Test
+    void esMayorDeEdad_cuandoEsMenor_devuelveFalse() {
+        TipoDocumento tipo = TipoDocumento.DNI;
+        String numero = "124";
+        HuespedId id = new HuespedId(tipo, numero);
+
+        Huesped h = new Huesped();
+        h.setFechaNacimiento(LocalDate.now().minusYears(17));
+
+        when(huespedRepository.findById(id)).thenReturn(Optional.of(h));
+
+        boolean resp = service.esMayorDeEdad(tipo, numero);
+
+        assertFalse(resp);
+        verify(huespedRepository).findById(id);
+    }
+    
+    @Test
+    void esMayorDeEdad_cuandoCumpleHoy_devuelveTrue() {
+        TipoDocumento tipo = TipoDocumento.DNI;
+        String numero = "125";
+        HuespedId id = new HuespedId(tipo, numero);
+
+        Huesped h = new Huesped();
+        h.setFechaNacimiento(LocalDate.now().minusYears(18));
+
+        when(huespedRepository.findById(id)).thenReturn(Optional.of(h));
+
+        boolean resp = service.esMayorDeEdad(tipo, numero);
+
+        assertTrue(resp);
+        verify(huespedRepository).findById(id);
+    }
+ 
 }

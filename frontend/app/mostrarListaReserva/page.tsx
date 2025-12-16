@@ -229,7 +229,7 @@ return (
                 {reservas.length > 0 && (
                      <div className="contenedor-botones-ML">
                         <button
-                            className="boton-ML rechazar"
+                            className="boton-ML"
                             onClick={() => {
                                 setVisible((prev) => ({...prev, advertencia:true}))
                             }}
@@ -238,7 +238,7 @@ return (
                         </button>
 
                         <button
-                            className="boton-ML aceptar"
+                            className="boton-ML"
                             onClick={enviarReservas}
                         >
                             ACEPTAR

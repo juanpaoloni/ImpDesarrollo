@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.DESO_TP.DESO_backend.Services.Facade.HuespedOcupacionFacade;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -183,5 +184,14 @@ public class HuespedService {
         return huespedRepository.existsById(id);
     }
 
-
+    public boolean esMayorDeEdad(TipoDocumento tipo, String numero){
+        HuespedId id = new HuespedId(tipo, numero);
+        
+        Huesped h = huespedRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Huésped no encontrado"));
+        
+        return h.getFechaNacimiento().plusYears(18).isBefore(LocalDate.now()) ||
+               h.getFechaNacimiento().plusYears(18).isEqual(LocalDate.now());
+    }
+    
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import '../facturar/formFacturar.css';
+import { ModalError } from './Modal.jsx';
 
 interface ResponsableIdentificado {
     idResponsable: string;
@@ -107,10 +108,27 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
         setError('');
     };
 
-    const handleConfirm = () => {
+    const [verPopUp, setVisibilidad] = useState(false);
+
+    const handleConfirm = async () => {
         let responsableFinal: ResponsableFinal | null = null;
 
         if (responsableSeleccionadoInterno) {
+
+            try{
+                const edadResp = await fetch(`http://localhost:8080/huespedes/esMayorDeEdad?tipoDocumento=${responsableSeleccionadoInterno.tipoDocumento}&nroDocumento=${responsableSeleccionadoInterno.numeroDocumento}`);
+                const data = await edadResp.text();
+
+                if(data === "false"){
+                    setVisibilidad(true);
+                    return;
+                }
+
+            } catch(error){
+                console.log("La edad del huesped no pudo ser verificada correctamente");
+            }
+
+
             responsableFinal = {
                 idResponsable:"",
                 nombre: `${responsableSeleccionadoInterno.apellido}, ${responsableSeleccionadoInterno.nombre}`,
@@ -236,7 +254,12 @@ const ResponsablePago = ({ habitacion, ocupantes, onClose, onConfirmAndAdvance }
                     </button>
                 </div>
             </div>
+                    {<ModalError visible={verPopUp} onClose={() => setVisibilidad(false)}>
+                            <h2>¡Error!</h2>
+                            <p>El huesped seleccionado como responsable es menor de edad, por favor elija otro.</p>
+                    </ModalError>}
         </div>
+
     );
 };
 

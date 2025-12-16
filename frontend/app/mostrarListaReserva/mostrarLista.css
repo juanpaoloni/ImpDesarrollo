@@ -20,30 +20,15 @@
     font-weight: bold;
     letter-spacing: 1px;
     font-size: 20;
+    background-color: #b69f7f;
 }
 
-.boton-ML.aceptar {
-    background-color: rgb(84, 129, 84);
+.boton-ML:hover{
+    background-color: #937e60;
 }
 
-.boton-ML.rechazar {
-    background-color: rgb(90, 54, 54);
-}
-
-.boton-ML.aceptar:hover {
-    background-color: rgb(118, 158, 118);
-}
-
-.boton-ML.rechazar:hover {
-    background-color: rgb(120, 89, 89);
-}
-
-.boton-ML.aceptar:active {
-    background-color: rgb(56, 86, 56);
-}
-
-.boton-ML.rechazar:active {
-    background-color: rgb(58, 35, 35);
+.boton-ML:active{
+    background-color: #393329;
 }
 
 .contenedor-campos-ML {
